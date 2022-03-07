@@ -13,7 +13,16 @@ This document will only focus on bio-informatics methods applied to ONT data, as
 ONT allow the sequencing of RNA or DNA single strands without prior amplification step, thus dumping PCR bias during sequencing. This technology doesn't recquire active DNA synthesis, unlike classical sequencing technique and doesn't recquire imaging equipment either.   
 Nanopore sequencing measures the ionic current change through a nanopore while a single strand DNA translocates trhoug it. During translocation, changes in current intensity allows to distinguish nucleotides including uraciles, permitting native RNA sequencing with no prior conversion to cDNA. The nanopore sequencing can also detect bases modification such as bases' methylation without any DNA treatment in advance.
 
+
+![](./img/nanopore_principle.png)
+**Principle of nanopore sequencing.** *A minION flow cell contains 512 channels with 4 nanopores in each channel, for a total of 2,048 nanopores used to sequence DNA or RNA. The wells are inserted into an electrically resistant polymer membrane supported by an array of microscaffolds connected to a sensor chip. each channel associates with a separate electrode in the sensor chip and is controlled and measured individually by the application-specific integration circuit (ASIC). Ionic current passes through the nanopore because a constant voltage is applied across the membrane, where the trans side is positively charged. Under the control of a motor protein, a double-stranded DNA (dsDNA) molecule (or an RNA–DNA hybrid duplex) is first unwound, then single-stranded DNA or RNA with negative charge is ratcheted through the nanopore, driven by the voltage. As nucleotides pass through the nanopore, a characteristic current change is measured and is used to determine the corresponding nucleotide type at ~450 bases per s (R9.4 nanopore).*      
+Wang, Yunhao et al. (2021) ‘Nanopore sequencing technology, bioinformatics and applications’, Nature Biotechnology, 39(11), pp. 1348–1365. (doi:10.1038/s41587-021-01108-x).
+
+
 Here, I will present the main bioinformatics analysis tools for ONT data.
+
+![](./img/workflow.png)
+**Typical long reads workflow** *Analysis solutions for nanopore sequencing data* [Nanopore resource, 03/2022] <https://nanoporetech.com/nanopore-sequencing-data-analysis>
 
 
 ## Long reads analysis
@@ -40,58 +49,60 @@ New features move from Bonito to Guppy.
 
 ### Consensus sequences generation
 
-Despite rapid advances in nanopore technologies, long reads still end with a higher base‐level error rate in comparison to short read assembly, mainly due to signal noise during translocation. Thus, long-read accuracy remains challenging. 
+Despite rapid advances in nanopore technologies, long reads still end with a higher base‐level error rate (~15%)in comparison to short read assembly, mainly due to signal noise during translocation. Thus, long-read accuracy remains challenging. 
 
 To overcome accuracy issues, error-correction must be applied before downstream analysis in order to improve quality results.     
 
-However, it is important that error-correction is not done at the expense of read depth and N50. Some tools may discard or trim reads during the process, negatively impacting downstream analysis.
-
-Error-correction performance usually increases with sequencing depth, especially for non hybrid-methods.  
+However, it is important that error-correction is not done at the expense of read depth and N50. Some tools may discard or trim reads during the process, negatively impacting downstream analysis.  
 
 Depending on the metholodoly used, two type of error-correction exists.
 
 #### Hybrid correction 
 This type of error-correction tools uses the high accuracy of short-reads (that have error rates usually < 1%) to correct long reads via alignment-based or assembly-based methods. 
 The advantage of hybrid correction is that it depends mainly on short reads data. As a result, long reads coverage will not influence the correction whatsoever.
-Hybrid correction can improve sequences accuracy to an error rate from 1 to 4%, resulting in an accuracy similar as that of short-reads.   
-
-Within the hybrid methods, assembly-based methods are superior to alignment-based methods in terms of scalability to large data sets.
-
+Hybrid correction can improve sequences accuracy to an error rate from 1 to 4%, resulting in an accuracy similar as that of short-reads.    
+Hybrid correction can either be alignement-based, or assembly-based.
+The first method will align short to long-reads, while the assembly-based methods will first perform an assembly with short reads and then align long reads back to the assembly.  
+Within the hybrid methods, assembly-based methods are superior in terms of scalability to large data sets.  
 If hybrid methods have been shown to produce more accurate results in general, their performance tend to drop when applied to large and complex genomes.
 
 #### Self correction
 One way to auto-correct long-reads is to produce consensus sequences from the set of long reads alone. 
-These methods usually results in less accurate reads, with error rates spanning between 3 and 6% which could be a consequence from non random systematic in ONT data.
-
+These methods usually results in less accurate reads, with error rates spanning between 3 and 6% which could be a consequence from non random systematic in ONT data.   
+Error-correction performance usually increase with sequencing depth.   
 Long-reads error-correction recquire high computational power and is relatively slow when perform prior to the reads assembly. Usually, the error prone reads are first assembled and then corrected, but it can also be done before **and** after.
 
-Error-correction tools have been developped and integrated as part of long reads *de novo* assembly pipelines.
+Most current long-reads genome assembly tools include a built-in error-correction stage prior or after the assembly.  
+It seems (to me) that error correction before assembly as a seperate software is not that common. It might be the reason why most correcting tools are not under active development, compared to assemblers. However, highly accurate sequences are crucial for exact diagnosis. For that matter, testing error-correcting tools prior assembly could be of interest. 
 
-Splice-aware error correction tools? 
+
 
 ### *De novo* assembly
-
-Long-reads sequencing lenght allow to reconstruct regions of low complexity or highly repetitive sequences that were barely identifiable with traditional short-reads.
+Long-read sequencing technology offers simplified and less ambiguous genome assembly.
+Long-reads sequencing lenght allow to reconstruct regions of low complexity or highly repetitive sequences that were barely identifiable with traditional short-reads, based on overlap–layout-consensus algorithms.
 That makes long-reads well suited for de novo assembly. 
 
-Long reads assemblers are based on overlap–layout-consensus algorithms.
-Minimum coverage required.
+Currently, *de novo* assemblers perform reads correction before or after assembly. Correction before the assembly is usually slower and recquire higher computational cost. However, error-prone reads assembly can result in assembly errors in the genome sequence, which could impact further downstream analysis. 
 
-For Human genome assembly, Nanopore advises using the third party assembler Shata. 
-The assembler Canu seems to be widely use and to perfom well on human genomic data, even if it has a very much longer run time. Shata stores the read in an homopolymer-compressed form using run-length encoding. 
-
+For Human genome assembly, Nanopore advises using the third party assembler Shata. Shata stores the read in an homopolymer-compressed form using run-length encoding. 
+The assembler Canu seems to be widely use and to perfom well on human genomic data, even if it has a very much longer run time. 
 
 One can use QUAST-LG to compare large genome assembly.
 
 ### Alignment to a reference genome
-Many alignment tools have been developped for short-reads analysis purposes. More recently, several long-reads specific aligners have also emerged. 
-
 Minimap2 seems to be the most recommended long-reads aligner. It is fastest, and more accurate than the majority of other alignment tools.
+
+### Splice aware alignment
+For RNA seq.
+
+### Phased assembly 
+Global haplotype phasing of human genome is usually performed thanks to parental data. However, in a clinical setting such data are not always available. 
+however, fully phased human genome assembly is accessible without parental data. Strand sequencing (Strand-seq) is a short-read, single-cell sequencing method that preserves structural contiguity of individual homologs in every single cell, and coupled with long-reads technology can achieve high quality completely phased de novo genome assembly.
 
 
 ### Polishing 
-To further remove errors, an other step of polishing can be performed. A polishing tool is a computational tool that increase genome assembly quality and accuracy. It allows for more accurate genomic analyses.
-These tools typically compare reads to an assembly to derive a more accurate consensus sequence.
+To remove remaining errors after the assembly, a "polishing step" can be performed. It is an error correcting step done on contigs wether than raw reads in order to increase genome assembly quality and accuracy. It allows for more accurate genomic analyses.
+Polishing tools typically compare reads to an assembly to derive a more accurate consensus sequence.
 
 ONT advise to use Medaka coupled with Racon (1 round each).
 For a high quality genome assembly, one could also use Medaka after having assembled with Flye. 
@@ -99,20 +110,37 @@ For a high quality genome assembly, one could also use Medaka after having assem
 
 ### Variant calling 
 With a reference genomes, nanopore long-reads can be used to investigate samples' genomic particularities with better accuracy than any other sequencing techniques to date.
+While short reads are higly effective in resolving SNV, their short size limit the detection of large structural variants (SVs).
+
 
 #### Structural Variants
-Sniffles : structural variant calling 
+Mapping uncomformity between sequenced reads and the referance genome allow to detect structural variations:
+
+- A read paired approach allow to determine orientation and distance of events in the genomic sequence.
+- The read depth is indicative of a deletion or a duplication event. 
+- Split reads are evidence for SVs breakpoint.
+
+No SVs callers use all SVs signature in sequencing. To increase sensivity in SVs detection, it is recommended to use ensembl algorithms, that is algorithms that use 2 or more callers working with different detection methods.
+
+CuteSV is a SVs caller recommended by nanopore for human variant calling. It seems to have a slightly higher accuracy than Sniffles, the other popular tool. 
+
+Pipelines using minimap2-sniffles, minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared.
 
 #### Single Nucleotide Variants
-Nanovare
+Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
 
-### Short tandem repeat identification 
+
+- Nanovare
+- long shot 
+- medaka
+- deepvariant 
+- freebayes
+
+### Phasing 
 
 ### Quality metrics
 pycoQC 
 multiQC
-
-
 
 
 
