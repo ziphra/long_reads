@@ -46,7 +46,7 @@ Use the training set `dna_rXX.X_e8.X_hc@vX.X` according to flowcells' nanopore (
 Guppy is the official ONT basecaller. As bonito, it can output `.bam` files. 
 
 ### Install 
-See ONT [doc]().
+See ONT [doc](https://community.nanoporetech.com/docs/prepare/library_prep_protocols/Guppy-protocol/v/gpb_2003_v1_revac_14dec2018).
 Guppy was already installed, but needed an update.      
 ```
 sudo apt install ont-guppy
@@ -164,7 +164,7 @@ wget https://raw.githubusercontent.com/roblanf/minion_qc/master/MinIONQC.R -O Mi
 wget https://github.com/roblanf/minion_qc/archive/refs/tags/1.4.2.zip
 sudo apt install r-base-core
 ```
-To make `MinIONQC.R` executable from anywhere: put the script in biopogram, a folder added to the `PATH`. 
+`alias minionqc = "Rscript '/home/euphrasie/bioprog/MinIONQC.R'"`
 
 ### Run LongQC
 ```
@@ -174,15 +174,50 @@ MinIONQC.R -i path/to/sequencing_summary.txt # or path/to/parent_directory
 ## [MultiQC](https://multiqc.info)
 
 # Alignment 
-## [minimap2](https://github.com/lh3/minimap2)
+## [minimap2 2.24-r1122](https://github.com/lh3/minimap2)
 ### Install 
 ```
-curl -L https://github.com/lh3/minimap2/releases/download/v2.24/minimap2-2.24_x64-linux.tar.bz2 | tar -jxvf -
-./minimap2-2.24_x64-linux/minimap2
+git clone https://github.com/lh3/minimap2
+cd minimap2 && make
 ```
 
-## [LRA](https://github.com/ChaissonLab/LRA)
+### Run minimap2 
+
+- index:    
+```
+minimap2 -x map-ont data.fastq -d ref.mmi 
+```
+- alignment:    
+```
+minimap2 -t 10 -ax map-ont ref.mmi ont.fq.gz | samtools sort -@ 8 -o minimap2_alignment.bam
+```
+	- `t`: number of threads 
+	- `a`: outputs SAM
+	- `x`: presets. `map-ont` is for aligning noisy long reads of ~10% error rate to a ref genome. Default mode.
+	- `splice`: splice aware alignment mode.
+	- The pipe `|` allows to directly write the outputs as BAM, and not as SAM (or .paf in default mode). 
+	- `@`: number of threads 
+	
+
+## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
+### install 
+```
+conda install -c bioconda lra
+```
+
+### run LRA 
+##### NOT WORKING, see [issue](https://github.com/ChaissonLab/LRA/issues/19)
+- index:    
+`lra index -ONT ref.fa`
+- alignment:    
+`lra align -ONT -t 16 /media/god/DATA/reference_genome/hg19/hg19_std.fa reads.fa -p s > lra_alignment.sam`
+	- `-t`: threads
+	- `-p`: output parameter, `-p s` = sam output.
+
+
+# Assembly
 ## [Shasta](https://github.com/chanzuckerberg/shasta)
+
 
 
 

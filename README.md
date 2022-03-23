@@ -16,13 +16,22 @@ Nanopore sequencing measures the ionic current change through a nanopore while a
 
 ![](./img/nanopore_principle.png)
 **Principle of nanopore sequencing.** *A minION flow cell contains 512 channels with 4 nanopores in each channel, for a total of 2,048 nanopores used to sequence DNA or RNA. The wells are inserted into an electrically resistant polymer membrane supported by an array of microscaffolds connected to a sensor chip. each channel associates with a separate electrode in the sensor chip and is controlled and measured individually by the application-specific integration circuit (ASIC). Ionic current passes through the nanopore because a constant voltage is applied across the membrane, where the trans side is positively charged. Under the control of a motor protein, a double-stranded DNA (dsDNA) molecule (or an RNA–DNA hybrid duplex) is first unwound, then single-stranded DNA or RNA with negative charge is ratcheted through the nanopore, driven by the voltage. As nucleotides pass through the nanopore, a characteristic current change is measured and is used to determine the corresponding nucleotide type at ~450 bases per s (R9.4 nanopore).*      
-Wang, Yunhao et al. (2021) ‘Nanopore sequencing technology, bioinformatics and applications’, Nature Biotechnology, 39(11), pp. 1348–1365. (doi:10.1038/s41587-021-01108-x).
+Wang, Yunhao et al. (2021) ‘Nanopore sequencing technology, bioinformatics and applications’, Nature Biotechnology, 39(11), pp. 1348–1365. <https://doi.org/10.1038/s41587-021-01108-x>.
+
+
+
+
+
+    
+![](./img/sequencing_approaches.jpg)
+**Schematic overview of the 1D, 2D and 1D 2 sequencing approaches**. *When using 1D chemistry, solely the template strand (blue) is threaded by the motor protein (green). The complement strand (red) is discarded and sequenced. When using the 2D chemistry both the template and complement are sequenced as they are link together with a hairpin (yellow). The 1D 2 chemistry, also allows sequencing of both strands, but rather than linked both strands, the complement strand is tethered to the membrane while the template is sequenced. Subsequently the complement strand is drawn in and the tether is pulled loose. Senne Cornelis* Forensic Lab-on-a-Chip DNA analysis
+
 
 
 Here, I will present the main bioinformatics analysis tools for ONT data.
 
 ![](./img/workflow.png)
-**Typical long reads workflow** *Analysis solutions for nanopore sequencing data* [Nanopore resource, 03/2022] <https://nanoporetech.com/nanopore-sequencing-data-analysis>
+**Typical long reads workflow** *Analysis solutions for nanopore sequencing data* [Nanopore resource, 03/2022](https://nanoporetech.com/nanopore-sequencing-data-analysis)
 
 
 ## Long reads analysis
@@ -35,16 +44,19 @@ This step is very critical. Long reads base calling has not been as efficient as
 
 For that matter, a lot of tools have been developped by both the machines constructor and the community. 
 
+Even though basecalling can be performed in real time while sequencing, it is often useful to separate the sequencing from basecalling. One advantage of “offline” basecalling is that the basecaller can use significant amounts of compute and read/write resources which may slow the sequencing process and, in rare cases, even lead to loss of sequencing data.
+
 #### Basecaller tools 
 Constructor's basecallers are generally the most reliable in terms of stability and accuracy. To date, softwares' constructors seem to be best suited for nanopore basecalling based on popularity and usability.
-The two main basecallers developped by ONT remaining under active development today are Guppy and Bonito. Their goals are slightly different. 
+The two main basecallers developped by ONT remaining under active development today are **Guppy** and **Bonito**. Their goals are slightly different. 
 
 - **Guppy**   
-It is the official production basecaller. It is fully supported and documented. It also seems to be slighty more performant than Bonito.
+It is the official production basecaller. It is fully supported and documented. It also seems to be slighty more performant than **Bonito**. It is a neural network based basecaller that in addition to basecalling also performs filtering of low quality reads, clipping of Oxford Nanopore adapters and estimation of methylation probabilities per base.
 
 - **Bonito**    
-Bonito is the open source ONT's basecaller, and figures as a "research and tech demonstrator". It is under active development.  It is GPU focused and you can train Bonito with your own model. If Bonito was said to be slow, its basecalling speeds are now inline with Guppy as of December 21.
+**Bonito** is the open source ONT's basecaller, and figures as a "research and tech demonstrator". It is under active development.  It is GPU focused and you can train Bonito with your own model. If Bonito was said to be slow, its basecalling speeds are now inline with **Guppy** as of December 21.
 New features move from Bonito to Guppy. 
+Bonito can also perform the alignment with minimap2 if an indexed reference is provided.
 
 
 ### Consensus sequences generation
@@ -78,6 +90,8 @@ It seems (to me) that error correction before assembly as a seperate software is
 
 
 ### *De novo* assembly
+De novo sequence assembly is a theoritical ideal approach as it allows to recreate the original genome sequence through overlapping sequenced reads, but it recquires high coverage, long reads and good quality reads. 
+
 Long-read sequencing technology offers simplified and less ambiguous genome assembly.
 Long-reads sequencing lenght allow to reconstruct regions of low complexity or highly repetitive sequences that were barely identifiable with traditional short-reads, based on overlap–layout-consensus algorithms.
 That makes long-reads well suited for de novo assembly. 
@@ -90,14 +104,21 @@ The assembler Canu seems to be widely use and to perfom well on human genomic da
 One can use QUAST-LG to compare large genome assembly.
 
 ### Alignment to a reference genome
+In reference-based assembly, sequenced reads are aligned back to a refernce genome. Even though it can first appear easier than *de novo* assembly, this method has trouble identifying structural variants, and regions that are really different from the reference. 
+Using a reference biased towards things that are in the reference and will thus not facilitate new events identification.
+
 Minimap2 seems to be the most recommended long-reads aligner. It is fastest, and more accurate than the majority of other alignment tools.
 
 ### Splice aware alignment
-For RNA seq.
+As mature RNA misses sequences introns, the alignment to a reference genomes containing introns in between exons becomes challenging. For that matter, "splice-aware" alignment can align RNA seq sequences to a reference genome while being aware to jump out introns regions.  
+
 
 ### Phased assembly 
 Global haplotype phasing of human genome is usually performed thanks to parental data. However, in a clinical setting such data are not always available. 
 however, fully phased human genome assembly is accessible without parental data. Strand sequencing (Strand-seq) is a short-read, single-cell sequencing method that preserves structural contiguity of individual homologs in every single cell, and coupled with long-reads technology can achieve high quality completely phased de novo genome assembly.
+
+### Compare assembly 
+[see here](https://timkahlke.github.io/LongRead_tutorials/ASS_M.html)
 
 
 ### Polishing 
@@ -120,11 +141,11 @@ Mapping uncomformity between sequenced reads and the referance genome allow to d
 - The read depth is indicative of a deletion or a duplication event. 
 - Split reads are evidence for SVs breakpoint.
 
-No SVs callers use all SVs signature in sequencing. To increase sensivity in SVs detection, it is recommended to use ensembl algorithms, that is algorithms that use 2 or more callers working with different detection methods.
+No SVs callers use all SVs signature in sequencing. To increase sensivity in SVs detection, it is recommended to use ensemble algorithms, that is algorithms that use 2 or more callers working with different detection methods.
 
 CuteSV is a SVs caller recommended by nanopore for human variant calling. It seems to have a slightly higher accuracy than Sniffles, the other popular tool. 
 
-Pipelines using minimap2-sniffles, minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared.
+Pipelines using [minimap2-sniffles](https://doi.org/10.1186/s13059-019-1858-1), minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared.
 
 #### Single Nucleotide Variants
 Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
@@ -135,15 +156,19 @@ Identifying SNVs is a challenging task, especially with error prone long reads, 
 - medaka
 - deepvariant 
 - freebayes
+- longshot 
+
+#### Copy Number Variation (CNV)
 
 ### Phasing 
 
 ### Quality metrics
-pycoQC 
-multiQC
+
+Evaluation of read-mapping characteristics from a Cas-mediated PCR-free enrichment
 
 
-
+## Cas 9
+<https://community.nanoporetech.com/knowledge/bioinformatics/evaluation-of-read-mapping/tutorial>
 
 
 
