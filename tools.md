@@ -57,30 +57,53 @@ See [Jetson Xavier basecalling notes](https://gist.github.com/sirselim/2ebe28071
 
 ```
 guppy_basecaller \
--i <input path> \
--s <save path> \
--c dna_r9.4.1_450bps_hac \
--a \
---device 0 \
+-i ./data \
+-s ./guppy_output \
 -r \
+-c dna_r9.4.1_450bps_hac.cfg \
+--device 'auto' \
 --compress_fastq \
---num_callers 16\
---chunks_per_caller 512\
---chunks_per_runner \
+--num_callers 16 \
+--chunk_size 1000 \
+--gpu_runners_per_device 4 \
+--chunks_per_runner 512 \
+--disable_pings \
 ```
 
-- `-c dna_r9.4.1_450bps_hac` available flowcell + kit combinations, hac = high accuracy, sup = super high accuracy. To see the models available: `guppy_basecaller --print_workflow`
+- `-c dna_r9.4.1_450bps_hac.cfg` available flowcell + kit combinations, `hac` = high accuracy, `sup` = super high accuracy. To see the models available: `guppy_basecaller --print_workflow`. Do not forget to add `.cfg` after the model's name! 
 - `-a` optional reference file name. Alignment is performed with minimap2.
 --device 0 
 - `-r` search trough all subfolders for fast5 
 - `--compress_fastq` compress fastq output files with gzip. Highly reduce processing time 
-- `--num_callers` dictates the maximum number of CPU threads used = number of parallel basecallers to create.
+- `--num_callers` = threads.
 - `--chunks_per_caller` directly influences how much computation can be done in parallel by a single basecaller
 - `--chunks_per_runner` The maximum number of chunks which can be submitted to a single neural network runner before it starts computation. Increasing this figure will increase GPU basecalling performance when it is enabled. 
-- `--chunks_per_caller` 512 
-- ...
+- `--disable_pings `: disable sending any telemetyry information to ONT.
 
-### Outout 
+### Setting custom GPU parameters in Guppy
+
+Follow this calculation to estimate custom GPU parameters in Guppy: 
+
+memory used by Guppy [in bytes] = `gpu_runners_per_device` * `chunks_per_runner` * `chunk_size` * model_factor 
+
+Where model_factor depends on the basecall model used:
+
+| Basecall model | model_factor | 
+|----------------|--------------|
+| Fast           | 1200         |
+| HAC            | 3300         |
+| SUP            | 12600        |
+
+For best performance it is recommended that the memory allocated should not exceed half the total GPU memory available. If this value is more than the available GPU memory, Guppy will exit with an error.
+
+As the alienware features 64GB of RAM, we would like:    
+**`gpu_runners_per_device` x 512 x 1000 x 12600 = 32.10^9**        
+Which estimates `gpu_runners_per_device` at **4**.
+
+`chunks_per_runner` and `chunk_size` were estimated from others run. Before running, it is important to make sure that the GPU can fit at least one runner. For speed matter, it can be best to have a dozen runners or more.
+
+
+### Output 
 - A log file
 - sequencing_summary.txt
 - fastq or bam depending if there were an optional alignment step. Output might be separated into `pass`, `fail`, and `calibration_strands` folders depending on wether they pass or fail the filtering condition. For faster models, the filtering score is 7 (~85% accuracy) but is higher for more accurate models.
@@ -132,7 +155,7 @@ See output file [here](./files/pycoqc.html). Besides basic reads statistics, Pyc
 Another quality tool for long reads. It has 2 functionalities:
  
 - Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analysis or not. You don't need any reference, meta information, even quality score.
-- Platform QC: this extracts and provides very fundamental stats for a run such as length or productivity in PacBio and some plots for productivity check in ONT.
+- Platform QC: this extracts and provides very fundamental stats for a run such as length or productivity in PacBio and some plots for productivity check for ONT.
 
 ### Install
 ```
@@ -166,7 +189,7 @@ sudo apt install r-base-core
 ```
 `alias minionqc = "Rscript '/home/euphrasie/bioprog/MinIONQC.R'"`
 
-### Run LongQC
+### Run MinIONQC
 ```
 MinIONQC.R -i path/to/sequencing_summary.txt # or path/to/parent_directory
 ```
@@ -191,6 +214,7 @@ minimap2 -x map-ont data.fastq -d ref.mmi
 ```
 minimap2 -t 10 -ax map-ont ref.mmi ont.fq.gz | samtools sort -@ 8 -o minimap2_alignment.bam
 ```
+
 	- `t`: number of threads 
 	- `a`: outputs SAM
 	- `x`: presets. `map-ont` is for aligning noisy long reads of ~10% error rate to a ref genome. Default mode.
@@ -217,8 +241,47 @@ conda install -c bioconda lra
 
 # Assembly
 ## [Shasta](https://github.com/chanzuckerberg/shasta)
+### install 
+
+```
+curl -O -L https://github.com/chanzuckerberg/shasta/releases/download/0.8.0/shasta-Linux-0.8.0
+sudo chmod ugo+x shasta-Linux-0.8.0
+```
+
+### Run Shasta
+
+```
+shasta \
+--input input.fastq \
+--config Nanopore-Oct2021 \
+--thread 16 \
+--memoryMode filesystem --memoryBacking 2M \ 
+--command saveBinaryData \
+--command explore \
+--alignmentsPafFile alignment.paf \
+--Assembly.mode 2 \
+```
 
 
+
+```
+shasta --command cleanupBinaryData #when fdone using binary data 
+
+```
+
+### Output
+- `Assembly.fasta`: The assembly results in FASTA format. The id of each assembled segment is the same as the edge id of the corresponding edge in the assembly graph.
+- `Assembly.gfa`: The assembly results in GFA 1.0 format. This contains the same sequences in the FASTA file (as GFA segments), plus their connectivity information (as GFA links). A convenient tool to inspect and study these files is Bandage. Segment ids in the GFA file correspond to FASTA ids in the FASTA file and also to assembly graph edge ids.
+- `Assembly-BothStrands.gfa`: An alternative GFA output file for the assembly. This contains both strands of the assembly. This can be useful in some cases to clarify connectivity of assembled segments. See AssemblySummary.csv to find the id of the reverse complement of each assembled segment.
+- `AssemblySummary.html`: An html file summarizing many assembly metrics. It can be viewed using an Internet browser. It has the same content shown by the summary page of the Shasta http server (`--command explore`).
+- `shasta.conf`: a configuration file containing the values of all assembly parameters used. This file uses a format that can also be used as input for a subsequent Shasta run using option `--config`.
+- `ReadLengthHistogram.csv`: A spreadsheet file containing statistics of the read length distribution. This only includes reads that were used by the assembler. The assembler discards reads shorter than  `Reads.minReadLength` bases **(default 10000)** and reads that contain bases repeated more than 255 times. The fifth field of the last line of this file contains the total number of input bases used by the assembler in this run.
+- `Binned-ReadLengthHistogram.csv`: Similar to `ReadLengthHistogram.csv`, but using 1 Kb bins of read lengths.
+-`Data`: A directory containing binary data that can later be used by the Shasta http server or with the Shasta Python API. This is only created if option `--memoryMode filesystem` was used for the run. Keep in mind that, unless you used option `--memoryBacking disk`, these data are in memory, not on disk, and will disappear at next reboot. If you want to save them permanently, you can use script `shasta-install/bin/SaveRun.py` to create a copy on disk of the binary data directory named `DataOnDisk`.
+
+### Exploring assembly results
+- Install graphviz : `sudo apt install graphviz`
+- Run the assembler again, this time specifying option `--command explore`, plus the same `--assemblyDirectory` option used for the assembly run (default is `ShastaRun`)
 
 
 
