@@ -84,7 +84,7 @@ guppy_basecaller \
 
 Follow this calculation to estimate custom GPU parameters in Guppy: 
 
-memory used by Guppy [in bytes] = `gpu_runners_per_device` * `chunks_per_runner` * `chunk_size` * model_factor 
+memory used by Guppy [in bytes] ≈ `gpu_runners_per_device` * `chunks_per_runner` * `chunk_size` * model_factor 
 
 Where model_factor depends on the basecall model used:
 
@@ -97,7 +97,7 @@ Where model_factor depends on the basecall model used:
 For best performance it is recommended that the memory allocated should not exceed half the total GPU memory available. If this value is more than the available GPU memory, Guppy will exit with an error.
 
 As the alienware features 64GB of RAM, we would like:    
-**`gpu_runners_per_device` x 512 x 1000 x 12600 = 32.10^9**        
+**`gpu_runners_per_device` x 512 x 1000 x 12600 ≈ 32.10^9**        
 Which estimates `gpu_runners_per_device` at **4**.
 
 `chunks_per_runner` and `chunk_size` were estimated from others run. Before running, it is important to make sure that the GPU can fit at least one runner. For speed matter, it can be best to have a dozen runners or more.
@@ -241,6 +241,7 @@ conda install -c bioconda lra
 
 # Assembly
 ## [Shasta](https://github.com/chanzuckerberg/shasta)
+<https://chanzuckerberg.github.io/shasta/>
 ### install 
 
 ```
@@ -253,21 +254,27 @@ sudo chmod ugo+x shasta-Linux-0.8.0
 ```
 shasta \
 --input input.fastq \
---config Nanopore-Oct2021 \
+--config Nanopore-Phased-Jan2022 \ 
 --thread 16 \
---memoryMode filesystem --memoryBacking 2M \ 
---command saveBinaryData \
+--memoryMode filesystem --memoryBacking disk \
 --command explore \
---alignmentsPafFile alignment.paf \
 --Assembly.mode 2 \
+--Reads.minReadLength 5000\
 ```
 
+- To see all configuration available: `shasta --command listConfigurations` 
+- To have information on one conf: `shasta --command listConfiguration --config Nanopore-Oct2021
+- `--memoryBacking`: Shasta assembler operates with no access to data on disk except during initial input of the reads, the final output of the assembly, and for small output files. As a result, for optimal performance, Shasta memory requirements are higher than comparable tools that keep some or most of their data on disk. For a human-size genome (≈3 Gb) at coverage 60x, this works out to around 1 TB of memory.
+	- `--memoryBacking 2M` if 1TB memory available. 
+	- `--memoryBacking disk`: The alienware has 64GB of memory, which is too small for a human genome. Shasta can operate with data structures physically on disk or other storage systems with `--memoryBacking disk`, mapped to virtual memory, but this results in huge performance penalty. However, SSD disks allow the operation to run faster.
+- `--memoryMode filesystem` to allow  `--memoryBacking disk`
+- `--thread 16`: default number of threads = number of core processor 
+- `--Reads.minReadLength`: default value = 10000, see QC to determine this.
+- `--Assembly.mode 2`: Assembly mode (0 = haploid assembly, 2 = phased diploid assembly).
+- `--alignmentsPafFile alignment.paf`: experimental. Could be great for structure variants?
+- `--command explore`: starts Shasta in a mode that behaves as an http server. Allow a browser to connect to it and visualize detailed information about bthe assembly, and this requires the binary data for the assembly to be available.
 
-
-```
-shasta --command cleanupBinaryData #when fdone using binary data 
-
-```
+When done using binary data, `shasta --command cleanupBinaryData`
 
 ### Output
 - `Assembly.fasta`: The assembly results in FASTA format. The id of each assembled segment is the same as the edge id of the corresponding edge in the assembly graph.
