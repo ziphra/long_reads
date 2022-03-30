@@ -11,7 +11,12 @@ This document will only focus on bio-informatics methods applied to ONT data, as
 
 ### Oxford Nanopore Technologies’ nanopore sequencing
 ONT allow the sequencing of RNA or DNA single strands without prior amplification step, thus dumping PCR bias during sequencing. This technology doesn't recquire active DNA synthesis, unlike classical sequencing technique and doesn't recquire imaging equipment either.   
-Nanopore sequencing measures the ionic current change through a nanopore while a single strand DNA translocates trhoug it. During translocation, changes in current intensity allows to distinguish nucleotides including uraciles, permitting native RNA sequencing with no prior conversion to cDNA. The nanopore sequencing can also detect bases modification such as bases' methylation without any DNA treatment in advance.
+Nanopore sequencing measures the ionic current change through a nanopore while a single strand DNA translocates through it. During translocation, changes in current intensity allows to distinguish nucleotides including uraciles, permitting native RNA sequencing with no prior conversion to cDNA. The nanopore sequencing can also detect bases modification such as bases' methylation without any DNA treatment in advance.
+
+During sequencing, the membrane separate two chambers with different electronic potential. 
+It's that difference in electronic potential between the two chambers that allow the passing of a single strand DNA or RNA molecule via the nanopores from the upper to the lower chamber. As the sequencing runs, and molecules goes from the top to the bottom chamber, the charge equalises on both sides. Hence, over time a higher current is needed to induce the passing of molecules through the nanopore. Every 2 hours the voltage applied to the flowcell is increased .   
+After a while, nanopores get stuck or dies and can't operate anymore. For that matter, the sequencer will switch to a new group of nanopores every 8 hours or so. This can be seen on the [output over experiment time graph from pycoQC](https://rawcdn.githack.com/ziphra/long_reads/24373579089a7ae0b21a6218b2fbc5e90e7d8cac/files/pycoqc.html).
+
 
 
 ![](./img/nanopore_principle.png)
@@ -89,6 +94,7 @@ It seems (to me) that error correction before assembly as a seperate software is
 
 
 
+
 ### *De novo* assembly
 De novo sequence assembly is a theoritical ideal approach as it allows to recreate the original genome sequence through overlapping sequenced reads, but it recquires high coverage, long reads and good quality reads. 
 
@@ -98,10 +104,22 @@ That makes long-reads well suited for de novo assembly.
 
 Currently, *de novo* assemblers perform reads correction before or after assembly. Correction before the assembly is usually slower and recquire higher computational cost. However, error-prone reads assembly can result in assembly errors in the genome sequence, which could impact further downstream analysis. 
 
-For Human genome assembly, Nanopore advises using the third party assembler Shata. Shata stores the read in an homopolymer-compressed form using run-length encoding. 
+For Human genome assembly, Nanopore advises using the third party assembler Shasta. Shasta stores the read in an homopolymer-compressed form using run-length encoding. 
 The assembler Canu seems to be widely use and to perfom well on human genomic data, even if it has a very much longer run time. 
 
 One can use QUAST-LG to compare large genome assembly.
+
+| *De novo* assemblers | Notes                                                                                     |
+|--------------------|-------------------------------------------------------------------------------------------|
+| Canu               | - Active<br>- Consensus sequence<br>- Trim<br>- Slow<br>- Error correction first<br>- Trio binning assembly          |
+| Falcon             | - Active<br>- Output polished contigs<br>- Error correction first                         |
+| MECAT              | - Active<br>- Error correction and assembly tools <br>- Fast<br>- Error correction first  |
+| Miniasm            | Not active                                                                                |
+| Flye               | - Error correction after<br>- Active<br>- Recommended by ONT for human data.                                                      |
+| Wtdbg2             | - Not active<br>- Error correction after                                                  |
+| Shasta             | - Good doc<br>- Active<br>- Fast<br>- Interactive and html reports<br>- No polishing<br>- Recommended by ONT for human data.      |
+| Smart denovo       | - No error correction step<br>- Not active<br>- Error correction after                    |
+| Raven              | - Active<br>- Polishing stage<br>- Error correction after                                 |
 
 ### Alignment to a reference genome
 In reference-based assembly, sequenced reads are aligned back to a refernce genome. Even though it can first appear easier than *de novo* assembly, this method has trouble identifying structural variants, and regions that are really different from the reference. 
@@ -114,8 +132,7 @@ As mature RNA misses sequences introns, the alignment to a reference genomes con
 
 
 ### Phased assembly 
-Global haplotype phasing of human genome is usually performed thanks to parental data. However, in a clinical setting such data are not always available. 
-however, fully phased human genome assembly is accessible without parental data. Strand sequencing (Strand-seq) is a short-read, single-cell sequencing method that preserves structural contiguity of individual homologs in every single cell, and coupled with long-reads technology can achieve high quality completely phased de novo genome assembly.
+Global haplotype phasing of human genome is usually performed thanks to parental data. However, in a clinical setting such data are not always available, but fully phased human genome assembly can be accessible without parental data. Strand sequencing (Strand-seq) is a short-read, single-cell sequencing method that preserves structural contiguity of individual homologs in every single cell, and coupled with long-reads technology can achieve high quality completely phased de novo genome assembly.
 
 ### Compare assembly 
 [see here](https://timkahlke.github.io/LongRead_tutorials/ASS_M.html)
@@ -131,10 +148,18 @@ For a high quality genome assembly, one could also use Medaka after having assem
 
 ### Variant calling 
 With a reference genomes, nanopore long-reads can be used to investigate samples' genomic particularities with better accuracy than any other sequencing techniques to date.
-While short reads are higly effective in resolving SNV, their short size limit the detection of large structural variants (SVs).
+While short reads are higly effective in resolving SNV, their short size limit the detection of large structural variants (SVs). 
 
+To asses variant calling, authors often bring up the **F1-score** which is the harmonic **mean of the precision and recall**. The precision is the number of true positive results / by the number of all positive results, including those not identified correctly, and the recall is the number of true positive results / by the number of all samples that should have been identified as positive. F1 score increases logically along with the coverage, read length, and accuracy rate, but the improvement in the ability of SV detection is more important with coverage than read length. However, read length greatly influence deletion, insertion, and duplication calling but not inversion calling.
 
 #### Structural Variants
+SVs are usually defined as genomic variants larger than 50bps (e.g. deletions, duplications, inversions). Each persons have approximately ~20,000 SV in their genomes, contributing in phenotypes diversity. 
+
+Usually SV callers’ performance varies depending on the SV types.
+
+![](./img/SVclasses.png)
+
+
 Mapping uncomformity between sequenced reads and the referance genome allow to detect structural variations:
 
 - A read paired approach allow to determine orientation and distance of events in the genomic sequence.
@@ -147,11 +172,19 @@ CuteSV is a SVs caller recommended by nanopore for human variant calling. It see
 
 Pipelines using [minimap2-sniffles](https://doi.org/10.1186/s13059-019-1858-1), minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared.
 
+
+| Structural Variants callers | Notes                                                                         |
+|---------------------|-------------------------------------------------------------------------------|
+| sniffles            | - Active<br>- Most popular<br>- Performs better with LRA?                     |
+| cuteSV              | - Active<br>- higher accuracy than Sniffles?                                  |
+| Svim-asm            | - Does not support multi-threads computing <br>- Last release and commit in 2021 |
+| nanoSV              | - Not under development                                                       |
+| Nanovare            | - Active <br>- Bof                                                            |
+
 #### Single Nucleotide Variants
 Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
 
 
-- Nanovare
 - long shot 
 - medaka
 - deepvariant 
@@ -164,7 +197,6 @@ Identifying SNVs is a challenging task, especially with error prone long reads, 
 
 ### Quality metrics
 
-Evaluation of read-mapping characteristics from a Cas-mediated PCR-free enrichment
 
 
 ## Cas 9

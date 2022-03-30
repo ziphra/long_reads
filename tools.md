@@ -1,3 +1,20 @@
+# Table of Contents
+1. Basecalling
+	- Bonito
+	- Guppy
+2. Quality check
+	- FastQC
+	- PycoQC
+	- LongQC
+	- MinIONQC
+3. Error correction
+	- pepper
+4. Alignment
+	- Minimap2
+	- LRA
+5. Assembly
+	- Shasta
+
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install 
@@ -199,6 +216,25 @@ sudo apt install r-base-core
 MinIONQC.R -i path/to/sequencing_summary.txt # or path/to/parent_directory
 ```
 
+
+
+
+# Error correction 
+## [Pepper](https://github.com/kishwarshafin/pepper)
+### Install 
+Doesn't work when installed through `pip`, conflicts between `torch` and `pytorch` versions.
+
+```
+sudo apt-get -y install cmake make git gcc g++ autoconf bzip2 lzma-dev zlib1g-dev libcurl4-openssl-dev libpthread-stubs0-dev libbz2-dev liblzma-dev libhdf5-dev python3-pip python3-virtualenv virtualenv
+git clone https://github.com/kishwarshafin/pepper.git
+cd pepper
+make install
+. ./venv/bin/activate
+
+```
+
+
+
 # Alignment 
 ## [minimap2 2.24-r1122](https://github.com/lh3/minimap2)
 ### Install 
@@ -293,6 +329,32 @@ When done using binary data, `shasta --command cleanupBinaryData`
 - Install graphviz : `sudo apt install graphviz`
 - Run the assembler again, this time specifying option `--command explore`, plus the same `--assemblyDirectory` option used for the assembly run (default is `ShastaRun`)
 
+## [Canu](https://canu.readthedocs.io/en/latest/tutorial.html)
+### Install 
+```
+curl -L https://github.com/marbl/canu/releases/download/v2.2/canu-2.2.Linux-amd64.tar.xz --output canu-2.2.Linux.tar.xz 
+tar -xJf canu-2.2.*.tar.xz
+```
+
+### Run Canu 
+The `canu` command will execute all the assembly steps, from correction, trimming and eventually unitigs construction.   
+`batMemory` and `batThreads` were recquired for some reason, so Canu doesn't crash, even though `maxMemory` and `maxThreads` should be default value. 
+
+```
+  ./bin/canu \
+ -p canu2 -d /home/euphrasie/Documents/lr_test3/canu \
+ genomeSize=3g maxInputCoverage=100 \
+ -nanopore /home/euphrasie/Documents/lr_test3/fastq/basecalled.fastq \
+ minInputCoverage=3 \
+ -maxMemory=50 -maxThreads=16 -batMemory=50 -batThreads=16
+```
+
+- `genomeSize`: the genome size estimate is used to decide how many reads to correct and how sensitive the mhap overlapper should be (via the mhapSensitivity parameter). It also impacts some logging, in particular, reports of NG50 sizes.
+- `maxInputCoverage`
+- `minInputCoverage`: low data=low coverage. To estimate coverage: `(read_count x read_lenght) / Gn size`. The average coverage on god minion data was ~4,3
+
+
+### output
 
 
 
