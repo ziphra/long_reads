@@ -68,7 +68,7 @@ Bonito can also perform the alignment with minimap2 if an indexed reference is p
 
 Despite rapid advances in nanopore technologies, long reads still end with a higher base‐level error rate (~15%)in comparison to short read assembly, mainly due to signal noise during translocation. Thus, long-read accuracy remains challenging. 
 
-To overcome accuracy issues, error-correction must be applied before downstream analysis in order to improve quality results.     
+To overcome accuracy issues, error-correction can be applied before downstream analysis in order to improve quality results.     
 
 However, it is important that error-correction is not done at the expense of read depth and N50. Some tools may discard or trim reads during the process, negatively impacting downstream analysis.  
 
@@ -107,19 +107,19 @@ Currently, *de novo* assemblers perform reads correction before or after assembl
 For Human genome assembly, Nanopore advises using the third party assembler Shasta. Shasta stores the read in an homopolymer-compressed form using run-length encoding. 
 The assembler Canu seems to be widely use and to perfom well on human genomic data, even if it has a very much longer run time. 
 
-One can use QUAST-LG to compare large genome assembly.
+One can use QUAST-LG to compare large genome assembly. It accepts sequencing data from multiple platforms and can generate reports with rich assembly metrics as well as plots.
 
 | *De novo* assemblers | Notes                                                                                     |
 |--------------------|-------------------------------------------------------------------------------------------|
-| Canu               | - Active<br>- Consensus sequence<br>- Trim<br>- Slow<br>- Error correction first<br>- Trio binning assembly          |
+| Canu               | - Active<br>- Consensus sequence<br>- Trim<br>- Slow<br>- Error correction first<br>- Trio binning assembly<br>- Good contiguity          |
 | Falcon             | - Active<br>- Output polished contigs<br>- Error correction first                         |
 | MECAT              | - Active<br>- Error correction and assembly tools <br>- Fast<br>- Error correction first  |
 | Miniasm            | Not active                                                                                |
-| Flye               | - Error correction after<br>- Active<br>- Recommended by ONT for human data.                                                      |
+| Flye               | - Error correction after<br>- Active<br>- Recommended by ONT for human data.<br>- Fast, best contiguity and completeness                                                    |
 | Wtdbg2             | - Not active<br>- Error correction after                                                  |
-| Shasta             | - Good doc<br>- Active<br>- Fast<br>- Interactive and html reports<br>- No polishing<br>- Recommended by ONT for human data.      |
+| Shasta             | - Good doc<br>- Active<br>- Fastest<br>- Interactive and html reports<br>- No polishing<br>- Recommended by ONT for human data.      |
 | Smart denovo       | - No error correction step<br>- Not active<br>- Error correction after                    |
-| Raven              | - Active<br>- Polishing stage<br>- Error correction after                                 |
+| Raven              | - Active<br>- Polishing stage after <br>- Error correction<br>- Very fast, lowest memory                                 |
 
 ### Alignment to a reference genome
 In reference-based assembly, sequenced reads are aligned back to a refernce genome. Even though it can first appear easier than *de novo* assembly, this method has trouble identifying structural variants, and regions that are really different from the reference. 
@@ -145,12 +145,24 @@ Polishing tools typically compare reads to an assembly to derive a more accurate
 ONT advise to use Medaka coupled with Racon (1 round each).
 For a high quality genome assembly, one could also use Medaka after having assembled with Flye. 
 
+| Polishing/error correction  | Notes                                         |
+|-----------------------------|-----------------------------------------------|
+| Racon + Medaka              | 1 round each after Shasta (ONT)               |
+| Medaka                      | After Flye for highly accurate assembly (ONT) |
+| Pepper-Margin-DeepVariants  | OG                                            |
+| Nanopolish                  |                                               |
 
 ### Variant calling 
 With a reference genomes, nanopore long-reads can be used to investigate samples' genomic particularities with better accuracy than any other sequencing techniques to date.
 While short reads are higly effective in resolving SNV, their short size limit the detection of large structural variants (SVs). 
 
-To asses variant calling, authors often bring up the **F1-score** which is the harmonic **mean of the precision and recall**. The precision is the number of true positive results / by the number of all positive results, including those not identified correctly, and the recall is the number of true positive results / by the number of all samples that should have been identified as positive. F1 score increases logically along with the coverage, read length, and accuracy rate, but the improvement in the ability of SV detection is more important with coverage than read length. However, read length greatly influence deletion, insertion, and duplication calling but not inversion calling.
+To asses variant calling, authors often bring up the **F1-score** which is the harmonic **mean of the precision and recall**. The precision is the number of true positive results / by the number of all positive results, including those not identified correctly, and the recall is the number of true positive results / by the number of all samples that should have been identified as positive. F1 score increases logically along with the coverage, read length, and accuracy rate, but the improvement in the ability of SV detection is more important with coverage than read length. However, read length greatly influence deletion, insertion, and duplication calling but not inversion calling. 
+
+20X sequencing depth is sufficient to complete good variant calling with good accuracy. A coverage of 30X to 40X will acheive variant calling with the highest accuracy. 
+Concerning the optimal read length, 20 kbp is a promising choice and is sufficiently capable to detect the SVs accurately and sensitively. 
+<https://doi.org/10.1186/s12859‐021‐04422‐y>   
+Coverage higher than 50X do no good. 
+
 
 #### Structural Variants
 SVs are usually defined as genomic variants larger than 50bps (e.g. deletions, duplications, inversions). Each persons have approximately ~20,000 SV in their genomes, contributing in phenotypes diversity. 
@@ -170,13 +182,13 @@ No SVs callers use all SVs signature in sequencing. To increase sensivity in SVs
 
 CuteSV is a SVs caller recommended by nanopore for human variant calling. It seems to have a slightly higher accuracy than Sniffles, the other popular tool. 
 
-Pipelines using [minimap2-sniffles](https://doi.org/10.1186/s13059-019-1858-1), minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared.
+Pipelines using minimap2-sniffles, minimap2-CuteSV as well as LRA-sniffles and LRA-CuteSV should be compared <https://doi.org/10.1186/s13059-019-1858-1>.
 
 
 | Structural Variants callers | Notes                                                                         |
 |---------------------|-------------------------------------------------------------------------------|
-| sniffles            | - Active<br>- Most popular<br>- Performs better with LRA?                     |
-| cuteSV              | - Active<br>- higher accuracy than Sniffles?                                  |
+| sniffles            | - Active<br>- Most popular<br>- Performs better with LRA?<br> - [Finnish SV paper](https://doi.org/10.1038/s41588-021-00865-4)                     |
+| cuteSV              | - Active<br>- higher accuracy than Sniffles?<br>- goes well with LRA                                  |
 | Svim-asm            | - Does not support multi-threads computing <br>- Last release and commit in 2021 |
 | nanoSV              | - Not under development                                                       |
 | Nanovare            | - Active <br>- Bof                                                            |
@@ -185,11 +197,12 @@ Pipelines using [minimap2-sniffles](https://doi.org/10.1186/s13059-019-1858-1), 
 Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
 
 
-- long shot 
-- medaka
-- deepvariant 
-- freebayes
-- longshot 
+| **SNV**      | **Notes**                                                                                            |
+|--------------|------------------------------------------------------------------------------------------------------|
+| long shot    | - Only for SNV<br>- Active                                                                           |
+| medaka       | - ONT tool<br>- Active<br>- Create consensus sequence                                                |
+| deepvariant  | - Google<br>- Active<br>- Part of the PEPPER-Margin-DeepVariant pipeline (polishing+variant calling).<br> Used in the [Ultra Rapid paper](https://doi.org/10.1038/s41587-022-01221-5) |
+
 
 #### Copy Number Variation (CNV)
 

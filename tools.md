@@ -237,6 +237,7 @@ make install
 
 # Alignment 
 ## [minimap2 2.24-r1122](https://github.com/lh3/minimap2)
+Does not produce consensus sequence. 
 ### Install 
 ```
 git clone https://github.com/lh3/minimap2
@@ -247,11 +248,11 @@ cd minimap2 && make
 
 - index:    
 ```
-minimap2 -x map-ont data.fastq -d ref.mmi 
+minimap2 -x map-ont hg38.fa -d ref.mmi 
 ```
 - alignment:    
 ```
-minimap2 -t 10 -ax map-ont ref.mmi ont.fq.gz | samtools sort -@ 8 -o minimap2_alignment.bam
+/home/euphrasie/bioprog/minimap2/minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
 ```
 
 	- `t`: number of threads 
@@ -355,7 +356,30 @@ The `canu` command will execute all the assembly steps, from correction, trimmin
 
 
 ### output
+Way too long
+
+## Flye
+### install 
+### Run Flye
 
 
+# Polishing 
+
+# Assembly quality assesment
+## [Pomoxis](https://nanoporetech.github.io/pomoxis/programs.html#assess-assembly)
+
+## QuastLG
+
+# Alignment quality assesment
+## [Nanoplot](https://github.com/wdecoster/NanoPlot)
+Plotting tool for long read sequencing data and alignments.
+
+# Variant calling
+## SNP calling 
+### PEPPER-Margin-Deep Variant
+
+## Structural variants calling 
+### Sniffles
+### CuteSV
 
 
