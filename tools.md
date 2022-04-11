@@ -17,7 +17,7 @@
 
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
-### Install 
+### Install
 ```
 conda install pip
 pip install --upgrade -pip
@@ -217,24 +217,6 @@ MinIONQC.R -i path/to/sequencing_summary.txt # or path/to/parent_directory
 ```
 
 
-
-
-# Error correction 
-## [Pepper](https://github.com/kishwarshafin/pepper)
-### Install 
-Doesn't work when installed through `pip`, conflicts between `torch` and `pytorch` versions.
-
-```
-sudo apt-get -y install cmake make git gcc g++ autoconf bzip2 lzma-dev zlib1g-dev libcurl4-openssl-dev libpthread-stubs0-dev libbz2-dev liblzma-dev libhdf5-dev python3-pip python3-virtualenv virtualenv
-git clone https://github.com/kishwarshafin/pepper.git
-cd pepper
-make install
-. ./venv/bin/activate
-
-```
-
-
-
 # Alignment 
 ## [minimap2 2.24-r1122](https://github.com/lh3/minimap2)
 Does not produce consensus sequence. 
@@ -250,17 +232,19 @@ cd minimap2 && make
 ```
 minimap2 -x map-ont hg38.fa -d ref.mmi 
 ```
-- alignment:    
+- alignment: 
 ```
-/home/euphrasie/bioprog/minimap2/minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
+minimap2 -t 10 -ax map-ont hg38.fa ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
 ```
 
 	- `t`: number of threads 
 	- `a`: outputs SAM
 	- `x`: presets. `map-ont` is for aligning noisy long reads of ~10% error rate to a ref genome. Default mode.
 	- `splice`: splice aware alignment mode.
-	- The pipe `|` allows to directly write the outputs as BAM, and not as SAM (or .paf in default mode). 
+	- The pipe `|` allows to directly write the outputs as `BAM`, and not as `SAM` (or `.paf` in default mode). 
 	- `@`: number of threads 
+
+minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows to convert to `bam` sorted files, its binary format. 
 	
 
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
@@ -359,27 +343,162 @@ The `canu` command will execute all the assembly steps, from correction, trimmin
 Way too long
 
 ## Flye
-### install 
-### Run Flye
-
-
-# Polishing 
 
 # Assembly quality assesment
 ## [Pomoxis](https://nanoporetech.github.io/pomoxis/programs.html#assess-assembly)
 
 ## QuastLG
 
-# Alignment quality assesment
-## [Nanoplot](https://github.com/wdecoster/NanoPlot)
-Plotting tool for long read sequencing data and alignments.
-
 # Variant calling
 ## SNP calling 
-### PEPPER-Margin-Deep Variant
+### [PEPPER-Margin-Deep Variant workflow](https://github.com/kishwarshafin/pepper)
+##### PEPPER SNP
+This finds SNPs from a read-to-reference alignment file using a recurrent neural network. Reports potential SNP sites using the likelihood of observing alternative alleles
+
+##### Margin
+Hidden Markov model-based, haplotyping module that produces a haplotag for each read using the SNPs reported by PEPPER SNP. Polishing step.
+
+##### PEPPER HP
+Takes the haplotagged alignment file from Margin and produces a set of candidate variants.
+
+##### DeepVariant
+Produces the final genotype calls by using a convolutional neural network with the candidates from PEPPER HP
+
+### Install 
+see <https://github.com/kishwarshafin/pepper/blob/r0.8/docs/quickstart/variant_calling_docker_gpu_quickstart.md>.    
+Followed instruction to install nvidia-docker, but `sudo docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi` or any attempt in docker pulling would result in
+ 
+```
+unable to find image 'XXX' locally
+docker: Error response from daemon: Get "https://registry-1.docker.io/v2/" ....
+```
+To troubleshoot that: 
+
+- `sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf` 
+Create the directory architecture if it is missing.
+- Then `i` to modify the file, and write:
+
+```
+[Service]
+Environment="HTTP_PROXY=http://proxym-inter.aphp.fr:8080"
+Environment="HTTPS_PROXY=http://proxym-inter.aphp.fr:8080"
+Environment="NO_PROXY=hostname.example.com, 172.10.10.10"
+``` 
+
+- then, 
+ 
+```
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+- `docker pull hello-world` should now work, and other dockers installation can be performed. 
+
+#### Run PEPPER-Margin-Deep Variant workflow
+
+```
+BASE="`pwd`"
+
+# Set up input data
+INPUT_DIR="${BASE}/input/data"
+REF="hg38_GenDev.fa"
+BAM="minimap2_alignment.bam"
+
+# Set the number of CPUs to use
+THREADS="14"
+
+# Set up output directory
+OUTPUT_DIR="${BASE}/output"
+OUTPUT_PREFIX="god_pmdv"
+OUTPUT_VCF="god_pmdv.vcf.gz"
+
+## Create local directory structure
+mkdir -p "${OUTPUT_DIR}"
+mkdir -p "${INPUT_DIR}"
+
+docker run --ipc=host \
+--gpus all \
+-v "${INPUT_DIR}":"${INPUT_DIR}" \
+-v "${OUTPUT_DIR}":"${OUTPUT_DIR}" \
+kishwars/pepper_deepvariant:r0.8-gpu \
+run_pepper_margin_deepvariant call_variant \
+-b "${INPUT_DIR}/${BAM}" \
+-f "${INPUT_DIR}/${REF}" \
+-o "${OUTPUT_DIR}" \
+-p "${OUTPUT_PREFIX}" \
+-t ${THREADS} \
+-g \
+--ont_r9_guppy5_sup
+```
+
+Make sure the `.fa` `.bam` as well as the `.fa` `.fai` are in the `input/data` folder.
+
+#### Output
+- `vcf.gz`
+- `vcf.gz.tbi`
+- `report.html`
+- `log` folder
+
+
+
+### hap.py 
+After, one can choose to run `hap.py` to evaluate the variants. 
+It is a tool to ocmpare diploid genotype at haplotype level (???).   
+Hap.py will report counts of
+
+- true-positives (TP): variants/genotypes that match in truth and query.
+- false-positives (FP): variants that have mismatching genotypes or alt alleles, as well as - query variant calls in regions a truth set would call confident hom-ref regions.
+- false-negatives (FN): variants present in the truth set, but missed in the query.
+- non-assessed calls (UNK): variants outside the truth set regions
+
+allowing to calculate recall, precision, F1 score...
+
+```
+# Set up input data
+THRUTH_VCF=
+TRUTH_BED= 
+
+# Run hap.py
+
+docker run -it \
+-v "${INPUT_DIR}":"${INPUT_DIR}" \
+-v "${OUTPUT_DIR}":"${OUTPUT_DIR}" \
+jmcdani20/hap.py:v0.3.12 /opt/hap.py/bin/hap.py \
+${INPUT_DIR}/${TRUTH_VCF} \
+${OUTPUT_DIR}/${OUTPUT_VCF} \
+-f "${INPUT_DIR}/${TRUTH_BED}" \
+-r "${INPUT_DIR}/${REF}" \
+-o "${OUTPUT_DIR}/happy.output" \
+--pass-only \
+--engine=vcfeval \
+--threads="${THREADS}"
+```
+
+#### Output 
+| Type  | Truth total | True positives | False negatives | False positives | Recall   | Precision | F1-Score |
+|-------|-------------|----------------|-----------------|-----------------|----------|-----------|----------|
+| INDEL | 11256       | 8981           | 2275            | 837             | 0.797886 | 0.916692  | 0.853172 |
+| SNP   | 71333       | 71257          | 94              | 68              | 0.998682 | 0.999047  | 0.998864 |
+
+
+
 
 ## Structural variants calling 
 ### Sniffles
+#### Install 
+`pip install sniffles` 
+
+#### Run Sniffles
+```
+sniffles -i minimap2_alignment.bam \
+--vcf sniffles.vcf\
+--tandem-repeats file 
+--reference hg38.fa
+-t 14
+--mapq N (default 25)
+--phase 
+```
+
 ### CuteSV
 
 

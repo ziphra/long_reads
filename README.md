@@ -20,7 +20,7 @@ After a while, nanopores get stuck or dies and can't operate anymore. For that m
 
 
 ![](./img/nanopore_principle.png)
-**Principle of nanopore sequencing.** *A minION flow cell contains 512 channels with 4 nanopores in each channel, for a total of 2,048 nanopores used to sequence DNA or RNA. The wells are inserted into an electrically resistant polymer membrane supported by an array of microscaffolds connected to a sensor chip. each channel associates with a separate electrode in the sensor chip and is controlled and measured individually by the application-specific integration circuit (ASIC). Ionic current passes through the nanopore because a constant voltage is applied across the membrane, where the trans side is positively charged. Under the control of a motor protein, a double-stranded DNA (dsDNA) molecule (or an RNA–DNA hybrid duplex) is first unwound, then single-stranded DNA or RNA with negative charge is ratcheted through the nanopore, driven by the voltage. As nucleotides pass through the nanopore, a characteristic current change is measured and is used to determine the corresponding nucleotide type at ~450 bases per s (R9.4 nanopore).*      
+> **Principle of nanopore sequencing.** *A minION flow cell contains 512 channels with 4 nanopores in each channel, for a total of 2,048 nanopores used to sequence DNA or RNA. The wells are inserted into an electrically resistant polymer membrane supported by an array of microscaffolds connected to a sensor chip. each channel associates with a separate electrode in the sensor chip and is controlled and measured individually by the application-specific integration circuit (ASIC). Ionic current passes through the nanopore because a constant voltage is applied across the membrane, where the trans side is positively charged. Under the control of a motor protein, a double-stranded DNA (dsDNA) molecule (or an RNA–DNA hybrid duplex) is first unwound, then single-stranded DNA or RNA with negative charge is ratcheted through the nanopore, driven by the voltage. As nucleotides pass through the nanopore, a characteristic current change is measured and is used to determine the corresponding nucleotide type at ~450 bases per s (R9.4 nanopore).*      
 Wang, Yunhao et al. (2021) ‘Nanopore sequencing technology, bioinformatics and applications’, Nature Biotechnology, 39(11), pp. 1348–1365. <https://doi.org/10.1038/s41587-021-01108-x>.
 
 
@@ -29,14 +29,14 @@ Wang, Yunhao et al. (2021) ‘Nanopore sequencing technology, bioinformatics and
 
     
 ![](./img/sequencing_approaches.jpg)
-**Schematic overview of the 1D, 2D and 1D 2 sequencing approaches**. *When using 1D chemistry, solely the template strand (blue) is threaded by the motor protein (green). The complement strand (red) is discarded and sequenced. When using the 2D chemistry both the template and complement are sequenced as they are link together with a hairpin (yellow). The 1D 2 chemistry, also allows sequencing of both strands, but rather than linked both strands, the complement strand is tethered to the membrane while the template is sequenced. Subsequently the complement strand is drawn in and the tether is pulled loose. Senne Cornelis* Forensic Lab-on-a-Chip DNA analysis
+> **Schematic overview of the 1D, 2D and 1D 2 sequencing approaches**. *When using 1D chemistry, solely the template strand (blue) is threaded by the motor protein (green). The complement strand (red) is discarded and sequenced. When using the 2D chemistry both the template and complement are sequenced as they are link together with a hairpin (yellow). The 1D 2 chemistry, also allows sequencing of both strands, but rather than linked both strands, the complement strand is tethered to the membrane while the template is sequenced. Subsequently the complement strand is drawn in and the tether is pulled loose. Senne Cornelis* Forensic Lab-on-a-Chip DNA analysis
 
 
 
 Here, I will present the main bioinformatics analysis tools for ONT data.
 
 ![](./img/workflow.png)
-**Typical long reads workflow** *Analysis solutions for nanopore sequencing data* [Nanopore resource, 03/2022](https://nanoporetech.com/nanopore-sequencing-data-analysis)
+> **Typical long reads workflow** *Analysis solutions for nanopore sequencing data* [Nanopore resource, 03/2022](https://nanoporetech.com/nanopore-sequencing-data-analysis)
 
 
 ## Long reads analysis
@@ -191,7 +191,12 @@ Pipelines using minimap2-sniffles, minimap2-CuteSV as well as LRA-sniffles and L
 | cuteSV              | - Active<br>- higher accuracy than Sniffles?<br>- goes well with LRA                                  |
 | Svim-asm            | - Does not support multi-threads computing <br>- Last release and commit in 2021 |
 | nanoSV              | - Not under development                                                       |
-| Nanovare            | - Active <br>- Bof                                                            |
+| Nanovare            | - Active <br>- Bof    
+
+![](./img/f1score.png)
+> **Heatmap of F1 scores for the SV detection performance with various sequencing metrics.**
+> Jiang, T., Liu, S., Cao, S. et al. Long-read sequencing settings for efficient structural variation detection based on comprehensive evaluation. BMC Bioinformatics 22, 552 (2021). <https://doi.org/10.1186/s12859-021-04422-y>
+
 
 #### Single Nucleotide Variants
 Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
