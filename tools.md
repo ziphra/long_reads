@@ -234,7 +234,7 @@ minimap2 -x map-ont hg38.fa -d ref.mmi
 ```
 - alignment: 
 ```
-minimap2 -t 10 -ax map-ont hg38.fa ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
+minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
 ```
 
 	- `t`: number of threads 
@@ -243,23 +243,30 @@ minimap2 -t 10 -ax map-ont hg38.fa ../fastq/basecalled.fastq | samtools sort -@ 
 	- `splice`: splice aware alignment mode.
 	- The pipe `|` allows to directly write the outputs as `BAM`, and not as `SAM` (or `.paf` in default mode). 
 	- `@`: number of threads 
+	- `MD` MD tag is for SNP/indels calling without looking at the reference.
 
 minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows to convert to `bam` sorted files, its binary format. 
 	
 
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
 ### install 
+From source:    
+
 ```
-conda install -c bioconda lra
+wget https://github.com/ChaissonLab/LRA/archive/refs/tags/v1.3.3.tar.gz
+tar -xvf v1.3.3.tar.gz
+cd LRA-1.3.3/
+make
 ```
 
 ### run LRA 
-##### NOT WORKING, see [issue](https://github.com/ChaissonLab/LRA/issues/19)
 - index:    
-`lra index -ONT ref.fa`
+`/home/euphrasie/bioprog/LRA-1.3.3/lra index -ONT /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa`   
+Indexs will be stored in the **same directory where the ref.fa is stored!** 
 - alignment:    
-`lra align -ONT -t 16 /media/god/DATA/reference_genome/hg19/hg19_std.fa reads.fa -p s > lra_alignment.sam`
+`/home/euphrasie/bioprog/LRA-1.3.3/lra align -ONT -t 10 /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa ../fastq/basecalled.fastq -p s | samtools sort -@ 4 -o lra.bam`
 	- `-t`: threads
+	- `-ONT`
 	- `-p`: output parameter, `-p s` = sam output.
 
 
@@ -490,15 +497,37 @@ ${OUTPUT_DIR}/${OUTPUT_VCF} \
 
 #### Run Sniffles
 ```
-sniffles -i minimap2_alignment.bam \
---vcf sniffles.vcf\
---tandem-repeats file 
---reference hg38.fa
--t 14
---mapq N (default 25)
---phase 
+sniffles -i ../minimap2MD/minimap2MD.bam \
+--vcf snifflesMD.vcf \
+--tandem-repeats human_GRCh38_no_alt_analysis_set.trf.bed \
+--reference /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa \
+-t 14 
 ```
+#### Ouput 
+A VCF file. Runs too fast? Difference without MD alignment?
 
 ### CuteSV
+#### installation 
+
+```
+conda create cutesv
+conda activate cutesv
+conda install -c bioconda cutesv
+```
+
+#### Run CuteSV
+```
+cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_cutesv.vcf . \
+    --max_cluster_bias_INS 100 \
+    --diff_ratio_merging_INS 0.3 \
+    --max_cluster_bias_DEL 100 \
+    --diff_ratio_merging_DEL 0.3 \
+    --threads 16
+```
+
+
+
+
+
 
 
