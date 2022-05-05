@@ -134,6 +134,12 @@ As mature RNA misses sequences introns, the alignment to a reference genomes con
 ### Phased assembly 
 Global haplotype phasing of human genome is usually performed thanks to parental data. However, in a clinical setting such data are not always available, but fully phased human genome assembly can be accessible without parental data. Strand sequencing (Strand-seq) is a short-read, single-cell sequencing method that preserves structural contiguity of individual homologs in every single cell, and coupled with long-reads technology can achieve high quality completely phased de novo genome assembly.
 
+Phasing converts a 3-Gb collapsed human genome into a 6-Gb genome that represents both maternal and paternal chromosomes, which has the advantage of increasing overall sensitivity for variant discovery.
+
+**Trio binning** is a technique in which the parental genomes are used to parts their offspring genomes in haplotypes specific sets. 
+
+Computational methods can also takes advantage of long reads to resolve a genome's haplotype architecture, and it should overall increase structural variant discovery sensitivity. 
+
 ### Compare assembly 
 [see here](https://timkahlke.github.io/LongRead_tutorials/ASS_M.html)
 

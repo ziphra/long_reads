@@ -1,20 +1,35 @@
 # Table of Contents
-1. Basecalling
+1. [Basecalling](# Basecalling)
 	- Bonito
 	- Guppy
-2. Quality check
+2. [Quality check](# Quality check)
 	- FastQC
 	- PycoQC
 	- LongQC
 	- MinIONQC
-3. Error correction
-	- pepper
-4. Alignment
+3. [Alignment](# Alignment)
 	- Minimap2
 	- LRA
-5. Assembly
+4. Assembly
 	- Shasta
+		- Optimazing parameters for low X and short reads
+5. Canu 
+6. Assembly quality assesment
+	- pomoxis
+	- QuastLG
+7. Variant calling
+	- 7.1 SNP calling
+		- PMDV 
+		- 
+	- SV calling 
+		- Sniffles 
+		- CuteSV
+	- Variants validation
+		- hap.py
 
+	
+	
+	
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -290,10 +305,9 @@ sudo chmod ugo+x shasta-Linux-0.8.0
 ```
 shasta \
 --input input.fastq \
---config Nanopore-Phased-Jan2022 \ 
+--config Nanopore-Phased-Jan2022 \
 --thread 16 \
 --memoryMode filesystem --memoryBacking disk \
---command explore \
 --Assembly.mode 2 \
 --Reads.minReadLength 5000\
 ```
@@ -451,50 +465,6 @@ Make sure the `.fa` `.bam` as well as the `.fa` `.fai` are in the `input/data` f
 - `report.html`
 - `log` folder
 
-
-
-### hap.py 
-After, one can choose to run `hap.py` to evaluate the variants. 
-It is a tool to ocmpare diploid genotype at haplotype level (???).   
-Hap.py will report counts of
-
-- true-positives (TP): variants/genotypes that match in truth and query.
-- false-positives (FP): variants that have mismatching genotypes or alt alleles, as well as - query variant calls in regions a truth set would call confident hom-ref regions.
-- false-negatives (FN): variants present in the truth set, but missed in the query.
-- non-assessed calls (UNK): variants outside the truth set regions
-
-allowing to calculate recall, precision, F1 score...
-
-```
-# Set up input data
-THRUTH_VCF=
-TRUTH_BED= 
-
-# Run hap.py
-
-docker run -it \
--v "${INPUT_DIR}":"${INPUT_DIR}" \
--v "${OUTPUT_DIR}":"${OUTPUT_DIR}" \
-jmcdani20/hap.py:v0.3.12 /opt/hap.py/bin/hap.py \
-${INPUT_DIR}/${TRUTH_VCF} \
-${OUTPUT_DIR}/${OUTPUT_VCF} \
--f "${INPUT_DIR}/${TRUTH_BED}" \
--r "${INPUT_DIR}/${REF}" \
--o "${OUTPUT_DIR}/happy.output" \
---pass-only \
---engine=vcfeval \
---threads="${THREADS}"
-```
-
-#### Output 
-| Type  | Truth total | True positives | False negatives | False positives | Recall   | Precision | F1-Score |
-|-------|-------------|----------------|-----------------|-----------------|----------|-----------|----------|
-| INDEL | 11256       | 8981           | 2275            | 837             | 0.797886 | 0.916692  | 0.853172 |
-| SNP   | 71333       | 71257          | 94              | 68              | 0.998682 | 0.999047  | 0.998864 |
-
-
-
-
 ## Structural variants calling 
 ### Sniffles
 #### Install 
@@ -547,6 +517,47 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
     --diff_ratio_merging_DEL 0.3 \
     --threads 16
 ```
+
+
+## Variants validation 
+### hap.py 
+After, one can choose to run `hap.py` to evaluate the variants. 
+It is a tool to ocmpare diploid genotype at haplotype level (???).   
+Hap.py will report counts of
+
+- true-positives (TP): variants/genotypes that match in truth and query.
+- false-positives (FP): variants that have mismatching genotypes or alt alleles, as well as - query variant calls in regions a truth set would call confident hom-ref regions.
+- false-negatives (FN): variants present in the truth set, but missed in the query.
+- non-assessed calls (UNK): variants outside the truth set regions
+
+allowing to calculate recall, precision, F1 score...
+
+```
+# Set up input data
+THRUTH_VCF=
+TRUTH_BED= 
+
+# Run hap.py
+
+docker run -it \
+-v "${INPUT_DIR}":"${INPUT_DIR}" \
+-v "${OUTPUT_DIR}":"${OUTPUT_DIR}" \
+jmcdani20/hap.py:v0.3.12 /opt/hap.py/bin/hap.py \
+${INPUT_DIR}/${TRUTH_VCF} \
+${OUTPUT_DIR}/${OUTPUT_VCF} \
+-f "${INPUT_DIR}/${TRUTH_BED}" \
+-r "${INPUT_DIR}/${REF}" \
+-o "${OUTPUT_DIR}/happy.output" \
+--pass-only \
+--engine=vcfeval \
+--threads="${THREADS}"
+```
+
+#### Output 
+| Type  | Truth total | True positives | False negatives | False positives | Recall   | Precision | F1-Score |
+|-------|-------------|----------------|-----------------|-----------------|----------|-----------|----------|
+| INDEL | 11256       | 8981           | 2275            | 837             | 0.797886 | 0.916692  | 0.853172 |
+| SNP   | 71333       | 71257          | 94              | 68              | 0.998682 | 0.999047  | 0.998864 |
 
 
 
