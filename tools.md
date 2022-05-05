@@ -1,35 +1,72 @@
-# Table of Contents
-1. [Basecalling](# Basecalling)
-	- Bonito
-	- Guppy
-2. [Quality check](# Quality check)
-	- FastQC
-	- PycoQC
-	- LongQC
-	- MinIONQC
-3. [Alignment](# Alignment)
-	- Minimap2
-	- LRA
-4. Assembly
-	- Shasta
-		- Optimazing parameters for low X and short reads
-5. Canu 
-6. Assembly quality assesment
-	- pomoxis
-	- QuastLG
-7. Variant calling
-	- 7.1 SNP calling
-		- PMDV 
-		- 
-	- SV calling 
-		- Sniffles 
-		- CuteSV
-	- Variants validation
-		- hap.py
-
-	
-	
-	
+- [Basecalling](#basecalling)
+	- [Bonito `0.5.1`](#bonito-051)
+		- [Install](#install)
+		- [Run Bonito](#run-bonito)
+		- [Output](#output)
+	- [Guppy `5.1.15`](#guppy-5115)
+		- [Install](#install-1)
+		- [Run Guppy](#run-guppy)
+		- [Setting custom GPU parameters in Guppy](#setting-custom-gpu-parameters-in-guppy)
+		- [Output](#output-1)
+- [Quality check](#quality-check)
+	- [FastQC `0.11.9`](#fastqc-0119)
+		- [Install](#install-2)
+		- [Run FastQC](#run-fastqc)
+		- [Output](#output-2)
+	- [PycoQC `2.5.2`](#pycoqc-252)
+		- [Install](#install-3)
+		- [Run PycoQC](#run-pycoqc)
+		- [Output](#output-3)
+	- [LongQC](#longqc)
+		- [Install](#install-4)
+		- [Run LongQC](#run-longqc)
+		- [Output](#output-4)
+	- [MinIONQC](#minionqc)
+		- [Install](#install-5)
+		- [Run MinIONQC](#run-minionqc)
+- [Alignment](#alignment)
+	- [minimap2 2.24-r1122](#minimap2-224-r1122)
+		- [Install](#install-6)
+		- [Run minimap2](#run-minimap2)
+	- [LRA 1.3.2](#lra-132)
+		- [install](#install-7)
+		- [run LRA](#run-lra)
+- [Assembly](#assembly)
+	- [Shasta](#shasta)
+		- [install](#install-8)
+		- [Run Shasta](#run-shasta)
+		- [Output](#output-5)
+		- [Exploring assembly results](#exploring-assembly-results)
+	- [Canu](#canu)
+		- [Install](#install-9)
+		- [Run Canu](#run-canu)
+		- [output](#output-6)
+	- [Flye](#flye)
+- [Assembly quality assesment](#assembly-quality-assesment)
+	- [Pomoxis](#pomoxis)
+	- [QuastLG](#quastlg)
+- [Variant calling](#variant-calling)
+	- [SNP calling](#snp-calling)
+		- [PEPPER-Margin-Deep Variant workflow](#pepper-margin-deep-variant-workflow)
+				- [PEPPER SNP](#pepper-snp)
+				- [Margin](#margin)
+				- [PEPPER HP](#pepper-hp)
+				- [DeepVariant](#deepvariant)
+		- [Install](#install-10)
+			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
+			- [Output](#output-7)
+	- [Structural variants calling](#structural-variants-calling)
+		- [Sniffles](#sniffles)
+			- [Install](#install-11)
+			- [Run Sniffles](#run-sniffles)
+			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
+			- [Ouput](#ouput)
+		- [CuteSV](#cutesv)
+			- [installation](#installation)
+			- [Run CuteSV](#run-cutesv)
+	- [Variants validation](#variants-validation)
+		- [hap.py](#happy)
+			- [Output](#output-8)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
