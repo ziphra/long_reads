@@ -37,14 +37,24 @@
 		- [Run Shasta](#run-shasta)
 		- [Output](#output-5)
 		- [Exploring assembly results](#exploring-assembly-results)
+		- [Run Shasta on low X mode](#run-shasta-on-low-x-mode)
+		- [Run Shasta with "short" reads](#run-shasta-with-short-reads)
+		- [God's MinION run (low X and short reads)](#gods-minion-run-low-x-and-short-reads)
 	- [Canu](#canu)
 		- [Install](#install-9)
 		- [Run Canu](#run-canu)
 		- [output](#output-6)
-	- [Flye](#flye)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
+		- [Install](#install-10)
+		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
+	- [Inspector](#inspector)
+		- [Install](#install-11)
+		- [Run Inspector](#run-inspector)
+			- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file)
+			- [retrieve ref's specific regions in `.fasta`](#retrieve-refs-specific-regions-in-fasta)
+		- [Output](#output-7)
 - [Variant calling](#variant-calling)
 	- [SNP calling](#snp-calling)
 		- [PEPPER-Margin-Deep Variant workflow](#pepper-margin-deep-variant-workflow)
@@ -52,12 +62,12 @@
 				- [Margin](#margin)
 				- [PEPPER HP](#pepper-hp)
 				- [DeepVariant](#deepvariant)
-		- [Install](#install-10)
+		- [Install](#install-12)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
-			- [Output](#output-7)
+			- [Output](#output-8)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-11)
+			- [Install](#install-13)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -66,7 +76,7 @@
 			- [Run CuteSV](#run-cutesv)
 	- [Variants validation](#variants-validation)
 		- [hap.py](#happy)
-			- [Output](#output-8)
+			- [Output](#output-9)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -345,7 +355,7 @@ shasta \
 --config Nanopore-Phased-Jan2022 \
 --thread 16 \
 --memoryMode filesystem --memoryBacking disk \
---Assembly.mode 2 \
+--Assembly.mode 0 \
 --Reads.minReadLength 5000\
 ```
 
@@ -377,6 +387,54 @@ When done using binary data, `shasta --command cleanupBinaryData`
 - Install graphviz : `sudo apt install graphviz`
 - Run the assembler again, this time specifying option `--command explore`, plus the same `--assemblyDirectory` option used for the assembly run (default is `ShastaRun`)
 
+### Run Shasta on low X mode
+
+See shasta's [issues](https://github.com/chanzuckerberg/shasta/issues/7)
+
+List of parameters for which the optimal value may be dependant on coverage: 
+
+- `MinHash.maxBucketSize` 
+- `MarkerGraph.minCoverage` 
+- `MarkerGraph.maxCoverage` 
+- `MarkerGraph.lowCoverageThreshold` 
+- `MarkerGraph.edgeMarkerSkipThreshold` 
+  
+The parameters above may be dependant on coverage and could be scale proportionaly to depth, as advised for very low stringent coverage.  
+
+- `MinHash.minHashIterationCount` ↗️ from default (10) to 20 or 50
+- `MinHash.minFrequency` ↘️ from 2 to 1
+- `Align.minAlignedMarkerCount` ↘️ from 100 to 50 
+
+
+
+### Run Shasta with "short" reads
+
+See shasta's [issues](https://github.com/chanzuckerberg/shasta/issues/250)
+
+- `Reads.minReadLength` ↘️
+- `Align.minAlignedMarkerCount`: the more we ↘️ this parameter, the more you ↗️ the possibility of incorrect assembly errors.
+
+### God's MinION run (low X and short reads)
+
+```
+shasta \
+--input input.fastq \
+--config Nanopore-Oct2021 \
+--thread 16 \
+--memoryMode filesystem \
+--memoryBacking disk \
+--Assembly.mode 0 \
+--Align.minAlignedMarkerCount 50 \ #100
+--MinHash.maxBucketSize 4 \ #default: 10 
+--MarkerGraph.minCoverage 2 \ #10
+--MarkerGraph.maxCoverage 10 \ #100
+--MarkerGraph.lowCoverageThreshold 0 \ #0 
+--MarkerGraph.edgeMarkerSkipThreshold 10 \ #100
+--MinHash.minHashIterationCount 50 \ #10
+--MinHash.minFrequency 1 \ #2
+--Reads.minReadLength 2000 \
+```
+
 ## [Canu](https://canu.readthedocs.io/en/latest/tutorial.html)
 ### Install 
 ```
@@ -405,12 +463,65 @@ The `canu` command will execute all the assembly steps, from correction, trimmin
 ### output
 Way too long
 
-## Flye
 
 # Assembly quality assesment
 ## [Pomoxis](https://nanoporetech.github.io/pomoxis/programs.html#assess-assembly)
+Pomoxis can be used to do basics operations on assemblies and compute basics assemblies stats. 
+
+### Install 
+```
+conda create pomoxis
+conda activate pomoxis
+conda install pomoxis
+```
+
+### Run Pomoxis
+- **`coverage_from_bam`**  
+  Calculate read civerage depth from a bam. Can be run on specific regions. Output a depth summary. 
+- **`assess_assembly`**  
+  calculate accurate stats for an assembly: percentage errors, Q scores, and reference coverage
+
 
 ## QuastLG
+
+## [Inspector](https://github.com/Maggi-Chen/Inspector) 
+### Install 
+`Inspector` works in conda `base` env. Otherwise, dependencies and `python2.7` vs `python3` issues. 
+
+
+- `git clone https://github.com/Maggi-Chen/Inspector.git`
+- `vim ~/.bashrc` and add `alias inspector='inspector/path'`
+- `source ~/.bashrc`
+- in the executable `inspector.py` change the 2 occurences of '`minimap2`' with full `minimap2` path. 
+
+### Run Inspector
+```
+inspector \
+	-c ShastaRun/Assembly.fasta \
+	-r chr11.fastq \
+	--ref ref_chr11.fa \
+	-o ins2/ \
+	-d nanopore
+```
+
+#### retrieve a specific regions out of a bam file 
+- `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
+- `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
+
+#### retrieve ref's specific regions in `.fasta`
+- `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
+with `chr11.txt` a file with regions of interest coordinates formatted as:    
+`chr11:from-to`, one per line. 
+
+### Output 
+- `summary_statistics`: An assembly with expected total length, high read-to-contig mapping rate, low number of structural and small-scale errors, and high QV score indicates a high assembly quality. When the reference genome is provided, a higher genome coverage and NA50 also indicates more complete assembly.
+- `structural_error.bed`
+- `small_scale_error.bed`
+- some plots 
+- `read_to_contig.bam` and `.bai`
+- `contig_to_ref.bam` and `.bai` if a `ref.fa` is provided
+- `valid_contig.fa` and `.fai
+  `
 
 # Variant calling
 ## SNP calling 
