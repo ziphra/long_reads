@@ -44,17 +44,25 @@
 		- [Install](#install-9)
 		- [Run Canu](#run-canu)
 		- [output](#output-6)
+	- [Flye](#flye)
+		- [install](#install-10)
+		- [Run Flye](#run-flye)
+- [Polishing](#polishing)
+	- [Medaka](#medaka)
+		- [Install](#install-11)
+		- [Run Medaka](#run-medaka)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
-		- [Install](#install-10)
+		- [Install](#install-12)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
 	- [Inspector](#inspector)
-		- [Install](#install-11)
+		- [Install](#install-13)
 		- [Run Inspector](#run-inspector)
-			- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file)
-			- [retrieve ref's specific regions in `.fasta`](#retrieve-refs-specific-regions-in-fasta)
 		- [Output](#output-7)
+	- [Assembly on a specific region](#assembly-on-a-specific-region)
+		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file)
+		- [retrieve ref's specific regions in `.fasta`](#retrieve-refs-specific-regions-in-fasta)
 - [Variant calling](#variant-calling)
 	- [SNP calling](#snp-calling)
 		- [PEPPER-Margin-Deep Variant workflow](#pepper-margin-deep-variant-workflow)
@@ -62,12 +70,12 @@
 				- [Margin](#margin)
 				- [PEPPER HP](#pepper-hp)
 				- [DeepVariant](#deepvariant)
-		- [Install](#install-12)
+		- [Install](#install-14)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
 			- [Output](#output-8)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-13)
+			- [Install](#install-15)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -356,7 +364,7 @@ shasta \
 --thread 16 \
 --memoryMode filesystem --memoryBacking disk \
 --Assembly.mode 0 \
---Reads.minReadLength 5000\
+--Reads.minReadLength 5000
 ```
 
 - To see all configuration available: `shasta --command listConfigurations` 
@@ -399,11 +407,17 @@ List of parameters for which the optimal value may be dependant on coverage:
 - `MarkerGraph.lowCoverageThreshold` 
 - `MarkerGraph.edgeMarkerSkipThreshold` 
   
-The parameters above may be dependant on coverage and could be scale proportionaly to depth, as advised for very low stringent coverage.  
+The parameters above may be dependant on coverage and could be scale proportionaly to depth, as advised for very low stringent coverage. 
+
 
 - `MinHash.minHashIterationCount` ↗️ from default (10) to 20 or 50
 - `MinHash.minFrequency` ↘️ from 2 to 1
 - `Align.minAlignedMarkerCount` ↘️ from 100 to 50 
+
+Concerning low hash algorithms and tweaking of `MinHash.maxBucketSize` and `MinHash.minBucketSize` ([#289](https://github.com/chanzuckerberg/shasta/issues/289) and [#285](https://github.com/chanzuckerberg/shasta/issues/285)): 
+`LowHashBucketHistogram.csv` allows to determine the optimal `MinHash.maxBucketSize` and `MinHash.minBucketSize` value by plotting FeatureCount versus BucketSize. 
+
+![](./img/LowHashBucketHistogram.png)
 
 
 
@@ -463,6 +477,43 @@ The `canu` command will execute all the assembly steps, from correction, trimmin
 ### output
 Way too long
 
+## [Flye](https://github.com/fenderglass/Flye)
+### install 
+```
+conda create -n flye -c conda-forge -c bioconda flye=2.9
+```
+### Run Flye
+Mammalian assemblies with 40x coverage need ~450Gb of RAM (for ONT) and typically finishes within 3-4 days using 30 threads.
+`--asm-coverage` option can be used to reduce the memory usage by sampling the longest reads for the initial disjointig assembly.
+Typically, 40x longest reads is enough to produce good disjointigs. Regardless of this parameter, all reads will be used at the later pipeline stages.
+
+```
+conda activate flye 
+flye --nano-hq /media/eservant/Data1/euphrasie/HG002_PAG07506/HG002_PAG07506.fastq.gz -o /media/eservant/Data1/euphrasie/HG002_PAG07506/flye2 -g 2.9g --asm-coverage 8 -t 44
+```
+
+# Polishing
+## [Medaka](https://github.com/nanoporetech/medaka)
+Medaka is a polishing tool developped by ONT. 
+It was often use together with the other polishing tool Racon, but Racon was not updated since 2019 and it seems that there is no difference between assemblies polished with Racon x Medaka and Medaka alone. 
+### Install 
+By installing from source, dependencies are resolved and it enables the use of GPU resource.
+
+```
+# Note: certain files are stored in git-lfs, https://git-lfs.github.com/,
+#       which must therefore be installed first.
+sudo apt install git-lsf
+
+git clone https://github.com/nanoporetech/medaka.git
+cd medaka
+make install
+. ./venv/bin/activate
+```
+
+### Run Medaka 
+```
+medaka_consensus -i /home/euphrasie/Documents/HG002_PAG07506/HG002_PAG07506.fastq -d /media/euphrasie/DATA/ShastaRun1/Assembly.fasta -o medakaa_shasta1 -t 16 -m r941_prom_hac_g507
+```
 
 # Assembly quality assesment
 ## [Pomoxis](https://nanoporetech.github.io/pomoxis/programs.html#assess-assembly)
@@ -470,14 +521,14 @@ Pomoxis can be used to do basics operations on assemblies and compute basics ass
 
 ### Install 
 ```
-conda create pomoxis
+conda create --name pomoxis
 conda activate pomoxis
 conda install pomoxis
 ```
 
 ### Run Pomoxis
 - **`coverage_from_bam`**  
-  Calculate read civerage depth from a bam. Can be run on specific regions. Output a depth summary. 
+  Calculate read coverage depth from a bam. Can be run on specific regions. Output a depth summary. 
 - **`assess_assembly`**  
   calculate accurate stats for an assembly: percentage errors, Q scores, and reference coverage
 
@@ -495,6 +546,7 @@ conda install pomoxis
 - in the executable `inspector.py` change the 2 occurences of '`minimap2`' with full `minimap2` path. 
 
 ### Run Inspector
+
 ```
 inspector \
 	-c ShastaRun/Assembly.fasta \
@@ -502,16 +554,8 @@ inspector \
 	--ref ref_chr11.fa \
 	-o ins2/ \
 	-d nanopore
+	--ref reference.fa 
 ```
-
-#### retrieve a specific regions out of a bam file 
-- `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
-- `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
-
-#### retrieve ref's specific regions in `.fasta`
-- `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
-with `chr11.txt` a file with regions of interest coordinates formatted as:    
-`chr11:from-to`, one per line. 
 
 ### Output 
 - `summary_statistics`: An assembly with expected total length, high read-to-contig mapping rate, low number of structural and small-scale errors, and high QV score indicates a high assembly quality. When the reference genome is provided, a higher genome coverage and NA50 also indicates more complete assembly.
@@ -522,6 +566,17 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
 - `contig_to_ref.bam` and `.bai` if a `ref.fa` is provided
 - `valid_contig.fa` and `.fai
   `
+
+## Assembly on a specific region
+### retrieve a specific regions out of a bam file 
+- `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
+- `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
+
+### retrieve ref's specific regions in `.fasta`
+- `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
+with `chr11.txt` a file with regions of interest coordinates formatted as:    
+`chr11:from-to`, one per line. 
+
 
 # Variant calling
 ## SNP calling 
@@ -670,7 +725,7 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 ## Variants validation 
 ### hap.py 
 After, one can choose to run `hap.py` to evaluate the variants. 
-It is a tool to ocmpare diploid genotype at haplotype level (???).   
+It is a tool to compare diploid genotype at haplotype level (???).   
 Hap.py will report counts of
 
 - true-positives (TP): variants/genotypes that match in truth and query.
