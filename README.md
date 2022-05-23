@@ -1,9 +1,30 @@
 # Nanopore long reads sequencing
-
 Next generation sequencing is currently the gold standard in clinical and research sequencing, and short-reads have proved themself as cost effective and highly accurate (>99.9%).
 However, their short fragments size are a limiting factor in mapping efficiency especially for highly homologous and repetitive sequences, homopolymers, and low complexity regions, and makes difficult the identification of Structural Variants (SVs).
 For these matters, long read sequencing are more efficient than short ones.
 While NGS' read length usually span between 75 up to 600bp, long reads technologies can produce reads up 10kb. 
+
+- [Nanopore long reads sequencing](#nanopore-long-reads-sequencing)
+  - [Long reads technologies](#long-reads-technologies)
+    - [Oxford Nanopore Technologies’ nanopore sequencing](#oxford-nanopore-technologies-nanopore-sequencing)
+  - [Long reads analysis](#long-reads-analysis)
+    - [basecalling](#basecalling)
+      - [Basecaller tools](#basecaller-tools)
+    - [Consensus sequences generation](#consensus-sequences-generation)
+      - [Hybrid correction](#hybrid-correction)
+      - [Self correction](#self-correction)
+    - [*De novo* assembly](#de-novo-assembly)
+    - [Alignment to a reference genome](#alignment-to-a-reference-genome)
+    - [Splice aware alignment](#splice-aware-alignment)
+    - [Phased assembly](#phased-assembly)
+    - [Polishing](#polishing)
+    - [Variant calling](#variant-calling)
+      - [Structural Variants](#structural-variants)
+      - [Single Nucleotide Variants](#single-nucleotide-variants)
+      - [Copy Number Variation (CNV)](#copy-number-variation-cnv)
+    - [Phasing](#phasing)
+    - [Quality metrics](#quality-metrics)
+  - [Cas 9](#cas-9)
 
 ## Long reads technologies 
 Two sequencing technologies relying on very different principles share long reads production today: Pacific Biosciences’ (PacBio) single-molecule real-time (SMRT) sequencing and Oxford Nanopore Technologies’ (ONT) nanopore sequencing. Nanopore offers longer read length, higher throughput, and lower costs than PacBio SMRT sequencing as of now.
@@ -139,9 +160,6 @@ Phasing converts a 3-Gb collapsed human genome into a 6-Gb genome that represent
 **Trio binning** is a technique in which the parental genomes are used to parts their offspring genomes in haplotypes specific sets. 
 
 Computational methods can also takes advantage of long reads to resolve a genome's haplotype architecture, and it should overall increase structural variant discovery sensitivity. 
-
-### Compare assembly 
-[see here](https://timkahlke.github.io/LongRead_tutorials/ASS_M.html)
 
 
 ### Polishing 
