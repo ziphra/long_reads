@@ -56,8 +56,10 @@
 		- [Install](#install-12)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
-	- [Inspector](#inspector)
 		- [Install](#install-13)
+		- [Run QuastLG](#run-quastlg)
+	- [Inspector](#inspector)
+		- [Install](#install-14)
 		- [Run Inspector](#run-inspector)
 		- [Output](#output-7)
 	- [Assembly on a specific region](#assembly-on-a-specific-region)
@@ -70,12 +72,12 @@
 				- [Margin](#margin)
 				- [PEPPER HP](#pepper-hp)
 				- [DeepVariant](#deepvariant)
-		- [Install](#install-14)
+		- [Install](#install-15)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
 			- [Output](#output-8)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-15)
+			- [Install](#install-16)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -83,14 +85,17 @@
 			- [installation](#installation)
 			- [Run CuteSV](#run-cutesv)
 	- [Variants validation](#variants-validation)
+		- [download truth sets](#download-truth-sets)
 		- [truvari](#truvari)
-			- [Install](#install-16)
+			- [Install](#install-17)
 			- [Run truvari](#run-truvari)
 		- [hap.py](#happy)
 			- [Output](#output-9)
 	- [Miscellaneous](#miscellaneous)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
+		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
+		- [sam flags](#sam-flags)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -545,6 +550,22 @@ conda install pomoxis
 
 ## QuastLG
 
+### Install 
+```
+wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
+tar -xzf quast-5.0.2.tar.gz
+cd quast-5.0.2
+
+./setup.py install_full
+```
+
+Replace all occurences of `cgi` with `html` in `quast_libs/site_packages/jsontemplate/jsontemplate.py`.
+
+`Quast` install is not working in all `python` and `Quast` versions tried. It seems that there is a problem related with `joblib`. Supposed to work with one thread. 
+
+### Run QuastLG
+
+
 ## [Inspector](https://github.com/ChongLab/Inspector) 
 
 ### Install 
@@ -745,6 +766,9 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 
 
 ## Variants validation 
+### download truth sets
+`wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/release/AshkenazimTrio/HG002_NA24385_son/NISTv4.2.1/`
+
 ### truvari 
 #### Install 
 `python3.8` is required to get the latest `numpy` version, one of `truvari`'s dependencies.
@@ -766,9 +790,11 @@ truvari bench -b truthtset.vcf.gz \
 
 
 ### hap.py 
+`hap.py` is the The Global Alliance for Genomics and Health (GA4GH) recommended benchmarking methods. However, very few support from developpers.
+
 After, one can choose to run `hap.py` to evaluate the variants. 
 It is a tool to compare diploid genotype at haplotype level (???).   
-Hap.py will report counts of
+`Hap.py` will report counts of
 
 - true-positives (TP): variants/genotypes that match in truth and query.
 - false-positives (FP): variants that have mismatching genotypes or alt alleles, as well as - query variant calls in regions a truth set would call confident hom-ref regions.
@@ -816,5 +842,22 @@ ${OUTPUT_DIR}/${OUTPUT_VCF} \
 with `chr11.txt` a file with regions of interest coordinates formatted as:    
 `chr11:from-to`, one per line. 
 
+### Add MD tags to .`bam`
+- `samtools calmd -b noMD.bam > withMD.bam` 
+  `-b` output a bam file (outputs are sams by default)
 
+### sam flags
+- Output reads names and their sam flags:
+  ```
+  samtools view -@ 4 $BAM | awk '{ print $1, $2 }' > all_flag.txt
+  ```
 
+- Output reads names and corresponding flags from all sequences with no quality score:  
+  ```
+  samtools view -@ 4 $BAM | awk '$11 == "*" { print $1, $2 }' > NoQ_flag.txt 
+  ```
+
+- Output all the different flags that are in a bam:
+  ```
+   samtools view -@ 4 $BAM | cut -f2 | sort -u
+  ```

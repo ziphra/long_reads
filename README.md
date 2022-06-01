@@ -15,6 +15,8 @@ While NGS' read length usually span between 75 up to 600bp, long reads technolog
       - [Self correction](#self-correction)
     - [*De novo* assembly](#de-novo-assembly)
     - [Alignment to a reference genome](#alignment-to-a-reference-genome)
+      - [hg38 and hg19](#hg38-and-hg19)
+      - [T2T chm13](#t2t-chm13)
     - [Splice aware alignment](#splice-aware-alignment)
     - [Phased assembly](#phased-assembly)
     - [Polishing](#polishing)
@@ -147,6 +149,10 @@ In reference-based assembly, sequenced reads are aligned back to a refernce geno
 Using a reference biased towards things that are in the reference and will thus not facilitate new events identification.
 
 Minimap2 seems to be the most recommended long-reads aligner. It is fastest, and more accurate than the majority of other alignment tools.
+
+#### hg38 and hg19 
+
+#### T2T chm13
 
 ### Splice aware alignment
 As mature RNA misses sequences introns, the alignment to a reference genomes containing introns in between exons becomes challenging. For that matter, "splice-aware" alignment can align RNA seq sequences to a reference genome while being aware to jump out introns regions.  
