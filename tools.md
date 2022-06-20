@@ -85,13 +85,17 @@
 			- [installation](#installation)
 			- [Run CuteSV](#run-cutesv)
 	- [Variants validation](#variants-validation)
-		- [download truth sets](#download-truth-sets)
+		- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
 		- [truvari](#truvari)
 			- [Install](#install-17)
 			- [Run truvari](#run-truvari)
 		- [hap.py](#happy)
+		- [Run `hap.py`](#run-happy)
 			- [Output](#output-9)
 	- [Miscellaneous](#miscellaneous)
+	- [GATK](#gatk)
+		- [Install](#install-18)
+		- [liftoverVCF](#liftovervcf)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -171,7 +175,7 @@ guppy_basecaller \
 ```
 
 - `--records_per_fastq`: 1- only a single read will be output per file; 0- all reads will be written into a single file. 
-- `-c dna_r9.4.1_450bps_hac.cfg` available flowcell + kit combinations, `hac` = high accuracy, `sup` = super high accuracy. To see the models available: `guppy_basecaller --print_workflow`. Do not forget to add `.cfg` after the model's name! 
+- `-c dna_r9.4.1_450bps_hac.cfg` available flowcell + kit combinations, `hac` = high accuracy, `sup` = super high accuracy. To see the models available: `guppy_basecaller --print_workflows`. Do not forget to add `.cfg` after the model's name! 
 - `-a` optional reference file name. Alignment is performed with minimap2.
 --device 0 
 - `-r` search trough all subfolders for fast5 
@@ -766,8 +770,19 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 
 
 ## Variants validation 
-### download truth sets
-`wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/release/AshkenazimTrio/HG002_NA24385_son/NISTv4.2.1/`
+### Benchmarcking resources: Genome in a Bottle
+See <https://github.com/ga4gh/benchmarking-tools/>
+
+High-confidence calls and regions can be obtained from the Genome in a Bottle FTP site: <ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/>
+
+The ftp sites contains:
+
+1. high-confidence bed and vcf files under GRCh37 and GRCh38 recommended for benchmarking. The confident call regions bed file shows places where the truth dataset does not expect variant calls, or selects a subset of truth variants that are high-confidence.
+2. Under supplementaryFiles/: a multi-sample vcf with genotypes from all input callsets (_annotated.vcf.gz), a vcf including the high-confidence calls plus filtered calls (_all.vcf.gz), a bed file with 50bp on either side of filtered calls (_filteredsites.bed), and callable regions before removing filtered sites (callablemultiinter_gt0.bed).  For some genomes, there is also a vcf and callable bed files from each method that is input into the integration process under supplementaryFiles/inputvcfsandbeds. 
+
+By their nature, high confidence variant calls and regions tend to be easier to detect and therefore they are over represented. Thus, benchmarcking againts high confidence calls overestimates accuracy for all variants.
+
+
 
 ### truvari 
 #### Install 
@@ -801,12 +816,15 @@ It is a tool to compare diploid genotype at haplotype level (???).
 - false-negatives (FN): variants present in the truth set, but missed in the query.
 - non-assessed calls (UNK): variants outside the truth set regions
 
-allowing to calculate recall, precision, F1 score...
+The `TRUTH-BED` is optional. It is a bed file with "confident call regions". It shows places where the truth dataset does not expect variant calls, or selects a subset of truth variants that are high-confidence. `Hap.py` uses these regions to count truth or query variant calls outside these regions as unknown (UNK), query variant calls inside these regions either as TP or FP.
+
+### Run `hap.py`
 
 ```
 # Set up input data
 THRUTH_VCF=
-TRUTH_BED= 
+TRUTH_BED=
+export HGREF='path/to/ref' # reference's fasta file must be defined that way, otherwise it won't work.
 
 # Run hap.py
 
@@ -823,16 +841,73 @@ ${OUTPUT_DIR}/${OUTPUT_VCF} \
 --engine=vcfeval \
 --threads="${THREADS}"
 ```
+When the reference is hg19, the chromosomes names in the query `vcf` have chr-prefixed name which is not consistent with GiaB numerical names, producing empty results for truth reference and metrics calculation. 
+
+To fix this, chr names should be stripped from their prefixed in the query so they can match with the benchmarking dataset: 
+
+```
+bcftools annotate --rename-chr renamechr.txt HG002_PAG07506_37_mmi.vcf.gz | bgzip > RN_CHR_HG002_PAG07506_37_mmi.vcf.gz
+```
+where `renamechr.txt` is a file with `old_name new_name\n`:
+```
+1 chr1
+2 chr2
+3 chr3
+...
+```
+
+
 
 #### Output 
-| Type  | Truth total | True positives | False negatives | False positives | Recall   | Precision | F1-Score |
-|-------|-------------|----------------|-----------------|-----------------|----------|-----------|----------|
-| INDEL | 11256       | 8981           | 2275            | 837             | 0.797886 | 0.916692  | 0.853172 |
-| SNP   | 71333       | 71257          | 94              | 68              | 0.998682 | 0.999047  | 0.998864 |
+| Type  | Filter   | TRUTH.TOTAL   | TRUTH.TP   | TRUTH.FN   | QUERY.TOTAL   | QUERY.FP   | QUERY.UNK   | FP.gt   | FP.al   | METRIC.Recall   | METRIC.Precision   | METRIC.Frac_NA   | METRIC.F1_Score   | TRUTH.TOTAL.TiTv_ratio   | QUERY.TOTAL.TiTv_ratio   | TRUTH.TOTAL.het_hom_ratio   | QUERY.TOTAL.het_hom_ratio |
+|-------|----------|---------------|------------|------------|---------------|------------|-------------|---------|---------|-----------------|--------------------|------------------|-------------------|--------------------------|--------------------------|-----------------------------|---------------------------|
+| **INDEL** |     ALL  | 525469        | 338277     | 187192     | 665660        | 124739     | 194352      | 27320   | 39298   | 0.643762        | 0.735334           | 0.291969         | 0.686508          |                     NaN  |                     NaN  | 1.528276                    | 1.673210                  |
+| **INDEL** |    PASS  | 525469        | 338277     | 187192     | 665660        | 124739     | 194352      | 27320   | 39298   | 0.643762        | 0.735334           | 0.291969         | 0.686508          |                     NaN  |                     NaN  | 1.528276                    | 1.673210                  |
+|   **SNP** |     ALL  | 3365127       | 3344925    | 20202      | 3953730       | 15710      | 592479      | 1740    | 4093    | 0.993997        | 0.995326           | 0.149853         | 0.994661          | 2.100128                 | 1.988687                 | 1.581196                    | 1.538706                  |
+|   **SNP** |    PASS  | 3365127       | 3344925    | 20202      | 3953730       | 15710      | 592479      | 1740    | 4093    | 0.993997        | 0.995326           | 0.149853         | 0.994661          | 2.100128                 | 1.988687                 | 1.581196                    | 1.538706                  |
 
+- **true-positives** (TP): variants that match in truth and query
+- **false-positives** (FP): variants that have mismatching genotypes or alt alleles as well as query variant calls in regions a truth set would call confident hom-ref regions. 
+- **false-negatives** (FN) : variants present in the truth set, but missed in the query.
+- **non-assessed calls** (UNK) : variants outside the truth set regions
 
+```
+Recall = TP/(TP+FN)
+Precision = TP/(TP+FP)
+Frac_NA = UNK/total(query)
+F1_Score = 2 * Precision * Recall / (Precision + Recall)
+```
 
 ## Miscellaneous 
+## GATK
+### Install
+``` 
+wget gatk-latest.zip
+```
+Then gatk toolkit is ready to use as `./gatk`
+
+### liftoverVCF
+First, create a reference `.dict` before lifting: 
+
+```
+./gatk CreateSequenceDictionary \
+      -R  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.fa \
+      -O  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.dict
+```
+then:
+
+```
+./gatk LiftoverVcf \
+    -I HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz \
+    -O lifted_over.vcf \
+    -CHAIN hg38-chm13v2.over.chain.gz \
+    --REJECT rejected_variants.vcf \
+    -R chm13v2.0.fa \
+    --CREATE_INDEX
+```
+
+See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
+
 ### retrieve a specific regions out of a bam file 
 - `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
 - `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
