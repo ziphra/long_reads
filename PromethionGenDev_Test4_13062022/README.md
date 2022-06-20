@@ -22,4 +22,4 @@ Ran for ~44 hours, but the computer was busy.
 Reads were aligned back to `GRCh38.primary_assembly.genome.fa`.
 
 ## QC 
-See [QC](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/report_PAM60245_20220613_1645_ad874836.html)
+See [QC](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html)
