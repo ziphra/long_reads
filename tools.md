@@ -878,6 +878,50 @@ Frac_NA = UNK/total(query)
 F1_Score = 2 * Precision * Recall / (Precision + Recall)
 ```
 
+
+## Variants annotation 
+
+### [vt](https://genome.sph.umich.edu/wiki/Vt)
+#### install
+
+```
+ #this will create a directory named vt in the directory you cloned the repository
+ 1. git clone https://github.com/atks/vt.git  
+
+ #change directory to vt
+ 2. cd vt 
+
+ #update submodules
+ 3. git submodule update --init --recursive 
+
+ #run make, note that compilers need to support the c++0x standard 
+ 4. make 
+
+ #you can test the build
+ 5. make test
+```
+
+### [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html) 
+#### install 
+```
+conda install -c bioconda ensembl-vep==106.1
+vep_install -a cf -s homo_sapiens -y GRCh38 -c /output/path/to/GRCh38/vep --CONVERT
+mkdir ./vep/Plugins
+cpan Module::Build
+vep_install -g LOEUF -c ./vep/ --NO_HTSLIB
+```
+
+### ANNOTSV 
+#### install 
+```
+git clone https://github.com/lgmgeo/AnnotSV.git
+make PREFIX=. install
+cd AnnotSV/
+curl -C - -LO https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.1.1.tar.gz -k
+
+```
+
+
 ## Miscellaneous 
 ## GATK
 ### Install
