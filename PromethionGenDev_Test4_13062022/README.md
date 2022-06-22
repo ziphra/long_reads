@@ -19,7 +19,18 @@ Ran for ~44 hours, but the computer was busy.
 ## mapping 
 `minimap2 2.24-r1122`
 
-Reads were aligned back to `GRCh38.primary_assembly.genome.fa`.
+Reads were aligned back to `GRCh38.primary_assembly.genome.fa` and `chm13v2.0.fa`
 
 ## QC 
-See [QC](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html)
+See [QC - t2t alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html) 
+
+See [QC - hg38 alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_t2t_mmi_QC.html) 
+
+
+## Variant calling 
+
+### Small variant 
+#### PEPPER-Margin-DeepVariant
+See [html report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html).
+
+### Structural Variant
