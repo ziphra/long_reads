@@ -771,9 +771,10 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 
 ## Variants validation 
 ### Benchmarcking resources: Genome in a Bottle
+#### Small variants truth set
 See <https://github.com/ga4gh/benchmarking-tools/>
 
-High-confidence calls and regions can be obtained from the Genome in a Bottle FTP site: <ftp://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/>
+High-confidence calls and regions can be obtained from the Genome in a Bottle FTP site: <https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/>
 
 The ftp sites contains:
 
@@ -782,6 +783,18 @@ The ftp sites contains:
 
 By their nature, high confidence variant calls and regions tend to be easier to detect and therefore they are over represented. Thus, benchmarcking againts high confidence calls overestimates accuracy for all variants.
 
+#### SV truth set 
+
+see <https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/>
+
+The calls are separated into 2 tiers: (1) isolated, sequence-resolved SVs and (2) regions with at least one likely SV but it is complex or we were unable to determine a consensus sequence change
+
+High-confidence SV bed file, defines regions in which Tier 1 callset should be comprehensive, so that any extra variants detected by a method should be false positives.
+
+**Known and Likely Limitations of this callset:**
+1. Although many of the Tier 1 calls are challenging (e.g., in long tandem repeats), it likely only includes 50% or less of the total SVs in the genome, and is likely biased towards easier SVs. 
+2. The predicted sequence change is not always accurate.  If multiple methods predicted the same sequence change, we select it, but this is not the case for all sites, and biases can cause the same incorrect sequence change to be predicted.
+3. The consensus genotype may be inaccurate in some cases, particularly if the predicted sequence change is inaccurate.  The fraction of Mendelian errors for sites genotyped in all 3 members of the trio was ~2%, and more sites were heterozygous in all individuals than expected.
 
 
 ### truvari 
@@ -905,10 +918,19 @@ F1_Score = 2 * Precision * Recall / (Precision + Recall)
 #### install 
 ```
 conda install -c bioconda ensembl-vep==106.1
-vep_install -a cf -s homo_sapiens -y GRCh38 -c /output/path/to/GRCh38/vep --CONVERT
+vep_install -a cf -s homo_sapiens -y GRCh38 -c ./vep --CONVERT
 mkdir ./vep/Plugins
 cpan Module::Build
-vep_install -g LOEUF -c ./vep/ --NO_HTSLIB
+
+# Plugins install
+# download all plugins (.pm) from vep repository
+git clone https://github.com/Ensembl/VEP_plugins.git
+
+# dowload UTRannotator plugin from its github repository - as it is not in vep repository
+git clone https://github.com/ImperialCardioGenetics/UTRannotator.git
+
+# having 2 copies might change something or not
+cp ~/.vep/Plugins/UTRannotator/* ~/.vep/Plugins/
 ```
 
 ### ANNOTSV 
@@ -952,6 +974,9 @@ then:
 
 See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
 
+
+
+
 ### retrieve a specific regions out of a bam file 
 - `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
 - `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
@@ -980,3 +1005,24 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
   ```
    samtools view -@ 4 $BAM | cut -f2 | sort -u
   ```
+
+### reads with `MAPQ==0`
+
+- QC with all basecalled reads and reads with `MAPQ==0`:
+
+```
+samtools view -@ 16 $BAM | awk '$5 == "0" { print $0}' > MAPQ0.sam
+samtools view -H $BAM > HEAD.txt
+cat HEAD MAPQ0.sam > H_MAPQ0.sam
+samtools view -bh H_MAPQ0.sam > H_MAPQ0.bam
+samtools index H_MAPQ0.bam
+pycoQC -f sequencing_summary.txt -a H_MAPQ0.bam -o QC.html
+```
+
+- QC with reads `MAPQ==0` only
+
+```
+cut -f 1  H_MAPQ0.sam > reads_MAPQ0.txt
+grep -f reads_MAPQ0.txt sequencing_summary.txt > MAPQ0_sequencing_summary.txt
+pycoQC -f MAPQ0_sequencing_summary.txt -a H_MAPQ0.bam -o MAPQ0_QC.html
+```
