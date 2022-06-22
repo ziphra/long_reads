@@ -22,9 +22,9 @@ Ran for ~44 hours, but the computer was busy.
 Reads were aligned back to `GRCh38.primary_assembly.genome.fa` and `chm13v2.0.fa`
 
 ## QC 
-See [QC - t2t](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html) 
+See [QC - t2t alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html) 
 
-See [QC - hg38](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_t2t_mmi_QC.html) 
+See [QC - hg38 alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_t2t_mmi_QC.html) 
 
 
 ## Variant calling 
