@@ -84,22 +84,44 @@
 		- [CuteSV](#cutesv)
 			- [installation](#installation)
 			- [Run CuteSV](#run-cutesv)
-	- [Variants validation](#variants-validation)
+	- [Variants benchmarking](#variants-benchmarking)
 		- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
+			- [Small variants truth set](#small-variants-truth-set)
+			- [SV truth set](#sv-truth-set)
 		- [truvari](#truvari)
 			- [Install](#install-17)
 			- [Run truvari](#run-truvari)
 		- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
 			- [Output](#output-9)
+	- [Variants annotation](#variants-annotation)
+		- [vt](#vt)
+			- [install](#install-18)
+		- [VEP](#vep)
+			- [install](#install-19)
+		- [ANNOTSV](#annotsv)
+			- [install](#install-20)
+			- [Run ANNOTSV](#run-annotsv)
+			- [Output](#output-10)
+		- [KnotAnnotSV](#knotannotsv)
+			- [Install](#install-21)
+	- [VCF manipulation](#vcf-manipulation)
+		- [vcflib](#vcflib)
+			- [install](#install-22)
+			- [Run vcflib](#run-vcflib)
+			- [randomly subset a vcf](#randomly-subset-a-vcf)
+		- [vcftools](#vcftools)
+			- [install](#install-23)
 	- [Miscellaneous](#miscellaneous)
 	- [GATK](#gatk)
-		- [Install](#install-18)
+		- [Install](#install-24)
 		- [liftoverVCF](#liftovervcf)
-		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
-		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
-		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
-		- [sam flags](#sam-flags)
+	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
+	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
+	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
+	- [sam flags](#sam-flags)
+	- [reads with `MAPQ==0`](#reads-with-mapq0)
+	- [filter VCF according to chromosomes with `bcftools`](#filter-vcf-according-to-chromosomes-with-bcftools)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -769,7 +791,7 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 ```
 
 
-## Variants validation 
+## Variants benchmarking 
 ### Benchmarcking resources: Genome in a Bottle
 #### Small variants truth set
 See <https://github.com/ga4gh/benchmarking-tools/>
@@ -895,6 +917,9 @@ F1_Score = 2 * Precision * Recall / (Precision + Recall)
 ## Variants annotation 
 
 ### [vt](https://genome.sph.umich.edu/wiki/Vt)
+
+Allows to split one position in the VCF for all alternatives alleles, so all possible different variants can be represented by one line each.
+
 #### install
 
 ```
@@ -914,7 +939,8 @@ F1_Score = 2 * Precision * Recall / (Precision + Recall)
  5. make test
 ```
 
-### [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html) 
+### [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html)
+
 #### install 
 ```
 conda install -c bioconda ensembl-vep==106.1
@@ -923,9 +949,7 @@ mkdir ./vep/Plugins
 cpan Module::Build
 
 # Plugins install
-# download all plugins (.pm) from vep repository
-git clone https://github.com/Ensembl/VEP_plugins.git
-
+# download all plugins (.pm) from vep repository0.012 
 # dowload UTRannotator plugin from its github repository - as it is not in vep repository
 git clone https://github.com/ImperialCardioGenetics/UTRannotator.git
 
@@ -933,16 +957,81 @@ git clone https://github.com/ImperialCardioGenetics/UTRannotator.git
 cp ~/.vep/Plugins/UTRannotator/* ~/.vep/Plugins/
 ```
 
-### ANNOTSV 
+### [ANNOTSV](https://lbgi.fr/AnnotSV/)
+Designed for annotating and ranking SV. 
+AnnotSV compiles functionally, regulatory and clinically relevant information and aims at providing annotations useful to i) interpret SV potential pathogenicity and ii) filter out SV potential false positives.
+See [ANNOTSV Readme](https://lbgi.fr/AnnotSV/Documentation/README.AnnotSV_latest.pdf)
+
 #### install 
 ```
 git clone https://github.com/lgmgeo/AnnotSV.git
 make PREFIX=. install
 cd AnnotSV/
 curl -C - -LO https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.1.1.tar.gz -k
+tar -xvfz Annotations_Human_3.1.1.tar.gz
+
+sudo apt-get install tclsh
+
+export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 
 ```
 
+#### Run ANNOTSV
+```
+export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
+$ANNOTSV/bin/AnnotSV -SvinputFile sniffles.vcf
+
+```
+#### Output
+A tab-delimited file.
+
+### KnotAnnotSV
+#### Install
+```
+# install perl dependencies
+
+cpan 
+o conf make_install_make_command 'sudo make'
+o conf commit
+install YAML::XS
+install Sort::Key::Natural
+```
+
+
+## VCF manipulation 
+
+### [vcflib](https://github.com/vcflib/vcflib)
+A tool for parsing and manipulating VCF files.
+
+#### install
+
+```
+sudo apt-get install libvcflib-tools libvcflib-dev
+```
+
+#### Run vcflib
+`vcflib <program>`
+
+
+#### randomly subset a vcf 
+- generate a subset of a `.vcf` with `vcfrandomsample`:
+  ```
+  bcftools view file.vcf.gz | vcflib vcfrandomsample -r 0.01 > subset.vcf
+  ```
+  View the file with `bcftools` if it is bgzip, as `vcflib` recquire uncompress files.
+
+
+### vcftools
+#### install 
+
+```
+wget https://github.com/vcftools/vcftools/releases/download/v0.1.16/vcftools-0.1.16.tar.gz
+tar -xvf vcftools-0.1.16.tar.gz
+cd vcftools-0.1.16/
+./configure
+sudo make
+sudo make install 
+```
 
 ## Miscellaneous 
 ## GATK
@@ -977,20 +1066,20 @@ See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfD
 
 
 
-### retrieve a specific regions out of a bam file 
+## retrieve a specific regions out of a bam file 
 - `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
 - `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
 
-### retrieve reference's specific region in `.fasta`
+## retrieve reference's specific region in `.fasta`
 - `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
 with `chr11.txt` a file with regions of interest coordinates formatted as:    
 `chr11:from-to`, one per line. 
 
-### Add MD tags to .`bam`
+## Add MD tags to .`bam`
 - `samtools calmd -b noMD.bam > withMD.bam` 
   `-b` output a bam file (outputs are sams by default)
 
-### sam flags
+## sam flags
 - Output reads names and their sam flags:
   ```
   samtools view -@ 4 $BAM | awk '{ print $1, $2 }' > all_flag.txt
@@ -1006,7 +1095,7 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
    samtools view -@ 4 $BAM | cut -f2 | sort -u
   ```
 
-### reads with `MAPQ==0`
+## reads with `MAPQ==0`
 
 - QC with all basecalled reads and reads with `MAPQ==0`:
 
@@ -1026,3 +1115,8 @@ cut -f 1  H_MAPQ0.sam > reads_MAPQ0.txt
 grep -f reads_MAPQ0.txt sequencing_summary.txt > MAPQ0_sequencing_summary.txt
 pycoQC -f MAPQ0_sequencing_summary.txt -a H_MAPQ0.bam -o MAPQ0_QC.html
 ```
+
+## filter VCF according to chromosomes with `bcftools`
+- `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
+- `bcftools filter in.vcf.gz -o filtered.vcf -R 'regiond.bed'`
+- `bcftools filter -e INFO/GNOMAD_AF>0.1 in.vcf.gz`
