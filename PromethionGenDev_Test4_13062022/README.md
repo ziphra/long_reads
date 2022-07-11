@@ -74,7 +74,8 @@ HyperExome sequenced regions having a depth coverage > 30X are considered *high 
 The small variants VCF from this run was compared against its HyperExome truth set.
 Before benchmarking, the VCF was filtered for the regions covered by the *truth set*.
 
-Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description.
+Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description. Slide to the right to see the rest of the table.
+
 
 | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|---------------------------|
@@ -86,6 +87,14 @@ Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/maste
 
 
 
+- **true-positives (TP)** : variants/genotypes that match in truth and query.
+- **false-positives (FP)** : variants that have mismatching genotypes or alt alleles, as well as query variant calls in regions a truth set would call confident hom-ref regions.
+- **false-negatives (FN)** : variants present in the truth set, but missed in the query.
+- **non-assessed calls (UNK)** : variants outside the truth set regions
+- **Ti** : transition and **Tv** : transversion
+- **het** : heterozygote and **hom** : homozygote
+- **Query** : PromethionGenDev_Test4 
+- **Truth** : HyperExome variants in 30X > regions
 
 
 
