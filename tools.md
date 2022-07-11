@@ -105,23 +105,28 @@
 			- [Output](#output-10)
 		- [KnotAnnotSV](#knotannotsv)
 			- [Install](#install-21)
-	- [VCF manipulation](#vcf-manipulation)
+	- [Handling VCF](#handling-vcf)
+		- [GATK](#gatk)
+			- [Install](#install-22)
+			- [liftoverVCF](#liftovervcf)
 		- [vcflib](#vcflib)
-			- [install](#install-22)
+			- [install](#install-23)
 			- [Run vcflib](#run-vcflib)
 			- [randomly subset a vcf](#randomly-subset-a-vcf)
+		- [filter VCF according to chromosomes with `bcftools`](#filter-vcf-according-to-chromosomes-with-bcftools)
 		- [vcftools](#vcftools)
-			- [install](#install-23)
+			- [install](#install-24)
 	- [Miscellaneous](#miscellaneous)
-	- [GATK](#gatk)
-		- [Install](#install-24)
-		- [liftoverVCF](#liftovervcf)
-	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
-	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
-	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
-	- [sam flags](#sam-flags)
-	- [reads with `MAPQ==0`](#reads-with-mapq0)
-	- [filter VCF according to chromosomes with `bcftools`](#filter-vcf-according-to-chromosomes-with-bcftools)
+		- [liftOver UCSC](#liftover-ucsc)
+			- [install](#install-25)
+		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
+		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
+		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
+		- [sam flags](#sam-flags)
+		- [reads with `MAPQ==0`](#reads-with-mapq0)
+		- [HyperExome regions > 30X](#hyperexome-regions--30x)
+	- [Computing issue](#computing-issue)
+		- [convert file encoding](#convert-file-encoding)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -980,7 +985,6 @@ export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 ```
 export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 $ANNOTSV/bin/AnnotSV -SvinputFile sniffles.vcf
-
 ```
 #### Output
 A tab-delimited file.
@@ -998,7 +1002,36 @@ install Sort::Key::Natural
 ```
 
 
-## VCF manipulation 
+## Handling VCF 
+### GATK
+#### Install
+``` 
+wget gatk-latest.zip
+```
+Then gatk toolkit is ready to use as `./gatk`
+
+#### liftoverVCF
+First, create a `.dict` before lifting ofr the **target** reference build: 
+
+```
+./gatk CreateSequenceDictionary \
+      -R  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.fa \
+      -O  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.dict
+```
+then:
+
+```
+./gatk LiftoverVcf \
+    -I HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz \
+    -O lifted_over.vcf \
+    -CHAIN hg38-chm13v2.over.chain.gz \
+    --REJECT rejected_variants.vcf \
+    -R chm13v2.0.fa \
+    --CREATE_INDEX
+```
+
+See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
+
 
 ### [vcflib](https://github.com/vcflib/vcflib)
 A tool for parsing and manipulating VCF files.
@@ -1021,7 +1054,12 @@ sudo apt-get install libvcflib-tools libvcflib-dev
   View the file with `bcftools` if it is bgzip, as `vcflib` recquire uncompress files.
 
 
-### vcftools
+### filter VCF according to chromosomes with `bcftools`
+- `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
+- `bcftools filter in.vcf.gz -o filtered.vcf -R 'regiond.bed'`
+- `bcftools filter -e INFO/GNOMAD_AF>0.1 in.vcf.gz`
+
+### [vcftools](https://github.com/vcftools/vcftools/)
 #### install 
 
 ```
@@ -1033,53 +1071,31 @@ sudo make
 sudo make install 
 ```
 
+
 ## Miscellaneous 
-## GATK
-### Install
-``` 
-wget gatk-latest.zip
-```
-Then gatk toolkit is ready to use as `./gatk`
+### liftOver UCSC 
+Move annotations from one assembly to another.
+#### install 
+- create an account to download the executable on <https://genome-store.ucsc.edu/>
+- `sudo chmod ugo+x liftOver`
+- add liftOver path to `~/.bashrc`
+- download recquired chain files:
+  `wget --timestamping 'ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz' -O hg19ToHg38.over.chain.gz`
 
-### liftoverVCF
-First, create a reference `.dict` before lifting: 
-
-```
-./gatk CreateSequenceDictionary \
-      -R  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.fa \
-      -O  /media/euphrasie/DATA/reference_genome/t2t/chm13v2.0.dict
-```
-then:
-
-```
-./gatk LiftoverVcf \
-    -I HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz \
-    -O lifted_over.vcf \
-    -CHAIN hg38-chm13v2.over.chain.gz \
-    --REJECT rejected_variants.vcf \
-    -R chm13v2.0.fa \
-    --CREATE_INDEX
-```
-
-See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
-
-
-
-
-## retrieve a specific regions out of a bam file 
+### retrieve a specific regions out of a bam file 
 - `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
 - `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
 
-## retrieve reference's specific region in `.fasta`
+### retrieve reference's specific region in `.fasta`
 - `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
 with `chr11.txt` a file with regions of interest coordinates formatted as:    
 `chr11:from-to`, one per line. 
 
-## Add MD tags to .`bam`
+### Add MD tags to .`bam`
 - `samtools calmd -b noMD.bam > withMD.bam` 
   `-b` output a bam file (outputs are sams by default)
 
-## sam flags
+### sam flags
 - Output reads names and their sam flags:
   ```
   samtools view -@ 4 $BAM | awk '{ print $1, $2 }' > all_flag.txt
@@ -1095,7 +1111,7 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
    samtools view -@ 4 $BAM | cut -f2 | sort -u
   ```
 
-## reads with `MAPQ==0`
+### reads with `MAPQ==0`
 
 - QC with all basecalled reads and reads with `MAPQ==0`:
 
@@ -1116,7 +1132,25 @@ grep -f reads_MAPQ0.txt sequencing_summary.txt > MAPQ0_sequencing_summary.txt
 pycoQC -f MAPQ0_sequencing_summary.txt -a H_MAPQ0.bam -o MAPQ0_QC.html
 ```
 
-## filter VCF according to chromosomes with `bcftools`
-- `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
-- `bcftools filter in.vcf.gz -o filtered.vcf -R 'regiond.bed'`
-- `bcftools filter -e INFO/GNOMAD_AF>0.1 in.vcf.gz`
+### HyperExome regions > 30X
+
+```
+for cram in /GENETIQUE1/DATA/GenDev/_EXOMES/KAPA-HyperExome_2022/KAPA-HyperExome*/03_Analyse/CRAM/*.cram; do file=`basename $cram`; filename=${file::-5}; echo $filename; samtools view -b $cram | bedtools genomecov -ibam - -bg | awk '$4 > 30' > $filename.bedgraph; done
+
+intersectBed -sorted -a index.bedgraph -b ./bedgraph/* | bedtools merge -i - > merged.txt
+```
+
+
+## Computing issue
+### convert file encoding 
+
+- Check file encoding:
+  ```
+  sudo file -i file.vcf
+  ```
+- change encoding:
+  ```
+  iconv -f ISO-8859-1 -t UTF-8//TRANSLIT /file.vcf -o utf8_file.vcf
+  ```
+
+
