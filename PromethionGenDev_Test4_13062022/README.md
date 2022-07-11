@@ -95,6 +95,8 @@ Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/maste
 - **het** : heterozygote and **hom** : homozygote
 - **Query** : PromethionGenDev_Test4 
 - **Truth** : HyperExome variants in 30X > regions
+- **gt** : genotype
+- **al** : allele 
 
 
 
