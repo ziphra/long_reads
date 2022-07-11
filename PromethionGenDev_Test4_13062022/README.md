@@ -12,6 +12,7 @@
     - [Small variants](#small-variants)
     - [Structural variants with AnnotSV](#structural-variants-with-annotsv)
   - [Benchmarking](#benchmarking)
+    - [SNP and small variants calling benchmarking](#snp-and-small-variants-calling-benchmarking)
 
 
 See [pipeline0617.sh](./scripts/pipeline_0617.sh) for code. 
@@ -22,7 +23,6 @@ See [HTML sequencing run report](https://raw.githack.com/ziphra/long_reads/main/
 - **Yield:** 48.1 Gb
 - **Flowcell:** FLOPRO002 
 - **Kit:** SQK-LSK110
-
 
 ## Basecalling 
 `guppy 6.1.2`
@@ -55,23 +55,24 @@ See [html report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDe
 See [custom_annotations_after_vep_chr.py](./scripts/custom_annotations_after_vep_chr.py) and [deepvariant_vcf2xlsx2.py](./scripts/deepvariant_vcf2xlsx2.py) for codes.
 
 ### Small variants 
-`.xlsx` annotation file (Julien's pipeline V2) is available at <dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/pmdv>:
+2 `.xlsx` annotation files (made with Julien's pipeline V2) are available at <smb://dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/pmdv> :
 - `filteredgnomadAF.vcf.gz_annot2.xlsx` - annotations of variant having a gnomAD allele frequency < 0.1%. The annotation file was filtered to reduce file size. The VCF went from 1.5 million lines to 278 000.
-- `30X_vep_all_annotations_noRefCal.vcf.gz_annot2.xlsx` - annotations of variants from exomic high confidence regions (63 000 lines)
+- `30X_vep_all_annotations_noRefCal.vcf.gz_annot2.xlsx` - annotations of variants from exonic high confidence regions (63 000 lines)
 
 
 ### Structural variants with [AnnotSV](https://lbgi.fr/AnnotSV/)
-AnnotSV produce a `.xslx` file and a `.html`, available at <dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/annotsv>.      
+Structural variants annotation with AnnotSV produced a `.xslx` and a `.html` file. These files are available at <smb://dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/annotsv>.      
 Report to [AnnotSV documentation](https://github.com/mobidic/knotAnnotSV#output) for output description.
 
 
 ## Benchmarking
 The output of PromethionGenDev_Test4 was benchmarked against the HyperExome run from the same patient. 
 
-HyperExome sequenced regions having a depth coverage above 30X are considered as *high confidence regions*, i.e., variants in exonic regions having at least a depth coverage > 30X represent a variant *truth set* for these regions.
+HyperExome sequenced regions having a depth coverage > 30X are considered *high confidence regions*, *i.e.*, variants in exonic regions with depth coverage > 30X represent a *truth set* for these regions against which variant calling results can be compared.
 
+### SNP and small variants calling benchmarking 
 The small variants VCF from this run was compared against its HyperExome truth set.
-Prior to benchmarking, the VCF was filtered for the regions covered by the *truth set*.
+Before benchmarking, the VCF was filtered for the regions covered by the *truth set*.
 
 | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|---------------------------|
