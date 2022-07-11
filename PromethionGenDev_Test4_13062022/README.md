@@ -24,7 +24,6 @@ See [HTML sequencing run report](https://raw.githack.com/ziphra/long_reads/main/
 - **Flowcell:** FLOPRO002 
 - **Kit:** SQK-LSK110
 
-
 ## Basecalling 
 `guppy 6.1.2`
 
