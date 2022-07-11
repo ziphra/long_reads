@@ -55,13 +55,13 @@ See [html report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDe
 See [custom_annotations_after_vep_chr.py](./scripts/custom_annotations_after_vep_chr.py) and [deepvariant_vcf2xlsx2.py](./scripts/deepvariant_vcf2xlsx2.py) for codes.
 
 ### Small variants 
-2 `.xlsx` annotation files (made with Julien's pipeline V2) are available at <dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/pmdv> :
+2 `.xlsx` annotation files (made with Julien's pipeline V2) are available at <smb://dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/pmdv> :
 - `filteredgnomadAF.vcf.gz_annot2.xlsx` - annotations of variant having a gnomAD allele frequency < 0.1%. The annotation file was filtered to reduce file size. The VCF went from 1.5 million lines to 278 000.
 - `30X_vep_all_annotations_noRefCal.vcf.gz_annot2.xlsx` - annotations of variants from exonic high confidence regions (63 000 lines)
 
 
 ### Structural variants with [AnnotSV](https://lbgi.fr/AnnotSV/)
-Structural variants annotation with AnnotSV produced a `.xslx` and a `.html` file. These files are available at <dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/annotsv>.      
+Structural variants annotation with AnnotSV produced a `.xslx` and a `.html` file. These files are available at <smb://dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/annotsv>.      
 Report to [AnnotSV documentation](https://github.com/mobidic/knotAnnotSV#output) for output description.
 
 
