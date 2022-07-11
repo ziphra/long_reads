@@ -12,12 +12,11 @@
     - [Small variants](#small-variants)
     - [Structural variants with AnnotSV](#structural-variants-with-annotsv)
   - [Benchmarking](#benchmarking)
-  - [CNV](#cnv)
 
 
 See [pipeline0617.sh](./scripts/pipeline_0617.sh) for code. 
 
-See [html sequencing run report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/report_PAM60245_20220613_1645_ad874836.html) for run summary.
+See [HTML sequencing run report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/report_PAM60245_20220613_1645_ad874836.html) for run summary.
 
 - **Date:** 06/13/22
 - **Yield:** 48.1 Gb
@@ -28,7 +27,7 @@ See [html sequencing run report](https://raw.githack.com/ziphra/long_reads/main/
 ## Basecalling 
 `guppy 6.1.2`
 
-~44 hours, on a busy computer
+~44 hours on a busy computer
 
 ## mapping 
 `minimap2 2.24-r1122`
@@ -45,11 +44,12 @@ Reads were aligned back to `GRCh38.primary_assembly.genome.fa` and `chm13v2.0.fa
 ## Variant calling 
 
 ### Small variant 
-#### with PEPPER-Margin-DeepVariant
+#### [with PEPPER-Margin-DeepVariant](https://github.com/kishwarshafin/pepper)
+
 See [html report](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html).
 
 ### Structural Variant
-#### with Sniffles
+#### with [Sniffles](https://github.com/fritzsedlazeck/Sniffles)
 
 ## Annotations 
 See [custom_annotations_after_vep_chr.py](./scripts/custom_annotations_after_vep_chr.py) and [deepvariant_vcf2xlsx2.py](./scripts/deepvariant_vcf2xlsx2.py) for codes.
@@ -60,30 +60,28 @@ See [custom_annotations_after_vep_chr.py](./scripts/custom_annotations_after_vep
 - `30X_vep_all_annotations_noRefCal.vcf.gz_annot2.xlsx` - annotations of variants from exomic high confidence regions (63 000 lines)
 
 
-### Structural variants with AnnotSV 
+### Structural variants with [AnnotSV](https://lbgi.fr/AnnotSV/)
 AnnotSV produce a `.xslx` file and a `.html`, available at <dfz/Z_APPLICATIONS/GENETIQUE1/DATA/GenDev/_DIVERS/_A_TRIER/Euphrasie/PromethionGenDev_Test4/annotations/annotsv>.      
 Report to [AnnotSV documentation](https://github.com/mobidic/knotAnnotSV#output) for output description.
 
 
 ## Benchmarking
-To build a "truth set", we filtered "high confidence regions" in exome sequencing data, i.e regions having > 30 X coverage in the last 2022 HyperExome runs. (See method in [tools](../tools.md#hyperexome-regions--30x))
+The output of PromethionGenDev_Test4 was benchmarked against the HyperExome run from the same patient. 
+
+HyperExome sequenced regions having a depth coverage above 30X are considered as *high confidence regions*, i.e., variants in exonic regions having at least a depth coverage > 30X represent a variant *truth set* for these regions.
+
+The small variants VCF from this run was compared against its HyperExome truth set.
+Prior to benchmarking, the VCF was filtered for the regions covered by the *truth set*.
+
+| Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|---------------------------|
+| ALL    | 4270        | 1124     | 3146     | 3365        | 2265     | 102   | 124   | 0.263232      | 0.326895         | 0.291629        |                        |                        | 4.03851091142             | 1.12588766946             | 1.18528082634             |
+| PASS   | 4270        | 1124     | 3146     | 3365        | 2265     | 102   | 124   | 0.263232      | 0.326895         | 0.291629        |                        |                        | 4.03851091142             | 1.12588766946             | 1.18528082634             |
+| ALL    | 37399       | 31399    | 6000     | 59234       | 27830    | 314   | 616   | 0.839568      | 0.530168         | 0.649924        | 2.52720928039          | 2.48011513834          | 2.18947098539             | 1.75254473623             | 1.75254473623             |
+| PASS   | 37399       | 31399    | 6000     | 59234       | 27830    | 314   | 616   | 0.839568      | 0.530168         | 0.649924        | 2.52720928039          | 2.48011513834          | 2.18947098539             | 1.75254473623             | 1.75254473623             |
 
 
-The output of PromethionGenDev_Test4 was benchmark against an HyperExome run from the same patient. 
 
-The VCF file was first filtered for exomic regions having a coverage depth superior to 30X in the HyperExome run from this sample.
- 
-Recall, precision and F1 score were then calculated with `hap.py`. See [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description.
-
-| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
-|-------|--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 4911        | 1132     | 3779     | 3411        | 2297     | 97    | 135   | 0.230503      | 0.32659          | 0.27026         |                        |                        | 3.6976016684              | 1.18528082634             |
-| INDEL | PASS   | 4911        | 1132     | 3779     | 3411        | 2297     | 97    | 135   | 0.230503      | 0.32659          | 0.27026         |                        |                        | 3.6976016684              | 1.18528082634             |
-| SNP   | ALL    | 39577       | 31399    | 8178     | 59234       | 27828    | 314   | 618   | 0.793365      | 0.530202         | 0.635621        | 2.42480096919          | 2.48011513834          | 2.14446125667             | 1.75254473623             |
-| SNP   | PASS   | 39577       | 31399    | 8178     | 59234       | 27828    | 314   | 618   | 0.793365      | 0.530202         | 0.635621        | 2.42480096919          | 2.48011513834          | 2.14446125667             | 1.75254473623             |
-
-
-## CNV 
 
 
 
