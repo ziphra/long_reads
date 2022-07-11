@@ -74,6 +74,8 @@ HyperExome sequenced regions having a depth coverage > 30X are considered *high 
 The small variants VCF from this run was compared against its HyperExome truth set.
 Before benchmarking, the VCF was filtered for the regions covered by the *truth set*.
 
+Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description.
+
 | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|---------------------------|
 | ALL    | 4270        | 1124     | 3146     | 3365        | 2265     | 102   | 124   | 0.263232      | 0.326895         | 0.291629        |                        |                        | 4.03851091142             | 1.12588766946             | 1.18528082634             |
