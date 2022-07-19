@@ -109,22 +109,22 @@
 		- [GATK](#gatk)
 			- [Install](#install-22)
 			- [liftoverVCF](#liftovervcf)
-		- [vcflib](#vcflib)
+		- [vcflib - subset VCF](#vcflib---subset-vcf)
 			- [install](#install-23)
 			- [Run vcflib](#run-vcflib)
 			- [randomly subset a vcf](#randomly-subset-a-vcf)
-		- [filter VCF according to chromosomes with `bcftools`](#filter-vcf-according-to-chromosomes-with-bcftools)
-		- [vcftools](#vcftools)
-			- [install](#install-24)
+		- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
+		- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
 	- [Miscellaneous](#miscellaneous)
 		- [liftOver UCSC](#liftover-ucsc)
-			- [install](#install-25)
+			- [install](#install-24)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
 		- [sam flags](#sam-flags)
 		- [reads with `MAPQ==0`](#reads-with-mapq0)
 		- [HyperExome regions > 30X](#hyperexome-regions--30x)
+		- [`samtools depth`](#samtools-depth)
 	- [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
 # Basecalling
@@ -1033,7 +1033,7 @@ then:
 See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
 
 
-### [vcflib](https://github.com/vcflib/vcflib)
+### [vcflib](https://github.com/vcflib/vcflib) - subset VCF
 A tool for parsing and manipulating VCF files.
 
 #### install
@@ -1054,21 +1054,60 @@ sudo apt-get install libvcflib-tools libvcflib-dev
   View the file with `bcftools` if it is bgzip, as `vcflib` recquire uncompress files.
 
 
-### filter VCF according to chromosomes with `bcftools`
-- `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
-- `bcftools filter in.vcf.gz -o filtered.vcf -R 'regiond.bed'`
-- `bcftools filter -e INFO/GNOMAD_AF>0.1 in.vcf.gz`
+### filter VCFs with `bcftools`
+- filter regions 
+  - `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
+  - `bcftools filter in.vcf.gz -o out.vcf -R 'regiond.bed'`
+- filter according to INFO field:
+  - `bcftools filter -e INFO/GNOMAD_AF>0.1 in.vcf.gz -o out.vcf.gz`
+- filter according to depth
+  - `bcftools filter -i'FORMAT/DP>30' in.vcf.gz -o out.vcf.gz -Oz`     
+	It is worth mentionning that if several samples are contains in the VCF, that `INFO/DEPTH` will report depth across all these samples, wherease `FORMAT/DP` only for the specified one.
+- filter 'refCall', i.e calls with `GT==0/0`
+  - `bcftools filter -e'FORMAT/GT="0/0"' in.vcf.gz -o out.vcf.gz -Oz`
+  - `bcftools filter -e'FILTER="refCall"' in.vcf.gz -o out.vcf.gz -Oz`
+- filter calls with missing genotypes
+  - `bcftools filter -e'FORMAT/GT="mis"' in.vcf.gz -o out.vcf.gz -Oz`
 
-### [vcftools](https://github.com/vcftools/vcftools/)
-#### install 
+
+### Transfer/custom VCF annotation - an example
+One could want to remove or modify annotations fields in a VCF for some matters. For example, merging 2 different VCF can happen to be tricky as the annotations format can slighty change between 2 files.
+In this example, the `FORMAT/AD` tag had 2 different definitions in 2 different files that could therefore not be merged: 
+- vcf1: `##FORMAT=<ID=AD,Number=A,Type=Integer,Description="Allele depth">`
+- vcf2: `##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">`. This file contains the depth for the ref allele, which is not the case in vcf1.
+
+One solution can be to remove the `FORMAT/AD` tag, but then that information is lost.
+
+Here, vcf2 `FORMAT/AD` tag can be modify to match vcf1 definition: 
 
 ```
-wget https://github.com/vcftools/vcftools/releases/download/v0.1.16/vcftools-0.1.16.tar.gz
-tar -xvf vcftools-0.1.16.tar.gz
-cd vcftools-0.1.16/
-./configure
-sudo make
-sudo make install 
+# delete INFO field with bcftools annotate, as it is useless for the following use of these files.
+
+bcftools annotate -x INFO 1.vcf.gz -o 1_noINFO.vcf.gz -Oz
+bcftools annotate -x INFO 2.vcf.gz -o 2_noINFO.vcf.gz -Oz
+
+# extract vcf2 FORMAT/AD into a tab-delimited annotation file.
+bcftools query -f '%CHROM\t%POS\tAD:[ %AD]\n' 2_noINFO.vcf.gz > 2_AD.txt
+
+# remove FORMAT/AD tag 
+bcftools annotate -x FORMAT/AD 2.vcf.gz -o 2_noINFOnoAD.vcf.gz -Oz
+
+# now, the 2_AD.txt file can be modified to remove the part of the TAG containing depths for the ref allele:
+sed 's/A[^"]*,/ /g' 2_AD.txt | bgzip > 2_noRefDP_AD.txt.gz
+
+# index the file with tabix
+tabix -s1 -b2 -e2 2_noRefDP_AD.txt.gz 
+
+# store new `FORMAT/AD` tag definition to add in the vcf2 header
+echo -e '##FORMAT=<ID=AD,Number=A,Type=Integer,Description="Allele depth">"' >> hdr.txt
+
+
+# Transfer the annotation
+bcftools annotate -a noRefDP_2_AD.txt.gz -h hdr.txt 2_noINFO_noAD.vcf.gz -o 2_noINFO_AD.vcf.gz -Oz -s 6620CY000167 -c CHROM,POS,FORMAT/AD
+
+# Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged
+bcftools merge 1_noINFO.vcf.gz 2_noRefDP_AD.txt.gz
+
 ```
 
 
@@ -1139,6 +1178,23 @@ for cram in /GENETIQUE1/DATA/GenDev/_EXOMES/KAPA-HyperExome_2022/KAPA-HyperExome
 
 intersectBed -sorted -a index.bedgraph -b ./bedgraph/* | bedtools merge -i - > merged.txt
 ```
+
+To compute genome coverage for all bases/regions, one could prefer being able to filter reads with low MAPQ score or specific sam flags. It would allow to make accurate comparisons between a bam and a VCF, as most variant callers will ignore duplicate reads, discordant reads, low MAPQ, etc. See following section.
+
+### `samtools depth`
+Allows to compute genome coverage at each positions and filtering for MAPQ and sam flags:
+- `samtools depth -f file.bam -Q 5`
+  - `Q`: Only count reads with mapping quality greater than or equal to INT 
+  - By default, reads that have any of the flags UNMAP, SECONDARY, QCFAIL, or DUP set are skipped
+  
+`samtools depth` will output a 3 columns 1 based coordinate file with `chrom`, `pos`, `depth`. 
+- To convert to a `bed` file, i.e a file with 0 based start and 1 based coordinate, do : `awk '{print $1,$2-1,$2,$3}' file.txt > file.bed`
+- To filter only regions with X>30 AND merge positions to regions, do `awk '$3>30' depth.txt | awk 'BEGIN{OFS="\t"}{print $1,$2-1,$2,$3}' > depth.bed
+sort -k1,1 -k2,2n depth.bed | bedtools merge -i stdin > depth_merged.bed`
+
+
+
+
 
 
 ## Computing issue

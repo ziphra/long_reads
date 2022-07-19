@@ -66,24 +66,21 @@ Report to [AnnotSV documentation](https://github.com/mobidic/knotAnnotSV#output)
 
 
 ## Benchmarking
-The output of PromethionGenDev_Test4 was benchmarked against the HyperExome run from the same patient. 
+The output of PromethionGenDev_Test4 was benchmarked against the HyperExome result from the same patient. 
 
 HyperExome sequenced regions having a depth coverage > 30X are considered *high confidence regions*, *i.e.*, variants in exonic regions with depth coverage > 30X represent a *truth set* for these regions against which variant calling results can be compared.
 
 ### SNP and small variants calling benchmarking 
 The small variants VCF from this run was compared against its HyperExome truth set.
-Before benchmarking, the VCF was filtered for the regions covered by the *truth set*.
+Before benchmarking, the VCF was filtered for the regions covered in the *truth set*.
 
 Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description. Slide to the right to see the rest of the table.
 
+
 | Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | ALL    | 4270        | 1124     | 3146     | 3365        | 2265     | 102   | 124   | 0.263232      | 0.326895         | 0.291629        |                        |                        | 4.03851091142             | 1.12588766946             |
-| INDEL | PASS   | 4270        | 1124     | 3146     | 3365        | 2265     | 102   | 124   | 0.263232      | 0.326895         | 0.291629        |                        |                        | 4.03851091142             | 1.12588766946             |
-| SNP   | ALL    | 37399       | 31399    | 6000     | 59234       | 27830    | 314   | 616   | 0.839568      | 0.530168         | 0.649924        | 2.52720928039          | 2.48011513834          | 2.18947098539             | 1.75254473623             |
-| SNP   | PASS   | 37399       | 31399    | 6000     | 59234       | 27830    | 314   | 616   | 0.839568      | 0.530168         | 0.649924        | 2.52720928039          | 2.48011513834          | 2.18947098539             | 1.75254473623             |
-
-
+| INDEL | PASS   | 3121        | 966      | 2155     | 3154        | 2198     | 49    | 114   | 0.309516      | 0.303107         | 0.306278        |                        |                        | 3.5231884058              | 1.17361111111             |
+| SNP   | PASS   | 35930       | 30505    | 5425     | 55185       | 24667    | 242   | 586   | 0.849012      | 0.553013         | 0.669766        | 2.57904173722          | 2.52236900887          | 2.18133522224             | 1.74976326937             |
 
 - **true-positives (TP)** : variants/genotypes that match in truth and query.
 - **false-positives (FP)** : variants that have mismatching genotypes or alt alleles, as well as query variant calls in regions a truth set would call confident hom-ref regions.
