@@ -1106,7 +1106,7 @@ echo -e '##FORMAT=<ID=AD,Number=A,Type=Integer,Description="Allele depth">"' >> 
 bcftools annotate -a noRefDP_2_AD.txt.gz -h hdr.txt 2_noINFO_noAD.vcf.gz -o 2_noINFO_AD.vcf.gz -Oz -s 6620CY000167 -c CHROM,POS,FORMAT/AD
 
 # Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged
-bcftools merge 1_noINFO.vcf.gz 2_noRefDP_AD.txt.gz
+bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 
 ```
 

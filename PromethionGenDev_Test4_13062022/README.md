@@ -12,7 +12,8 @@
     - [Small variants](#small-variants)
     - [Structural variants with AnnotSV](#structural-variants-with-annotsv)
   - [Benchmarking](#benchmarking)
-    - [SNP and small variants calling benchmarking](#snp-and-small-variants-calling-benchmarking)
+    - [Truth set](#truth-set)
+    - [SNP and small variants call benchmarking](#snp-and-small-variants-call-benchmarking)
 
 
 See [pipeline0617.sh](./scripts/pipeline_0617.sh) for code. 
@@ -66,21 +67,20 @@ Report to [AnnotSV documentation](https://github.com/mobidic/knotAnnotSV#output)
 
 
 ## Benchmarking
-The output of PromethionGenDev_Test4 was benchmarked against the HyperExome result from the same patient. 
+### Truth set
+HyperExome sequenced regions having a depth coverage > 30X are considered *high confidence regions*, *i.e.*, variants identified in these regions are supposed to be true positives only, and they provide a *truth set* against which variants from the PromethionGenDev_Test4 run will be compared.
 
-HyperExome sequenced regions having a depth coverage > 30X are considered *high confidence regions*, *i.e.*, variants in exonic regions with depth coverage > 30X represent a *truth set* for these regions against which variant calling results can be compared.
-
-### SNP and small variants calling benchmarking 
+### SNP and small variants call benchmarking 
 The small variants VCF from this run was compared against its HyperExome truth set.
-Before benchmarking, the VCF was filtered for the regions covered in the *truth set*.
+Before benchmarking, the PromethionGenDev_Test4 VCF was filtered for regions covered in the *truth set* and the target calling regions.
 
 Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description. Slide to the right to see the rest of the table.
 
 
-| Type  | Filter | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
-|-------|--------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
-| INDEL | PASS   | 3121        | 966      | 2155     | 3154        | 2198     | 49    | 114   | 0.309516      | 0.303107         | 0.306278        |                        |                        | 3.5231884058              | 1.17361111111             |
-| SNP   | PASS   | 35930       | 30505    | 5425     | 55185       | 24667    | 242   | 586   | 0.849012      | 0.553013         | 0.669766        | 2.57904173722          | 2.52236900887          | 2.18133522224             | 1.74976326937             |
+| Type  | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | 1716        | 766      | 950      | 1419        | 655      | 28    | 86    | 0.446387      | 0.538407         | 0.488098        |                        |                        | 2.28735632184             | 1.13657056146             |
+| SNP   | 31733       | 29221    | 2512     | 32600       | 3378     | 179   | 337   | 0.92084       | 0.89638          | 0.908445        | 2.77638938474          | 2.79513444302          | 1.91048335321             | 1.71645274212             |
 
 - **true-positives (TP)** : variants/genotypes that match in truth and query.
 - **false-positives (FP)** : variants that have mismatching genotypes or alt alleles, as well as query variant calls in regions a truth set would call confident hom-ref regions.
