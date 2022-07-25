@@ -88,6 +88,8 @@
 		- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
 			- [Small variants truth set](#small-variants-truth-set)
 			- [SV truth set](#sv-truth-set)
+				- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
+				- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 		- [truvari](#truvari)
 			- [Install](#install-17)
 			- [Run truvari](#run-truvari)
@@ -811,10 +813,13 @@ The ftp sites contains:
 By their nature, high confidence variant calls and regions tend to be easier to detect and therefore they are over represented. Thus, benchmarcking againts high confidence calls overestimates accuracy for all variants.
 
 #### SV truth set 
+##### NIST SVs Integration_v0.6
+Hg19 only.
 
-see <https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/>
+see <https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/>  
 
-The calls are separated into 2 tiers: (1) isolated, sequence-resolved SVs and (2) regions with at least one likely SV but it is complex or we were unable to determine a consensus sequence change
+
+The calls are separated into 2 tiers: (1) isolated, sequence-resolved SVs and (2) regions with at least one likely SV but it is complex or consensus sequence change could not be determined.
 
 High-confidence SV bed file, defines regions in which Tier 1 callset should be comprehensive, so that any extra variants detected by a method should be false positives.
 
@@ -823,6 +828,22 @@ High-confidence SV bed file, defines regions in which Tier 1 callset should be c
 2. The predicted sequence change is not always accurate.  If multiple methods predicted the same sequence change, we select it, but this is not the case for all sites, and biases can cause the same incorrect sequence change to be predicted.
 3. The consensus genotype may be inaccurate in some cases, particularly if the predicted sequence change is inaccurate.  The fraction of Mendelian errors for sites genotyped in all 3 members of the trio was ~2%, and more sites were heterozygous in all individuals than expected.
 
+##### GIAB Challenging Medically Relevant Gene Benchmark
+Hg19 and hg38.
+
+It reports over 17,000 SNVs, 3,600 INDELs, and 200 SVs each for GRCh37 and GRCh38 across HG002.
+
+The SV benchmark dataset is focused on 273 challenging medically relevant genes for the GIAB sample HG002 (aka Ashkenazi son).
+
+
+For the reasons below, it is not a random subset of the genome, so performance measured against this benchmark will not be the same as the performance for all genomic regions  
+  - It only includes autosomes  
+  - It excludes homopolymers >20bp and some indels in highly homozygous regions that are incorrectly resolved by hifiasm v0.11  
+  - It only includes medically relevant genes covered <90% by v4.2.1 in HG002 on GRCh37 or GRCh38  
+  - It uses gene coordinates as downloaded from ENSEMBL  
+  - It excludes genes that were not fully and accurately resolved by the hifiasm v0.11 assembly (e.g., SMN2)  
+  - It excludes genes with very large structural or copy number variation, which cause breaks in the assembly-assembly alignment or multiple contigs to align (e.g., LPA, CR1, and KIR genes)  
+  - The benchmark bed excludes complex SVs, because no current tools exist to compare these.  
 
 ### truvari 
 #### Install 
@@ -833,6 +854,8 @@ python3.8 -m venv truvari
 . truvari bin activate
 pip install truvari
 ```
+
+Updated to version `3.4`
 
 #### Run truvari
 ```
@@ -883,7 +906,7 @@ ${OUTPUT_DIR}/${OUTPUT_VCF} \
 ```
 When the reference is hg19, the chromosomes names in the query `vcf` have chr-prefixed name which is not consistent with GiaB numerical names, producing empty results for truth reference and metrics calculation. 
 
-To fix this, chr names should be stripped from their prefixed in the query so they can match with the benchmarking dataset: 
+To fix this, chr names should be stripped from their prefixed in the query so they can match with the benchmarking dataset, or the chr prefixe should be added before chromosomes number. The last alternative is preferred: 
 
 ```
 bcftools annotate --rename-chr renamechr.txt HG002_PAG07506_37_mmi.vcf.gz | bgzip > RN_CHR_HG002_PAG07506_37_mmi.vcf.gz

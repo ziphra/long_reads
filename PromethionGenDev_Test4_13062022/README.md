@@ -26,7 +26,7 @@ See [HTML sequencing run report](https://raw.githack.com/ziphra/long_reads/main/
 - **Kit:** SQK-LSK110
 
 ## Basecalling 
-`guppy 6.1.2`
+`guppy 6.1.2`, super accurate (SUP) model `dna_r9.4.1_450bps_sup_prom.cfg`
 
 ~44 hours on a busy computer
 
