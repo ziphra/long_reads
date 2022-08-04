@@ -14,6 +14,8 @@
   - [Benchmarking](#benchmarking)
     - [Truth set](#truth-set)
     - [SNP and small variants call benchmarking](#snp-and-small-variants-call-benchmarking)
+      - [PMDV calls benchmark](#pmdv-calls-benchmark)
+      - [clair3 calls benchmark](#clair3-calls-benchmark)
 
 
 See [pipeline0617.sh](./scripts/pipeline_0617.sh) for code. 
@@ -37,9 +39,15 @@ Reads were aligned back to `GRCh38.primary_assembly.genome.fa` and `chm13v2.0.fa
 
 ## QC 
 
+| Alignment summary | Reads    | Mean coverage | N50   | Median read length | Median identity freq |
+|-------------------|----------|---------------|-------|--------------------|----------------------|
+| Hg38              | 1.06E+07 | 11.9          | 13600 | 1100               | 0.974                |
+| t2t               | 1.05E+07 | 11.9          | 13700 | 1100               | 0.974                |
+
 - See [QC - hg38 alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_QC.html)
 - See [QC - t2t alignment](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/PromethionGenDev_Test4_13062022_t2t_mmi_QC.html)
 - [QC](https://raw.githack.com/ziphra/long_reads/main/PromethionGenDev_Test4_13062022/files/H_MAPQ0_PromethionGenDev_Test4_13062022_mmi_QC2.html) with `MAPQ==0` reads from hg38 alignment 
+
 
 
 ## Variant calling 
@@ -76,11 +84,17 @@ Before benchmarking, the PromethionGenDev_Test4 VCF was filtered for regions cov
 
 Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/master/doc/happy.md#full-list-of-output-columns) for columns description. Slide to the right to see the rest of the table.
 
-
+#### PMDV calls benchmark 
 | Type  | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
 |-------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
 | INDEL | 1716        | 766      | 950      | 1419        | 655      | 28    | 86    | 0.446387      | 0.538407         | 0.488098        |                        |                        | 2.28735632184             | 1.13657056146             |
 | SNP   | 31733       | 29221    | 2512     | 32600       | 3378     | 179   | 337   | 0.92084       | 0.89638          | 0.908445        | 2.77638938474          | 2.79513444302          | 1.91048335321             | 1.71645274212             |
+
+#### clair3 calls benchmark 
+| Type  | TRUTH.TOTAL | TRUTH.TP | TRUTH.FN | QUERY.TOTAL | QUERY.FP | FP.gt | FP.al | METRIC.Recall | METRIC.Precision | METRIC.F1_Score | TRUTH.TOTAL.TiTv_ratio | QUERY.TOTAL.TiTv_ratio | TRUTH.TOTAL.het_hom_ratio | QUERY.TOTAL.het_hom_ratio |
+|-------|-------------|----------|----------|-------------|----------|-------|-------|---------------|------------------|-----------------|------------------------|------------------------|---------------------------|---------------------------|
+| INDEL | 1716        | 808      | 908      | 1591        | 784      | 29    | 119   | 0.470862      | 0.507228         | 0.488369        |                        |                        | 2.287356322               | 1.234132581               |
+| SNP   | 31733       | 29633    | 2100     | 34541       | 4907     | 234   | 570   | 0.933823      | 0.857937         | 0.894273        | 2.776389385            | 2.720331682            | 1.910483353               | 1.855288183               |
 
 - **true-positives (TP)** : variants/genotypes that match in truth and query.
 - **false-positives (FP)** : variants that have mismatching genotypes or alt alleles, as well as query variant calls in regions a truth set would call confident hom-ref regions.

@@ -75,9 +75,13 @@
 		- [Install](#install-15)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
 			- [Output](#output-8)
+		- [clair3](#clair3)
+			- [Install](#install-16)
+			- [Run clair3](#run-clair3)
+		- [Output](#output-9)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-16)
+			- [Install](#install-17)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -91,35 +95,35 @@
 				- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
 				- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 		- [truvari](#truvari)
-			- [Install](#install-17)
+			- [Install](#install-18)
 			- [Run truvari](#run-truvari)
 		- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
-			- [Output](#output-9)
+			- [Output](#output-10)
 	- [Variants annotation](#variants-annotation)
 		- [vt](#vt)
-			- [install](#install-18)
-		- [VEP](#vep)
 			- [install](#install-19)
-		- [ANNOTSV](#annotsv)
+		- [VEP](#vep)
 			- [install](#install-20)
+		- [ANNOTSV](#annotsv)
+			- [install](#install-21)
 			- [Run ANNOTSV](#run-annotsv)
-			- [Output](#output-10)
+			- [Output](#output-11)
 		- [KnotAnnotSV](#knotannotsv)
-			- [Install](#install-21)
+			- [Install](#install-22)
 	- [Handling VCF](#handling-vcf)
 		- [GATK](#gatk)
-			- [Install](#install-22)
+			- [Install](#install-23)
 			- [liftoverVCF](#liftovervcf)
 		- [vcflib - subset VCF](#vcflib---subset-vcf)
-			- [install](#install-23)
+			- [install](#install-24)
 			- [Run vcflib](#run-vcflib)
 			- [randomly subset a vcf](#randomly-subset-a-vcf)
 		- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
 		- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
 	- [Miscellaneous](#miscellaneous)
 		- [liftOver UCSC](#liftover-ucsc)
-			- [install](#install-24)
+			- [install](#install-25)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -736,6 +740,35 @@ Make sure the `.fa` `.bam` as well as the `.fa` `.fai` are in the `input/data` f
 - `report.html`
 - `log` folder
 
+### [clair3](https://github.com/HKU-BAL/Clair3)
+Germline small variant caller for long-reads.
+
+Clair3 integrates both pileup (summarized alignment statistics) model and full-alignment model for variant calling. While a pileup model determines the result of a majority of variant candidates, candidates with uncertain results are further processed with a more computational-intensive haplotype-resolved full-alignment model. [PMDV]() only uses a full-alignment model. The pileup-based algorithms are usually superior in terms of time efficiency and the full-alignment algorithms provide the best precision and recall. 
+
+
+#### Install 
+`conda create -n clair3 -c bioconda clair3 python=3.6.10 -y`
+
+#### Run clair3
+```
+MODEL_NAME="[YOUR_MODEL_NAME]"         # e.g. r941_prom_hac_g360+g422
+
+run_clair3.sh \
+  --bam_fn=input.bam \
+  --ref_fn=ref.fa \
+  --threads=${THREADS} \
+  --platform="ont" \
+  --model_path="${CONDA_PREFIX}/bin/models/${MODEL_NAME}" \ 
+  --output=${OUTPUT_DIR} 
+ ```
+See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
+
+### Output
+
+- `full_alignment.vcf`
+- `pileup.vcf`
+- `merge_output.vcf`: final output file
+
 ## Structural variants calling 
 ### Sniffles
 #### Install 
@@ -747,7 +780,6 @@ Make sure the `.fa` `.bam` as well as the `.fa` `.fai` are in the `input/data` f
   conda activate sniffles
   conda install -c bioconda sniffles=2.0
   ```
-
 
 #### Run Sniffles
 ```
@@ -778,7 +810,7 @@ sniffles -i ../minimap2MD/minimap2MD.bam \
 #### Ouput 
 A VCF file. Runs too fast? Difference without MD alignment?
 
-### CuteSV
+### [CuteSV](https://github.com/tjiangHIT/cuteSV)
 #### installation 
 
 ```
@@ -855,7 +887,7 @@ python3.8 -m venv truvari
 pip install truvari
 ```
 
-Updated to version `3.4`
+Installed version `3.4` with pip, outside venv.
 
 #### Run truvari
 ```
