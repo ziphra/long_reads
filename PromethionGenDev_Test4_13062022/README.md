@@ -96,6 +96,9 @@ Report to `hap.py` [documentation](https://github.com/Illumina/hap.py/blob/maste
 | INDEL | 1716        | 808      | 908      | 1591        | 784      | 29    | 119   | 0.470862      | 0.507228         | 0.488369        |                        |                        | 2.287356322               | 1.234132581               |
 | SNP   | 31733       | 29633    | 2100     | 34541       | 4907     | 234   | 570   | 0.933823      | 0.857937         | 0.894273        | 2.776389385            | 2.720331682            | 1.910483353               | 1.855288183               |
 
+
+![](./files/pmdvVSclair_Prom4.png)
+
 - **true-positives (TP)** : variants/genotypes that match in truth and query.
 - **false-positives (FP)** : variants that have mismatching genotypes or alt alleles, as well as query variant calls in regions a truth set would call confident hom-ref regions.
 - **false-negatives (FN)** : variants present in the truth set, but missed in the query.
