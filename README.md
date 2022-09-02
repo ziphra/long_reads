@@ -16,7 +16,7 @@ While NGS' read length usually span between 75 up to 600bp, long reads technolog
     - [*De novo* assembly](#de-novo-assembly)
     - [Alignment to a reference genome](#alignment-to-a-reference-genome)
       - [hg38 and hg19](#hg38-and-hg19)
-      - [T2T chm13](#t2t-chm13)
+      - [T2T CHM13](#t2t-chm13)
     - [Splice aware alignment](#splice-aware-alignment)
     - [Phased assembly](#phased-assembly)
     - [Polishing](#polishing)
@@ -24,8 +24,12 @@ While NGS' read length usually span between 75 up to 600bp, long reads technolog
       - [Structural Variants](#structural-variants)
       - [Single Nucleotide Variants](#single-nucleotide-variants)
       - [Copy Number Variation (CNV)](#copy-number-variation-cnv)
+    - [Trio callers](#trio-callers)
     - [Phasing](#phasing)
     - [Quality metrics](#quality-metrics)
+      - [Basecalling](#basecalling-1)
+      - [Alignment](#alignment)
+      - [Variant calling](#variant-calling-1)
   - [Cas 9](#cas-9)
 
 ## Long reads technologies 
@@ -152,7 +156,16 @@ Minimap2 seems to be the most recommended long-reads aligner. It is fastest, and
 
 #### hg38 and hg19 
 
-#### T2T chm13
+#### T2T CHM13
+The T2T assembly is the most recent and the most complete version of the human genome.
+It adds nearly 200 million base pairs of sequence, and correct structural errors.
+
+Imbalence in insertions and deletions have been attributed to missing or incomplete sequences in HG38 as it biases variant calling for insertions.
+
+HG38 has been reconstituted from many genomes and has a mosaic of ancestries, which can lead to an excess of artificial haplotype structure that could bias analysis, as some allelic combination are rare or inexistant.
+T2T is mainly from european descent. 
+
+Many of haplotype transitions encountered in 38 are absent from KGP - which seems normal to me as 1KGP is mainly from "non african ancestry", and 38 mainly African.
 
 ### Splice aware alignment
 As mature RNA misses sequences introns, the alignment to a reference genomes containing introns in between exons becomes challenging. For that matter, "splice-aware" alignment can align RNA seq sequences to a reference genome while being aware to jump out introns regions.  
@@ -241,9 +254,18 @@ Identifying SNVs is a challenging task, especially with error prone long reads, 
 
 #### Copy Number Variation (CNV)
 
+### Trio callers
+Treating genetic trio analysis as 3 independant tasks limits accurate variant calling.
+Few callers can take the familly pedigree in trio or duo analysis to perform more acuurate calling. 
+Only Clair3 can do such with ONT data.
+
 ### Phasing 
 
 ### Quality metrics
+#### Basecalling
+#### Alignment
+#### Variant calling 
+- mendelian error rate 
 
 
 
