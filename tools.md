@@ -131,6 +131,8 @@
 		- [reads with `MAPQ==0`](#reads-with-mapq0)
 		- [HyperExome regions > 30X](#hyperexome-regions--30x)
 		- [`samtools depth`](#samtools-depth)
+		- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
+			- [install](#install-26)
 	- [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
 # Basecalling
@@ -1246,6 +1248,21 @@ Allows to compute genome coverage at each positions and filtering for MAPQ and s
 - To convert to a `bed` file, i.e a file with 0 based start and 1 based coordinate, do : `awk '{print $1,$2-1,$2,$3}' file.txt > file.bed`
 - To filter only regions with X>30 AND merge positions to regions, do `awk '$3>30' depth.txt | awk 'BEGIN{OFS="\t"}{print $1,$2-1,$2,$3}' > depth.bed
 sort -k1,1 -k2,2n depth.bed | bedtools merge -i stdin > depth_merged.bed`
+
+### akt - ancestry and kinship toolkit
+#### install
+
+Among else, this tool allows to check the relatedness between several individuals from their vcfs. 
+It calculates the IBD (Identical By Descent).
+
+It can assessed grand-parents grand-child relationship and siblings
+
+
+```
+git clone https://github.com/Illumina/akt.git
+cd akt/
+make
+```
 
 
 
