@@ -111,30 +111,20 @@
 			- [Output](#output-11)
 		- [KnotAnnotSV](#knotannotsv)
 			- [Install](#install-22)
-	- [Handling VCF](#handling-vcf)
-		- [GATK](#gatk)
+		- [Snpeff & SnpSift](#snpeff--snpsift)
 			- [Install](#install-23)
-			- [liftoverVCF](#liftovervcf)
-		- [vcflib - subset VCF](#vcflib---subset-vcf)
-			- [install](#install-24)
-			- [Run vcflib](#run-vcflib)
-			- [randomly subset a vcf](#randomly-subset-a-vcf)
-		- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
-		- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
-	- [Miscellaneous](#miscellaneous)
-		- [liftOver UCSC](#liftover-ucsc)
-			- [install](#install-25)
-		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
-		- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
-		- [Add MD tags to .`bam`](#add-md-tags-to-bam)
-		- [sam flags](#sam-flags)
-		- [reads with `MAPQ==0`](#reads-with-mapq0)
-		- [HyperExome regions > 30X](#hyperexome-regions--30x)
-		- [`samtools depth`](#samtools-depth)
-		- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-			- [install](#install-26)
-	- [Computing issue](#computing-issue)
-		- [convert file encoding](#convert-file-encoding)
+			- [Run Snpeff](#run-snpeff)
+		- [ANNOVAR](#annovar)
+			- [Install ANNOVAR](#install-annovar)
+		- [Run Annovar](#run-annovar)
+- [delete INFO field with bcftools annotate, as it is useless for the following use of these files.](#delete-info-field-with-bcftools-annotate-as-it-is-useless-for-the-following-use-of-these-files)
+- [extract vcf2 FORMAT/AD into a tab-delimited annotation file.](#extract-vcf2-formatad-into-a-tab-delimited-annotation-file)
+- [remove FORMAT/AD tag](#remove-formatad-tag)
+- [now, the 2_AD.txt file can be modified to remove the part of the TAG containing depths for the ref allele:](#now-the-2_adtxt-file-can-be-modified-to-remove-the-part-of-the-tag-containing-depths-for-the-ref-allele)
+- [index the file with tabix](#index-the-file-with-tabix)
+- [store new `FORMAT/AD` tag definition to add in the vcf2 header](#store-new-formatad-tag-definition-to-add-in-the-vcf2-header)
+- [Transfer the annotation](#transfer-the-annotation)
+- [Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged](#eventually-the-2-vcfs-with-matching-formatad-tag-definition-can-be-merged)
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -977,10 +967,13 @@ F1_Score = 2 * Precision * Recall / (Precision + Recall)
 
 
 ## Variants annotation 
+Data fields are encoded separated by "|";
 
 ### [vt](https://genome.sph.umich.edu/wiki/Vt)
 
-Allows to split one position in the VCF for all alternatives alleles, so all possible different variants can be represented by one line each.
+Pre-process the vcf file for multi-allelic variants before annotating facilitates variants annotations and downstream analysis.
+
+The `vt` toolset allows to split one position in the VCF for all alternatives alleles, so all possible different variants can be represented by one line each. See <https://research-help.genomicsengland.co.uk/display/GERE/Variant+Normalisation>
 
 #### install
 
@@ -1001,6 +994,10 @@ Allows to split one position in the VCF for all alternatives alleles, so all pos
  5. make test
 ```
 
+- `vt decompose blocksub`: decomposes bi-allelic block substitutions (MNPs - Multi-Nucleotide Polymorphisms) into its constituent SNPs
+- `vt decompose -s`: decompose all multi-allelic variants, so that each variant is represented in its bi-allelic format. 
+- `vt normalize`: parsimony and left alignment of variants 
+
 ### [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html)
 
 #### install 
@@ -1018,11 +1015,25 @@ git clone https://github.com/ImperialCardioGenetics/UTRannotator.git
 # having 2 copies might change something or not
 cp ~/.vep/Plugins/UTRannotator/* ~/.vep/Plugins/
 ```
+VEP can annotate SV if the `SVTYPE` INFO field in the VCF is set to one of the currently recognised values: `INS, DEL, DUP, TDUP`
+
+
+see [this page](https://research-help.genomicsengland.co.uk/pages/viewpage.action?pageId=38046629) for a quick tutorial.
+
+
+
+
+
+
+
+
 
 ### [ANNOTSV](https://lbgi.fr/AnnotSV/)
 Designed for annotating and ranking SV. 
 AnnotSV compiles functionally, regulatory and clinically relevant information and aims at providing annotations useful to i) interpret SV potential pathogenicity and ii) filter out SV potential false positives.
 See [ANNOTSV Readme](https://lbgi.fr/AnnotSV/Documentation/README.AnnotSV_latest.pdf)
+
+Bad for translocations annotations according to jmsa.
 
 #### install 
 ```
@@ -1057,6 +1068,160 @@ o conf commit
 install YAML::XS
 install Sort::Key::Natural
 ```
+
+### [Snpeff & SnpSift](https://pcingola.github.io/SnpEff/se_commandline/) 
+
+SnpEff is a variant annotation and effect prediction tool. User can use its own bed and vcf files for custom annotations. 
+#### Install 
+- `wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
+unzip snpEff_latest_core.zip`
+- load reference database: `java -jar snpEff.jar download -v GRCh38`
+
+#### Run Snpeff
+- annotation and prediction: 
+```
+java -jar -Xmx8g snpEff.jar ann hg38 \
+    -noStats \
+    -interval omim_inheritence.bed sniffles.vcf.gz \
+    -interval DGV.GS.hg38.gff \
+    sniffles.vcf \
+    > preannotated.vcf
+
+```
+
+or `snpeff -Xmx8g ann  hg38` 
+
+it is possible to give a custom bed file for annotation, or a vcf or a gff. However, it seems like there is no possible ways to filter the desired field or columns of a vcf or a gff. For that matter, it is best to use `SnpSift`    
+`Xmx8G` is a Java parameter to define available memory. Replace 8 with available memory in Gb.
+
+- custom annotations
+```
+java -jar SnpSift.jar annotate preannotated.vcf'\
+    -info "CLNSIG,CLNDN" clinvar.vcf.gz' | java -jar SnpSift.jar
+-info "PHEN" hgmd.vcf.gz  > annotated.vcf
+```
+
+- from a gene list to a `.bed` file:   
+  `java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P `
+  
+### [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/user-guide/startup/)
+ANNOVAR seems to be the most used annotator.
+
+#### Install ANNOVAR 
+```
+wget http://www.openbioinformatics.org/annovar/download/0wgxR2rIVP/annovar.latest.tar.gz
+tar xvfz annovar.latest.tar.gz
+```
+
+### Run Annovar 
+- list available databases:    
+  `perl annotate_variation.pl -webfrom annovar -downdb avdblist -buildver hg38 humandb/`
+
+- `table_annovar`     
+  ``` 
+	perl table_annovar.pl example/ex1.avinput \
+	humandb/ \
+	-buildver hg19 \
+	-out myanno \
+	-remove \
+	-protocol refGene,cytoBand,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp138,ljb23_all \
+	-operation g,r,r,f,f,f,f \
+	-nastring . \
+	-csvout \
+	-polish \
+	-xref example/gene_xref.txt
+	```   
+  This generates a tab-delimited annotation file. 
+	- one column correspond to one `protocol`.
+	- `xref` allow to cross-reference data for genes. It provides annotation to genes. It is a tab delimited file with genes identifiers in the first column, and annotations in the followings.
+	- The `-operation` argument tells ANNOVAR which operations to use for each of the protocols: `g` means gene-based, `gx` means gene-based with cross-reference annotation (from `-xref` argument), `r` means region-based and `f` means filter-based.
+	- `remove` all temporary files
+
+
+- `annotate_variation.pl`     
+  ```
+	annotate_variation.pl -geneanno -dbtype refGene -buildver hg19 example/ex1.avinput humandb/
+
+	annotate_variation.pl -regionanno -dbtype cytoBand -buildver hg19 example/ex1.avinput humandb/ 
+
+	annotate_variation.pl -filter -dbtype exac03 -buildver hg19 example/ex1.avinput humandb/
+  ```
+  These three commands correspond to gene-based, region-based and filter-based annotations. These commands cannot be resumed in one single command. VCF have to be converted in a specific format. This sucks.
+
+`-filter` operation works on mutations (nucleotide changes), but `--regionanno` operation works on chromosome locations. For example, `--region` compare variants with things like chr1:1000-1000, but `--filter` compare variants with things like A->G change at the position chr1:1000-1000.
+
+- annotating with custom made database through `-regionanno`:
+
+- Make an annovar database:
+	```
+	vt decompose clinvar_20180603.vcf.gz -o temp.split.vcf
+    prepare_annovar_user.pl   -dbtype clinvar_preprocess2 temp.split.vcf -out temp.split2.vcf
+	```
+	Chromosomes can be either refered with or without the `chr` prefixe. In the Clinvar version used, chromosomes are called without prefixe, and the mithocondrial chromosome is called `MT`, creating conflict with the reference genome during `vt` normalization: `[xxx is_not_ref_consistent] failure to extract base from fasta file:`.
+	To get rid of the error, one can add `chr` prefixe to Clinvar vcf:
+	```
+	zcat clinvar.vcf.gz | sed 's/^/chr/' | sed 's/^chr#/#/' | sed 's/chrMT/chrM/' | bgzip > clinvar_chr.vcf.gz
+	tabix clinvar_chr.vcf.gz
+	```
+
+	```
+	vt normalize temp.split2.vcf -r $REF -o temp.norm.vcf -w 2000000
+    prepare_annovar_user.pl -dbtype clinvar2 temp.norm.vcf -out hg38_clinvar_20180603_raw.txt
+    index_annovar.pl hg38_clinvar_20180603_raw.txt -out hg38_clinvar_20180603.txt -comment comment_20180708.txt
+  	```
+  - Make sure to add `perl` before any call to a annovar perl scripts in `prepare_annovar_user.pl`, if annovar not added to path.
+  - `index_annovar.pl` can be find [here](https://gist.github.com/suqingdong/447ee784582200309c17b3a844566bac).
+
+### [MAVIS](https://mavis.readthedocs.io/en/latest/)
+#### Install MAVIS
+```
+. ~/bioprog/mavis/bin/activate
+pip install mavis
+```
+
+#### Run MAVIS annotation only 
+```
+
+
+```
+
+
+## Annotations 
+### [OMIM](https://www.omim.org/) 
+OMIM is a comprehensive, authoritative compendium of human genes and genetic phenotypes that is freely available and updated daily. The full-text, referenced overviews in OMIM contain information on all known mendelian disorders and over 16,000 genes. OMIM focuses on the relationship between phenotype and genotype. It is updated daily, and the entries contain copious links to other genetics resources.
+
+- `genemap2.txt` is a tab-delimited file containing OMIM's Synopsis of the Human Gene Map including additional information such as genomic coordinates and inheritance. 
+
+We should implement the auto update of the OMIM database.
+
+### custom OMIM
+Transformed `genemap2.txt` to a `.bed` file with only the inheritence in the fourth column.
+
+### [DGV](http://dgv.tcag.ca/dgv/app/home) 
+The Database of Genomic Variants (DGV) (MacDonald et al., 2014) provides SV defined as DNA elements with a
+size >50 bp. The content of DGV is only representing SV identified in healthy control samples from large cohorts
+published and integrated by the DGV team. The annotations will give information about whether your SV is a
+rare or a benign common variant.   
+
+- `DGV.GS` is a curated dataset of variants. This was created by applying quality filters and merging overlapping variants to the existing DGV dataset in an effort to remove low-resolution data and reduce the number of polymorphic variants. Every year, more and more published structural variants are being reported and yet the DGV Gold Standard Dataset has not been updated since its original release in the summer of 2019.
+- `DGV_variants` has 7x times more variants than the Gold Standard dataset.
+
+#### custom DGV
+Transformed the `DGV.txt` file to a `.bed` file with 4 columns, with the different annotations being separated in the fourth column with a `|`.
+
+### [Clinvar](https://www.ncbi.nlm.nih.gov/clinvar/intro/) 
+ClinVar gives access to the relationships asserted between human variants and observed health status.
+- `clinvar.vcf`: a vcf file containing variants description and their clinical significance...
+
+We should implement the auto update of the clinvar database.
+
+### [HGMD](https://www.hgmd.cf.ac.uk/ac/index.php)
+The Human Gene Mutation Database (HGMD) represents an attempt to collate all known (published) gene lesions responsible for human inherited disease. Need a license (25k $).
+
+
+### [GnomaD](https://gnomad.broadinstitute.org/)
+
+
 
 
 ## Handling VCF 
