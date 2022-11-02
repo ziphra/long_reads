@@ -3,85 +3,95 @@
 		- [Install](#install)
 		- [Run Bonito](#run-bonito)
 		- [Output](#output)
-	- [Guppy `5.1.15`](#guppy-5115)
+	- [Guppy](#guppy)
 		- [Install](#install-1)
+			- [update (guppy 6)](#update-guppy-6)
 		- [Run Guppy](#run-guppy)
 		- [Setting custom GPU parameters in Guppy](#setting-custom-gpu-parameters-in-guppy)
 		- [Output](#output-1)
+	- [Dorado Alpha release v.0.0.1](#dorado-alpha-release-v001)
+		- [Install](#install-2)
+		- [Run Dorado](#run-dorado)
+		- [Output](#output-2)
+	- [pod5](#pod5)
+		- [Install](#install-3)
+		- [Run pod5](#run-pod5)
 - [Quality check](#quality-check)
 	- [FastQC `0.11.9`](#fastqc-0119)
-		- [Install](#install-2)
-		- [Run FastQC](#run-fastqc)
-		- [Output](#output-2)
-	- [PycoQC `2.5.2`](#pycoqc-252)
-		- [Install](#install-3)
-		- [Run PycoQC](#run-pycoqc)
-		- [Output](#output-3)
-	- [LongQC](#longqc)
 		- [Install](#install-4)
-		- [Run LongQC](#run-longqc)
-		- [Output](#output-4)
-	- [MinIONQC](#minionqc)
+		- [Run FastQC](#run-fastqc)
+		- [Output](#output-3)
+	- [PycoQC `2.5.2`](#pycoqc-252)
 		- [Install](#install-5)
+		- [Run PycoQC](#run-pycoqc)
+		- [Output](#output-4)
+	- [LongQC](#longqc)
+		- [Install](#install-6)
+		- [Run LongQC](#run-longqc)
+		- [Output](#output-5)
+	- [MinIONQC](#minionqc)
+		- [Install](#install-7)
 		- [Run MinIONQC](#run-minionqc)
 - [Alignment](#alignment)
 	- [minimap2 2.24-r1122](#minimap2-224-r1122)
-		- [Install](#install-6)
+		- [Install](#install-8)
 		- [Run minimap2](#run-minimap2)
+			- [Run minimap2 for dorado](#run-minimap2-for-dorado)
 	- [LRA 1.3.2](#lra-132)
-		- [install](#install-7)
+		- [install](#install-9)
 		- [run LRA](#run-lra)
 - [Assembly](#assembly)
 	- [Shasta](#shasta)
-		- [install](#install-8)
+		- [install](#install-10)
 		- [Run Shasta](#run-shasta)
-		- [Output](#output-5)
+		- [Output](#output-6)
 		- [Exploring assembly results](#exploring-assembly-results)
 		- [Run Shasta on low X mode](#run-shasta-on-low-x-mode)
 		- [Run Shasta with "short" long-reads](#run-shasta-with-short-long-reads)
 		- [God's MinION run (low X and short reads)](#gods-minion-run-low-x-and-short-reads)
 	- [Canu](#canu)
-		- [Install](#install-9)
+		- [Install](#install-11)
 		- [Run Canu](#run-canu)
-		- [output](#output-6)
+		- [output](#output-7)
 	- [Flye](#flye)
-		- [install](#install-10)
+		- [install](#install-12)
 		- [Run Flye](#run-flye)
 - [Polishing](#polishing)
 	- [Medaka](#medaka)
-		- [Install](#install-11)
+		- [Install](#install-13)
 		- [Run Medaka](#run-medaka)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
-		- [Install](#install-12)
+		- [Install](#install-14)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
-		- [Install](#install-13)
+		- [Install](#install-15)
 		- [Run QuastLG](#run-quastlg)
 	- [Inspector](#inspector)
-		- [Install](#install-14)
+		- [Install](#install-16)
 		- [Run Inspector](#run-inspector)
-		- [Output](#output-7)
+		- [Output](#output-8)
 	- [Assembly on a specific region](#assembly-on-a-specific-region)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file)
 		- [retrieve ref's specific regions in `.fasta`](#retrieve-refs-specific-regions-in-fasta)
 - [Variant calling](#variant-calling)
 	- [SNP calling](#snp-calling)
 		- [PEPPER-Margin-Deep Variant workflow](#pepper-margin-deep-variant-workflow)
-				- [PEPPER SNP](#pepper-snp)
-				- [Margin](#margin)
-				- [PEPPER HP](#pepper-hp)
-				- [DeepVariant](#deepvariant)
-		- [Install](#install-15)
+			- [PEPPER SNP](#pepper-snp)
+			- [Margin](#margin)
+			- [PEPPER HP](#pepper-hp)
+			- [DeepVariant](#deepvariant)
+		- [Install](#install-17)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
-			- [Output](#output-8)
+			- [Output](#output-9)
 		- [clair3](#clair3)
-			- [Install](#install-16)
+			- [Install](#install-18)
 			- [Run clair3](#run-clair3)
-		- [Output](#output-9)
+				- [SwitchZygosityBasedOnSVCalls module](#switchzygositybasedonsvcalls-module)
+		- [Output](#output-10)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-17)
+			- [Install](#install-19)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -95,24 +105,25 @@
 			- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
 			- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 	- [truvari](#truvari)
-		- [Install](#install-18)
+		- [Install](#install-20)
 		- [Run truvari](#run-truvari)
 	- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
-		- [Output](#output-10)
+		- [Output](#output-11)
 - [Variants annotation](#variants-annotation)
 	- [vt](#vt)
-		- [install](#install-19)
-	- [VEP](#vep)
-		- [install](#install-20)
-	- [ANNOTSV](#annotsv)
 		- [install](#install-21)
+	- [VEP](#vep)
+		- [install](#install-22)
+	- [ANNOTSV](#annotsv)
+		- [install](#install-23)
 		- [Run ANNOTSV](#run-annotsv)
-		- [Output](#output-11)
+			- [custom annotation with ANNOTSV](#custom-annotation-with-annotsv)
+		- [Output](#output-12)
 		- [KnotAnnotSV](#knotannotsv)
-			- [Install](#install-22)
+			- [Install](#install-24)
 	- [Snpeff & SnpSift](#snpeff--snpsift)
-		- [Install](#install-23)
+		- [Install](#install-25)
 		- [Run Snpeff](#run-snpeff)
 	- [ANNOVAR](#annovar)
 		- [Install ANNOVAR](#install-annovar)
@@ -132,17 +143,19 @@
 	- [gnomAD](#gnomad)
 - [Handling a VCF](#handling-a-vcf)
 	- [GATK](#gatk)
-		- [Install](#install-24)
+		- [Install](#install-26)
 		- [liftoverVCF](#liftovervcf)
 	- [vcflib - subset VCF](#vcflib---subset-vcf)
-		- [install](#install-25)
+		- [install](#install-27)
 		- [Run vcflib](#run-vcflib)
 		- [randomly subset a vcf](#randomly-subset-a-vcf)
 	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
 	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
+	- [Hail](#hail)
+		- [Variant dataset](#variant-dataset)
 - [Miscellaneous](#miscellaneous)
 	- [liftOver UCSC](#liftover-ucsc)
-		- [install](#install-26)
+		- [install](#install-28)
 	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -151,9 +164,10 @@
 	- [HyperExome regions > 30X](#hyperexome-regions--30x)
 	- [`samtools depth`](#samtools-depth)
 	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-		- [install](#install-27)
+		- [install](#install-29)
 - [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
+		- [install R](#install-r)
 
 
 
@@ -201,7 +215,7 @@ Use the training set `dna_rXX.X_e8.X_hc@vX.X` according to flowcells' nanopore (
 - basecalls_summary.tsv
 
 
-## [Guppy](https://community.nanoporetech.com/knowledge/bioinformatics/tools) `5.1.15`
+## [Guppy](https://community.nanoporetech.com/knowledge/bioinformatics/tools) 
 Guppy is the official ONT basecaller. As bonito, it can output `.bam` files. 
 
 ### Install 
@@ -209,6 +223,11 @@ See ONT [doc](https://community.nanoporetech.com/docs/prepare/library_prep_proto
 Guppy was already installed, but needed an update.      
 ```
 sudo apt install ont-guppy
+```
+#### update (guppy 6)
+```
+sudo apt update
+sudo apt upgrade ont-guppy 
 ```
 
 ### Run Guppy 
@@ -270,6 +289,58 @@ Which estimates `gpu_runners_per_device` at **4**.
 - sequencing_summary.txt
 - fastq or bam depending if there were an optional alignment step. Output might be separated into `pass`, `fail`, and `calibration_strands` folders depending on wether they pass or fail the filtering condition. For faster models, the filtering score is 7 (~85% accuracy) but is higher for more accurate models.
 - what is the `dump-dp` folder for?
+
+## Dorado Alpha release v.0.0.1
+
+### Install
+Simply download linux package. Link on the readme.
+
+### Run Dorado 
+- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/models.h).
+
+```
+
+```
+
+### Output
+Dorado doesn't output `fastq`, as we could expect, but unaligned `sam`.
+`sam` can store more information than `fastq`, that only store sequence ID, sequence itself, and quality scores for each nucleotides. 
+Originally, `sam` are used to store mapping information. A `bam` is smaller than a `fastq.gz` containing exactly the same information.
+Also, `sam` allows to store metadata. 
+
+**size (GB) according to file type:**       
+| fastq | fastq.gz | sam | bam |
+|-------|----------|-----|-----|
+| 80    | 39       | 63  | 28  |   
+
+Dorado took 19 hours to basecalled `PromethionGenDev_Test4_13062022_analysis` data .
+
+** basecalled `sam` metadata**
+
+
+## [pod5](https://github.com/nanoporetech/pod5-file-format)
+pod5 is ONT new format for its raw sequencing data. It replaces fast5 and has smaller size and improves read/write performance. ONT has developped a python library and a set of tools for pod5. Dorado, ONT' latest basecaller at the time writing, uses pod5 for best performances.
+
+### Install 
+To use ONT's [selection of tools](https://github.com/nanoporetech/pod5-file-format/blob/master/python/README.md) for pod5:
+
+```
+pip install pod5_format_tools
+```
+Reduces file size to 30%.
+
+**size (GB) according to file type:**       
+| pod5 | fast5 |
+|------|-------|
+| 344  |   422 |  
+
+### Run pod5
+From `fast5` to `pod5`
+```
+pod5-convert-from-fast5 fast5/* pod5/
+```
+
+
 
 
 # Quality check 
@@ -398,6 +469,12 @@ minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@
 
 minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows to convert to `bam` sorted files, its binary format. 
 	
+
+#### Run minimap2 for dorado 
+
+```
+bedtools bamtofastq -i  dorado.bam -fq dorado.fastq | minimap2 -t 10 -ax map-ont hg38.mmi - | samtools sort -@ 8 -o minimap2_alignment.bam
+```
 
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
 ### install 
@@ -610,7 +687,7 @@ conda install pomoxis
 
 
 ## QuastLG
-
+For evaluating large-scale genome assemblies 
 ### Install 
 ```
 wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
@@ -677,16 +754,16 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
 # Variant calling
 ## SNP calling 
 ### [PEPPER-Margin-Deep Variant workflow](https://github.com/kishwarshafin/pepper)
-##### PEPPER SNP
+#### PEPPER SNP
 This finds SNPs from a read-to-reference alignment file using a recurrent neural network. Reports potential SNP sites using the likelihood of observing alternative alleles
 
-##### Margin
+#### Margin
 Hidden Markov model-based, haplotyping module that produces a haplotag for each read using the SNPs reported by PEPPER SNP. Polishing step.
 
-##### PEPPER HP
+#### PEPPER HP
 Takes the haplotagged alignment file from Margin and produces a set of candidate variants.
 
-##### DeepVariant
+#### DeepVariant
 Produces the final genotype calls by using a convolutional neural network with the candidates from PEPPER HP
 
 ### Install 
@@ -786,6 +863,9 @@ run_clair3.sh \
   --output=${OUTPUT_DIR} 
  ```
 See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
+
+##### SwitchZygosityBasedOnSVCalls module
+
 
 ### Output
 
@@ -1050,6 +1130,17 @@ cp ~/.vep/Plugins/UTRannotator/* ~/.vep/Plugins/
 ```
 VEP can annotate SV if the `SVTYPE` INFO field in the VCF is set to one of the currently recognised values: `INS, DEL, DUP, TDUP`
 
+- **update to VEP 107**:
+  Some problems with `gnu-gcc` and perl `zlib` module:   
+  ```
+	conda update -c bioconda ensembl-vep
+	vep_install -a cf -s homo_sapiens -y GRCh38 -c ~/.vep/ --CONVERT
+	conda install x86_64-conda-linux-gnu-gcc
+	cpanm Compress::Raw::Zlib
+  ```
+  And then it works.
+
+
 
 see [this page](https://research-help.genomicsengland.co.uk/pages/viewpage.action?pageId=38046629) for a quick tutorial.
 
@@ -1087,11 +1178,34 @@ export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 $ANNOTSV/bin/AnnotSV -SvinputFile sniffles.vcf
 ```
+#### custom annotation with ANNOTSV
+- with a custom bed
+  - Each external BED annotation file should be copied or linked in the appropriate directory (`FtIncludedInSV`/`SVincludedInFt`/`AnyOverlap`)
+
+In the `FtIncludedInSV` directory, only the features overlapped at 100% with the SV
+will be reported.    
+In the `SVincludedInFt` directory, only the features overlapping 100% of the SV will be
+reported. In this case, a reciprocal overlap can be used.   
+In the `AnyOverlap` directory, any feature overlapped with the SV (even with 1bp
+overlap) will be reported. In this case, a reciprocal overlap can be used.
+
+- **external genes annotation file**
+  - should be located in the `$ANNOTSV/share/AnnotSV/Annotations_Human/Users/” directory`.
+  - change config file to define output columns to annotate with from the external genes annotation file. The config file should be in the `/AnnotSV/etc/AnnotSV/` folder. (Not working when the config file is in the input file folder).
+  - the first column should be "genes"
+
+- **filtered SNV/indel input files for compound heterozygosity analysis**
+  - to highlight compound heterozygotes, add `-candidateSnvIndelFiles vc/SNV_INDELS.vcf.gz` 
+
+- 
+
+
+
 ### Output
 A tab-delimited file.
 
 ### KnotAnnotSV
-C reate customizable html or xlsm files from an AnnotSV output.
+Create customizable html or xlsm files from an AnnotSV output.
 #### Install
 ```
 # install perl dependencies
@@ -1236,10 +1350,14 @@ We should implement the auto update of the OMIM database.
 - Transformed `genemap2.txt` to a `.bed` file with only the inheritence in the fourth column, so VCF could be annotated with inheritence through VEP `--custom`. See `omim_inheritence.sh` to grep inheritence from `genemap2.txt` into a VEP friendly `.bed`.
 - Same transformation for OMIM Phenotypes:
   ```
-	awk -v OFS='\t' -v FS='\t' '{print $1, $2, $3, $12";"$13}' genemap2.txt | sed 's/\t;/\t/g' | grep -v "#" > omim_phen.bed
+	awk -v OFS='\t' -v FS='\t' '{print $1, $2, $3, $12";"$13}' genemap2.txt | sed 's/\t;/\t/g' | grep -v "#" | awk  '$4!=""' > omim_phen.bed
 	sort -k1,1 -k2,2n -k3,3n -t$'\t' omim_phen.bed | bgzip -c >omim_phen.bed.bz
 	tabix -p bed omim_phen.bed.gz
   ```
+
+- OMIM parser 
+There is a sample code in python to parse this file [here](https://github.com/OMIM-org/genemap2-parser).    
+See genemap2-parser2bed.py (modified from genemap2-parser.py).
 
 ## [DGV](http://dgv.tcag.ca/dgv/app/home) 
 The Database of Genomic Variants (DGV) (MacDonald et al., 2014) provides SV defined as DNA elements with a
@@ -1291,7 +1409,7 @@ I keep the gene symbol in the 4th column, because we never know.
 ## [gnomAD](https://gnomad.broadinstitute.org/)
 The Genome Aggregation Database (gnomAD) is composed of exome and genome sequences from more than 75k genomes collected around the world.
 It is recommended using Hail and [Hail utilities for gnomAD](https://broadinstitute.github.io/gnomad_methods/api_reference/) to work with the data.
-
+The VEP plugin only allows to get population allele frequency.
 
 
 
@@ -1422,6 +1540,10 @@ bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 
 ```
 
+## Hail 
+### Variant dataset 
+
+
 
 # Miscellaneous 
 ## liftOver UCSC 
@@ -1495,7 +1617,7 @@ To compute genome coverage for all bases/regions, one could prefer being able to
 
 ## `samtools depth`
 Allows to compute genome coverage at each positions and filtering for MAPQ and sam flags:
-- `samtools depth -f file.bam -Q 5`
+- `samtools depth file.bam -Q 5`
   - `Q`: Only count reads with mapping quality greater than or equal to INT 
   - By default, reads that have any of the flags UNMAP, SECONDARY, QCFAIL, or DUP set are skipped
   
@@ -1503,6 +1625,8 @@ Allows to compute genome coverage at each positions and filtering for MAPQ and s
 - To convert to a `bed` file, i.e a file with 0 based start and 1 based coordinate, do : `awk '{print $1,$2-1,$2,$3}' file.txt > file.bed`
 - To filter only regions with X>30 AND merge positions to regions, do `awk '$3>30' depth.txt | awk 'BEGIN{OFS="\t"}{print $1,$2-1,$2,$3}' > depth.bed
 sort -k1,1 -k2,2n depth.bed | bedtools merge -i stdin > depth_merged.bed`
+
+One liner: `samtools depth $EXBAMPATH -Q 5 | awk -v OFS='\t' '$3>30 {print $1,$2-1,$2,$3}' | sort -k1,1 -k2,2n | bedtools merge -i stdin > filename_30X.bed`
 
 ## akt - ancestry and kinship toolkit
 Among else, this tool allows to check the relatedness between several individuals from their vcfs. 
@@ -1532,4 +1656,21 @@ See link to exome
   iconv -f ISO-8859-1 -t UTF-8//TRANSLIT /file.vcf -o utf8_file.vcf
   ```
 
+### install R 
 
+First: 
+
+```
+sudo apt remove r-base* --purge
+```
+Remove any existing entry for `R` in the `etc/apt/sources.list` to install an older R version (things that should look like `deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/`)
+
+
+see `https://cran.r-project.org/bin/linux/ubuntu/` and follow instructions.
+
+No https in .Renviron 
+
+
+
+
+https://uw-gac.github.io/SISG_2019/index.html
