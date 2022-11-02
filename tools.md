@@ -3,128 +3,174 @@
 		- [Install](#install)
 		- [Run Bonito](#run-bonito)
 		- [Output](#output)
-	- [Guppy `5.1.15`](#guppy-5115)
+	- [Guppy](#guppy)
 		- [Install](#install-1)
+			- [update (guppy 6)](#update-guppy-6)
 		- [Run Guppy](#run-guppy)
 		- [Setting custom GPU parameters in Guppy](#setting-custom-gpu-parameters-in-guppy)
 		- [Output](#output-1)
+	- [Dorado Alpha release v.0.0.1](#dorado-alpha-release-v001)
+		- [Install](#install-2)
+		- [Run Dorado](#run-dorado)
+		- [Output](#output-2)
+	- [pod5](#pod5)
+		- [Install](#install-3)
+		- [Run pod5](#run-pod5)
 - [Quality check](#quality-check)
 	- [FastQC `0.11.9`](#fastqc-0119)
-		- [Install](#install-2)
-		- [Run FastQC](#run-fastqc)
-		- [Output](#output-2)
-	- [PycoQC `2.5.2`](#pycoqc-252)
-		- [Install](#install-3)
-		- [Run PycoQC](#run-pycoqc)
-		- [Output](#output-3)
-	- [LongQC](#longqc)
 		- [Install](#install-4)
-		- [Run LongQC](#run-longqc)
-		- [Output](#output-4)
-	- [MinIONQC](#minionqc)
+		- [Run FastQC](#run-fastqc)
+		- [Output](#output-3)
+	- [PycoQC `2.5.2`](#pycoqc-252)
 		- [Install](#install-5)
+		- [Run PycoQC](#run-pycoqc)
+		- [Output](#output-4)
+	- [LongQC](#longqc)
+		- [Install](#install-6)
+		- [Run LongQC](#run-longqc)
+		- [Output](#output-5)
+	- [MinIONQC](#minionqc)
+		- [Install](#install-7)
 		- [Run MinIONQC](#run-minionqc)
 - [Alignment](#alignment)
 	- [minimap2 2.24-r1122](#minimap2-224-r1122)
-		- [Install](#install-6)
+		- [Install](#install-8)
 		- [Run minimap2](#run-minimap2)
+			- [Run minimap2 for dorado](#run-minimap2-for-dorado)
 	- [LRA 1.3.2](#lra-132)
-		- [install](#install-7)
+		- [install](#install-9)
 		- [run LRA](#run-lra)
 - [Assembly](#assembly)
 	- [Shasta](#shasta)
-		- [install](#install-8)
+		- [install](#install-10)
 		- [Run Shasta](#run-shasta)
-		- [Output](#output-5)
+		- [Output](#output-6)
 		- [Exploring assembly results](#exploring-assembly-results)
 		- [Run Shasta on low X mode](#run-shasta-on-low-x-mode)
 		- [Run Shasta with "short" long-reads](#run-shasta-with-short-long-reads)
 		- [God's MinION run (low X and short reads)](#gods-minion-run-low-x-and-short-reads)
 	- [Canu](#canu)
-		- [Install](#install-9)
+		- [Install](#install-11)
 		- [Run Canu](#run-canu)
-		- [output](#output-6)
+		- [output](#output-7)
 	- [Flye](#flye)
-		- [install](#install-10)
+		- [install](#install-12)
 		- [Run Flye](#run-flye)
 - [Polishing](#polishing)
 	- [Medaka](#medaka)
-		- [Install](#install-11)
+		- [Install](#install-13)
 		- [Run Medaka](#run-medaka)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
-		- [Install](#install-12)
+		- [Install](#install-14)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
-		- [Install](#install-13)
+		- [Install](#install-15)
 		- [Run QuastLG](#run-quastlg)
 	- [Inspector](#inspector)
-		- [Install](#install-14)
+		- [Install](#install-16)
 		- [Run Inspector](#run-inspector)
-		- [Output](#output-7)
+		- [Output](#output-8)
 	- [Assembly on a specific region](#assembly-on-a-specific-region)
 		- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file)
 		- [retrieve ref's specific regions in `.fasta`](#retrieve-refs-specific-regions-in-fasta)
 - [Variant calling](#variant-calling)
 	- [SNP calling](#snp-calling)
 		- [PEPPER-Margin-Deep Variant workflow](#pepper-margin-deep-variant-workflow)
-				- [PEPPER SNP](#pepper-snp)
-				- [Margin](#margin)
-				- [PEPPER HP](#pepper-hp)
-				- [DeepVariant](#deepvariant)
-		- [Install](#install-15)
+			- [PEPPER SNP](#pepper-snp)
+			- [Margin](#margin)
+			- [PEPPER HP](#pepper-hp)
+			- [DeepVariant](#deepvariant)
+		- [Install](#install-17)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
-			- [Output](#output-8)
+			- [Output](#output-9)
 		- [clair3](#clair3)
-			- [Install](#install-16)
+			- [Install](#install-18)
 			- [Run clair3](#run-clair3)
-		- [Output](#output-9)
+				- [SwitchZygosityBasedOnSVCalls module](#switchzygositybasedonsvcalls-module)
+		- [Output](#output-10)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-17)
+			- [Install](#install-19)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
 		- [CuteSV](#cutesv)
 			- [installation](#installation)
 			- [Run CuteSV](#run-cutesv)
-	- [Variants benchmarking](#variants-benchmarking)
-		- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
-			- [Small variants truth set](#small-variants-truth-set)
-			- [SV truth set](#sv-truth-set)
-				- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
-				- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
-		- [truvari](#truvari)
-			- [Install](#install-18)
-			- [Run truvari](#run-truvari)
-		- [hap.py](#happy)
+- [Variants benchmarking](#variants-benchmarking)
+	- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
+		- [Small variants truth set](#small-variants-truth-set)
+		- [SV truth set](#sv-truth-set)
+			- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
+			- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
+	- [truvari](#truvari)
+		- [Install](#install-20)
+		- [Run truvari](#run-truvari)
+	- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
-			- [Output](#output-10)
-	- [Variants annotation](#variants-annotation)
-		- [vt](#vt)
-			- [install](#install-19)
-		- [VEP](#vep)
-			- [install](#install-20)
-		- [ANNOTSV](#annotsv)
-			- [install](#install-21)
-			- [Run ANNOTSV](#run-annotsv)
-			- [Output](#output-11)
+		- [Output](#output-11)
+- [Variants annotation](#variants-annotation)
+	- [vt](#vt)
+		- [install](#install-21)
+	- [VEP](#vep)
+		- [install](#install-22)
+	- [ANNOTSV](#annotsv)
+		- [install](#install-23)
+		- [Run ANNOTSV](#run-annotsv)
+			- [custom annotation with ANNOTSV](#custom-annotation-with-annotsv)
+		- [Output](#output-12)
 		- [KnotAnnotSV](#knotannotsv)
-			- [Install](#install-22)
-		- [Snpeff & SnpSift](#snpeff--snpsift)
-			- [Install](#install-23)
-			- [Run Snpeff](#run-snpeff)
-		- [ANNOVAR](#annovar)
-			- [Install ANNOVAR](#install-annovar)
-		- [Run Annovar](#run-annovar)
-- [delete INFO field with bcftools annotate, as it is useless for the following use of these files.](#delete-info-field-with-bcftools-annotate-as-it-is-useless-for-the-following-use-of-these-files)
-- [extract vcf2 FORMAT/AD into a tab-delimited annotation file.](#extract-vcf2-formatad-into-a-tab-delimited-annotation-file)
-- [remove FORMAT/AD tag](#remove-formatad-tag)
-- [now, the 2_AD.txt file can be modified to remove the part of the TAG containing depths for the ref allele:](#now-the-2_adtxt-file-can-be-modified-to-remove-the-part-of-the-tag-containing-depths-for-the-ref-allele)
-- [index the file with tabix](#index-the-file-with-tabix)
-- [store new `FORMAT/AD` tag definition to add in the vcf2 header](#store-new-formatad-tag-definition-to-add-in-the-vcf2-header)
-- [Transfer the annotation](#transfer-the-annotation)
-- [Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged](#eventually-the-2-vcfs-with-matching-formatad-tag-definition-can-be-merged)
+			- [Install](#install-24)
+	- [Snpeff & SnpSift](#snpeff--snpsift)
+		- [Install](#install-25)
+		- [Run Snpeff](#run-snpeff)
+	- [ANNOVAR](#annovar)
+		- [Install ANNOVAR](#install-annovar)
+	- [Run Annovar](#run-annovar)
+	- [MAVIS](#mavis)
+		- [Install MAVIS](#install-mavis)
+		- [Run MAVIS annotation only](#run-mavis-annotation-only)
+- [Annotations](#annotations)
+	- [OMIM](#omim)
+		- [custom OMIM](#custom-omim)
+	- [DGV](#dgv)
+		- [custom DGV](#custom-dgv)
+	- [Clinvar](#clinvar)
+	- [HGMD](#hgmd)
+	- [sysnnd](#sysnnd)
+		- [custom sysndd](#custom-sysndd)
+	- [gnomAD](#gnomad)
+- [Handling a VCF](#handling-a-vcf)
+	- [GATK](#gatk)
+		- [Install](#install-26)
+		- [liftoverVCF](#liftovervcf)
+	- [vcflib - subset VCF](#vcflib---subset-vcf)
+		- [install](#install-27)
+		- [Run vcflib](#run-vcflib)
+		- [randomly subset a vcf](#randomly-subset-a-vcf)
+	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
+	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
+	- [Hail](#hail)
+		- [Variant dataset](#variant-dataset)
+- [Miscellaneous](#miscellaneous)
+	- [liftOver UCSC](#liftover-ucsc)
+		- [install](#install-28)
+	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
+	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
+	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
+	- [sam flags](#sam-flags)
+	- [reads with `MAPQ==0`](#reads-with-mapq0)
+	- [HyperExome regions > 30X](#hyperexome-regions--30x)
+	- [`samtools depth`](#samtools-depth)
+	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
+		- [install](#install-29)
+- [Computing issue](#computing-issue)
+		- [convert file encoding](#convert-file-encoding)
+		- [install R](#install-r)
+
+
+
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
 ### Install
@@ -169,7 +215,7 @@ Use the training set `dna_rXX.X_e8.X_hc@vX.X` according to flowcells' nanopore (
 - basecalls_summary.tsv
 
 
-## [Guppy](https://community.nanoporetech.com/knowledge/bioinformatics/tools) `5.1.15`
+## [Guppy](https://community.nanoporetech.com/knowledge/bioinformatics/tools) 
 Guppy is the official ONT basecaller. As bonito, it can output `.bam` files. 
 
 ### Install 
@@ -177,6 +223,11 @@ See ONT [doc](https://community.nanoporetech.com/docs/prepare/library_prep_proto
 Guppy was already installed, but needed an update.      
 ```
 sudo apt install ont-guppy
+```
+#### update (guppy 6)
+```
+sudo apt update
+sudo apt upgrade ont-guppy 
 ```
 
 ### Run Guppy 
@@ -238,6 +289,58 @@ Which estimates `gpu_runners_per_device` at **4**.
 - sequencing_summary.txt
 - fastq or bam depending if there were an optional alignment step. Output might be separated into `pass`, `fail`, and `calibration_strands` folders depending on wether they pass or fail the filtering condition. For faster models, the filtering score is 7 (~85% accuracy) but is higher for more accurate models.
 - what is the `dump-dp` folder for?
+
+## Dorado Alpha release v.0.0.1
+
+### Install
+Simply download linux package. Link on the readme.
+
+### Run Dorado 
+- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/models.h).
+
+```
+
+```
+
+### Output
+Dorado doesn't output `fastq`, as we could expect, but unaligned `sam`.
+`sam` can store more information than `fastq`, that only store sequence ID, sequence itself, and quality scores for each nucleotides. 
+Originally, `sam` are used to store mapping information. A `bam` is smaller than a `fastq.gz` containing exactly the same information.
+Also, `sam` allows to store metadata. 
+
+**size (GB) according to file type:**       
+| fastq | fastq.gz | sam | bam |
+|-------|----------|-----|-----|
+| 80    | 39       | 63  | 28  |   
+
+Dorado took 19 hours to basecalled `PromethionGenDev_Test4_13062022_analysis` data .
+
+** basecalled `sam` metadata**
+
+
+## [pod5](https://github.com/nanoporetech/pod5-file-format)
+pod5 is ONT new format for its raw sequencing data. It replaces fast5 and has smaller size and improves read/write performance. ONT has developped a python library and a set of tools for pod5. Dorado, ONT' latest basecaller at the time writing, uses pod5 for best performances.
+
+### Install 
+To use ONT's [selection of tools](https://github.com/nanoporetech/pod5-file-format/blob/master/python/README.md) for pod5:
+
+```
+pip install pod5_format_tools
+```
+Reduces file size to 30%.
+
+**size (GB) according to file type:**       
+| pod5 | fast5 |
+|------|-------|
+| 344  |   422 |  
+
+### Run pod5
+From `fast5` to `pod5`
+```
+pod5-convert-from-fast5 fast5/* pod5/
+```
+
+
 
 
 # Quality check 
@@ -366,6 +469,12 @@ minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@
 
 minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows to convert to `bam` sorted files, its binary format. 
 	
+
+#### Run minimap2 for dorado 
+
+```
+bedtools bamtofastq -i  dorado.bam -fq dorado.fastq | minimap2 -t 10 -ax map-ont hg38.mmi - | samtools sort -@ 8 -o minimap2_alignment.bam
+```
 
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
 ### install 
@@ -578,7 +687,7 @@ conda install pomoxis
 
 
 ## QuastLG
-
+For evaluating large-scale genome assemblies 
 ### Install 
 ```
 wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
@@ -645,16 +754,16 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
 # Variant calling
 ## SNP calling 
 ### [PEPPER-Margin-Deep Variant workflow](https://github.com/kishwarshafin/pepper)
-##### PEPPER SNP
+#### PEPPER SNP
 This finds SNPs from a read-to-reference alignment file using a recurrent neural network. Reports potential SNP sites using the likelihood of observing alternative alleles
 
-##### Margin
+#### Margin
 Hidden Markov model-based, haplotyping module that produces a haplotag for each read using the SNPs reported by PEPPER SNP. Polishing step.
 
-##### PEPPER HP
+#### PEPPER HP
 Takes the haplotagged alignment file from Margin and produces a set of candidate variants.
 
-##### DeepVariant
+#### DeepVariant
 Produces the final genotype calls by using a convolutional neural network with the candidates from PEPPER HP
 
 ### Install 
@@ -755,6 +864,9 @@ run_clair3.sh \
  ```
 See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
 
+##### SwitchZygosityBasedOnSVCalls module
+
+
 ### Output
 
 - `full_alignment.vcf`
@@ -766,6 +878,7 @@ See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
 #### Install 
 - Alienware:    
   `pip install sniffles` 
+  `pip install sniffles --upgrade` updated to 2.0.7
 - P700:
   ```
   conda create -n sniffles
@@ -822,9 +935,9 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
 ```
 
 
-## Variants benchmarking 
-### Benchmarcking resources: Genome in a Bottle
-#### Small variants truth set
+# Variants benchmarking 
+## Benchmarcking resources: Genome in a Bottle
+### Small variants truth set
 See <https://github.com/ga4gh/benchmarking-tools/>
 
 High-confidence calls and regions can be obtained from the Genome in a Bottle FTP site: <https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/>
@@ -836,8 +949,8 @@ The ftp sites contains:
 
 By their nature, high confidence variant calls and regions tend to be easier to detect and therefore they are over represented. Thus, benchmarcking againts high confidence calls overestimates accuracy for all variants.
 
-#### SV truth set 
-##### NIST SVs Integration_v0.6
+### SV truth set 
+#### NIST SVs Integration_v0.6
 Hg19 only.
 
 see <https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/>  
@@ -852,7 +965,7 @@ High-confidence SV bed file, defines regions in which Tier 1 callset should be c
 2. The predicted sequence change is not always accurate.  If multiple methods predicted the same sequence change, we select it, but this is not the case for all sites, and biases can cause the same incorrect sequence change to be predicted.
 3. The consensus genotype may be inaccurate in some cases, particularly if the predicted sequence change is inaccurate.  The fraction of Mendelian errors for sites genotyped in all 3 members of the trio was ~2%, and more sites were heterozygous in all individuals than expected.
 
-##### GIAB Challenging Medically Relevant Gene Benchmark
+#### GIAB Challenging Medically Relevant Gene Benchmark
 Hg19 and hg38.
 
 It reports over 17,000 SNVs, 3,600 INDELs, and 200 SVs each for GRCh37 and GRCh38 across HG002.
@@ -869,8 +982,8 @@ For the reasons below, it is not a random subset of the genome, so performance m
   - It excludes genes with very large structural or copy number variation, which cause breaks in the assembly-assembly alignment or multiple contigs to align (e.g., LPA, CR1, and KIR genes)  
   - The benchmark bed excludes complex SVs, because no current tools exist to compare these.  
 
-### truvari 
-#### Install 
+## truvari 
+### Install 
 `python3.8` is required to get the latest `numpy` version, one of `truvari`'s dependencies.
 ```
 sudo apt-get install python3.8-dev
@@ -881,7 +994,7 @@ pip install truvari
 
 Installed version `3.4` with pip, outside venv.
 
-#### Run truvari
+### Run truvari
 ```
 . truvari/bin/activate
 truvari bench -b truthtset.vcf.gz \
@@ -891,7 +1004,7 @@ truvari bench -b truthtset.vcf.gz \
 ```
 
 
-### hap.py 
+## hap.py 
 `hap.py` is the The Global Alliance for Genomics and Health (GA4GH) recommended benchmarking methods. However, very few support from developpers.
 
 After, one can choose to run `hap.py` to evaluate the variants. 
@@ -945,7 +1058,7 @@ where `renamechr.txt` is a file with `old_name new_name\n`:
 
 
 
-#### Output 
+### Output 
 | Type  | Filter   | TRUTH.TOTAL   | TRUTH.TP   | TRUTH.FN   | QUERY.TOTAL   | QUERY.FP   | QUERY.UNK   | FP.gt   | FP.al   | METRIC.Recall   | METRIC.Precision   | METRIC.Frac_NA   | METRIC.F1_Score   | TRUTH.TOTAL.TiTv_ratio   | QUERY.TOTAL.TiTv_ratio   | TRUTH.TOTAL.het_hom_ratio   | QUERY.TOTAL.het_hom_ratio |
 |-------|----------|---------------|------------|------------|---------------|------------|-------------|---------|---------|-----------------|--------------------|------------------|-------------------|--------------------------|--------------------------|-----------------------------|---------------------------|
 | **INDEL** |     ALL  | 525469        | 338277     | 187192     | 665660        | 124739     | 194352      | 27320   | 39298   | 0.643762        | 0.735334           | 0.291969         | 0.686508          |                     NaN  |                     NaN  | 1.528276                    | 1.673210                  |
@@ -966,16 +1079,16 @@ F1_Score = 2 * Precision * Recall / (Precision + Recall)
 ```
 
 
-## Variants annotation 
+# Variants annotation 
 Data fields are encoded separated by "|";
 
-### [vt](https://genome.sph.umich.edu/wiki/Vt)
+## [vt](https://genome.sph.umich.edu/wiki/Vt)
 
 Pre-process the vcf file for multi-allelic variants before annotating facilitates variants annotations and downstream analysis.
 
 The `vt` toolset allows to split one position in the VCF for all alternatives alleles, so all possible different variants can be represented by one line each. See <https://research-help.genomicsengland.co.uk/display/GERE/Variant+Normalisation>
 
-#### install
+### install
 
 ```
  #this will create a directory named vt in the directory you cloned the repository
@@ -998,9 +1111,9 @@ The `vt` toolset allows to split one position in the VCF for all alternatives al
 - `vt decompose -s`: decompose all multi-allelic variants, so that each variant is represented in its bi-allelic format. 
 - `vt normalize`: parsimony and left alignment of variants 
 
-### [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html)
+## [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html)
 
-#### install 
+### install 
 ```
 conda install -c bioconda ensembl-vep==106.1
 vep_install -a cf -s homo_sapiens -y GRCh38 -c ./vep --CONVERT
@@ -1017,6 +1130,17 @@ cp ~/.vep/Plugins/UTRannotator/* ~/.vep/Plugins/
 ```
 VEP can annotate SV if the `SVTYPE` INFO field in the VCF is set to one of the currently recognised values: `INS, DEL, DUP, TDUP`
 
+- **update to VEP 107**:
+  Some problems with `gnu-gcc` and perl `zlib` module:   
+  ```
+	conda update -c bioconda ensembl-vep
+	vep_install -a cf -s homo_sapiens -y GRCh38 -c ~/.vep/ --CONVERT
+	conda install x86_64-conda-linux-gnu-gcc
+	cpanm Compress::Raw::Zlib
+  ```
+  And then it works.
+
+
 
 see [this page](https://research-help.genomicsengland.co.uk/pages/viewpage.action?pageId=38046629) for a quick tutorial.
 
@@ -1028,14 +1152,14 @@ see [this page](https://research-help.genomicsengland.co.uk/pages/viewpage.actio
 
 
 
-### [ANNOTSV](https://lbgi.fr/AnnotSV/)
+## [ANNOTSV](https://lbgi.fr/AnnotSV/)
 Designed for annotating and ranking SV. 
 AnnotSV compiles functionally, regulatory and clinically relevant information and aims at providing annotations useful to i) interpret SV potential pathogenicity and ii) filter out SV potential false positives.
 See [ANNOTSV Readme](https://lbgi.fr/AnnotSV/Documentation/README.AnnotSV_latest.pdf)
 
 Bad for translocations annotations according to jmsa.
 
-#### install 
+### install 
 ```
 git clone https://github.com/lgmgeo/AnnotSV.git
 make PREFIX=. install
@@ -1049,15 +1173,39 @@ export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 
 ```
 
-#### Run ANNOTSV
+### Run ANNOTSV
 ```
 export ANNOTSV="/home/euphrasie/bioprog/AnnotSV/"
 $ANNOTSV/bin/AnnotSV -SvinputFile sniffles.vcf
 ```
-#### Output
+#### custom annotation with ANNOTSV
+- with a custom bed
+  - Each external BED annotation file should be copied or linked in the appropriate directory (`FtIncludedInSV`/`SVincludedInFt`/`AnyOverlap`)
+
+In the `FtIncludedInSV` directory, only the features overlapped at 100% with the SV
+will be reported.    
+In the `SVincludedInFt` directory, only the features overlapping 100% of the SV will be
+reported. In this case, a reciprocal overlap can be used.   
+In the `AnyOverlap` directory, any feature overlapped with the SV (even with 1bp
+overlap) will be reported. In this case, a reciprocal overlap can be used.
+
+- **external genes annotation file**
+  - should be located in the `$ANNOTSV/share/AnnotSV/Annotations_Human/Users/” directory`.
+  - change config file to define output columns to annotate with from the external genes annotation file. The config file should be in the `/AnnotSV/etc/AnnotSV/` folder. (Not working when the config file is in the input file folder).
+  - the first column should be "genes"
+
+- **filtered SNV/indel input files for compound heterozygosity analysis**
+  - to highlight compound heterozygotes, add `-candidateSnvIndelFiles vc/SNV_INDELS.vcf.gz` 
+
+- 
+
+
+
+### Output
 A tab-delimited file.
 
 ### KnotAnnotSV
+Create customizable html or xlsm files from an AnnotSV output.
 #### Install
 ```
 # install perl dependencies
@@ -1069,15 +1217,15 @@ install YAML::XS
 install Sort::Key::Natural
 ```
 
-### [Snpeff & SnpSift](https://pcingola.github.io/SnpEff/se_commandline/) 
+## [Snpeff & SnpSift](https://pcingola.github.io/SnpEff/se_commandline/) 
 
 SnpEff is a variant annotation and effect prediction tool. User can use its own bed and vcf files for custom annotations. 
-#### Install 
+### Install 
 - `wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 unzip snpEff_latest_core.zip`
 - load reference database: `java -jar snpEff.jar download -v GRCh38`
 
-#### Run Snpeff
+### Run Snpeff
 - annotation and prediction: 
 ```
 java -jar -Xmx8g snpEff.jar ann hg38 \
@@ -1104,20 +1252,22 @@ java -jar SnpSift.jar annotate preannotated.vcf'\
 - from a gene list to a `.bed` file:   
   `java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P `
   
-### [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/user-guide/startup/)
+## [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/user-guide/startup/)
 ANNOVAR seems to be the most used annotator.
 
-#### Install ANNOVAR 
+### Install ANNOVAR 
 ```
 wget http://www.openbioinformatics.org/annovar/download/0wgxR2rIVP/annovar.latest.tar.gz
 tar xvfz annovar.latest.tar.gz
 ```
 
-### Run Annovar 
-- list available databases:    
+## Run Annovar
+
+- **list available databases:**    
   `perl annotate_variation.pl -webfrom annovar -downdb avdblist -buildver hg38 humandb/`
 
-- `table_annovar`     
+- `table_annovar`   
+    
   ``` 
 	perl table_annovar.pl example/ex1.avinput \
 	humandb/ \
@@ -1131,6 +1281,7 @@ tar xvfz annovar.latest.tar.gz
 	-polish \
 	-xref example/gene_xref.txt
 	```   
+
   This generates a tab-delimited annotation file. 
 	- one column correspond to one `protocol`.
 	- `xref` allow to cross-reference data for genes. It provides annotation to genes. It is a tab delimited file with genes identifiers in the first column, and annotations in the followings.
@@ -1138,7 +1289,8 @@ tar xvfz annovar.latest.tar.gz
 	- `remove` all temporary files
 
 
-- `annotate_variation.pl`     
+- **`annotate_variation.pl`**
+     
   ```
 	annotate_variation.pl -geneanno -dbtype refGene -buildver hg19 example/ex1.avinput humandb/
 
@@ -1146,48 +1298,48 @@ tar xvfz annovar.latest.tar.gz
 
 	annotate_variation.pl -filter -dbtype exac03 -buildver hg19 example/ex1.avinput humandb/
   ```
-  These three commands correspond to gene-based, region-based and filter-based annotations. These commands cannot be resumed in one single command. VCF have to be converted in a specific format. This sucks.
 
-`-filter` operation works on mutations (nucleotide changes), but `--regionanno` operation works on chromosome locations. For example, `--region` compare variants with things like chr1:1000-1000, but `--filter` compare variants with things like A->G change at the position chr1:1000-1000.
+  These three commands correspond to gene-based, region-based and filter-based annotations. These commands cannot be resumed in one single command. VCF have to be converted in a specific format. This sucks.  
+  `-filter` operation works on mutations (nucleotide changes), but `--regionanno` operation works on chromosome locations. For example, `--region` compare variants with things like chr1:1000-1000, but `--filter` compare variants with things like A->G change at the position chr1:1000-1000.
 
-- annotating with custom made database through `-regionanno`:
+- **annotating with custom made database through `-regionanno`**
 
-- Make an annovar database:
-	```
-	vt decompose clinvar_20180603.vcf.gz -o temp.split.vcf
-    prepare_annovar_user.pl   -dbtype clinvar_preprocess2 temp.split.vcf -out temp.split2.vcf
-	```
-	Chromosomes can be either refered with or without the `chr` prefixe. In the Clinvar version used, chromosomes are called without prefixe, and the mithocondrial chromosome is called `MT`, creating conflict with the reference genome during `vt` normalization: `[xxx is_not_ref_consistent] failure to extract base from fasta file:`.
-	To get rid of the error, one can add `chr` prefixe to Clinvar vcf:
-	```
-	zcat clinvar.vcf.gz | sed 's/^/chr/' | sed 's/^chr#/#/' | sed 's/chrMT/chrM/' | bgzip > clinvar_chr.vcf.gz
-	tabix clinvar_chr.vcf.gz
-	```
+- **Make an annovar database:**
+  Chromosomes can be either refered with or without the `chr` prefixe. In the Clinvar version used, chromosomes are called without prefixe, and the mithocondrial chromosome is called `MT`, creating conflict with the reference genome during `vt` normalization: `[xxx is_not_ref_consistent] failure to extract base from fasta file:`.
+  To get rid of the error, one can add `chr` prefixe to Clinvar vcf:
 
-	```
-	vt normalize temp.split2.vcf -r $REF -o temp.norm.vcf -w 2000000
-    prepare_annovar_user.pl -dbtype clinvar2 temp.norm.vcf -out hg38_clinvar_20180603_raw.txt
-    index_annovar.pl hg38_clinvar_20180603_raw.txt -out hg38_clinvar_20180603.txt -comment comment_20180708.txt
-  	```
+```
+vt decompose clinvar_20180603.vcf.gz -o temp.split.vcf
+prepare_annovar_user.pl   -dbtype clinvar_preprocess2 temp.split.vcf -out temp.split2.vcf
+    
+zcat clinvar.vcf.gz | sed 's/^/chr/' | sed 's/^chr#/#/' | sed 's/chrMT/chrM/' | bgzip > clinvar_chr.vcf.gz
+
+tabix clinvar_chr.vcf.gz
+
+vt normalize temp.split2.vcf -r $REF -o temp.norm.vcf -w 2000000
+
+prepare_annovar_user.pl -dbtype clinvar2 temp.norm.vcf -out hg38_clinvar_20180603_raw.txt
+    
+index_annovar.pl hg38_clinvar_20180603_raw.txt -out hg38_clinvar_20180603.txt -comment comment_20180708.txt
+```
+
   - Make sure to add `perl` before any call to a annovar perl scripts in `prepare_annovar_user.pl`, if annovar not added to path.
   - `index_annovar.pl` can be find [here](https://gist.github.com/suqingdong/447ee784582200309c17b3a844566bac).
 
-### [MAVIS](https://mavis.readthedocs.io/en/latest/)
-#### Install MAVIS
+
+## [MAVIS](https://mavis.readthedocs.io/en/latest/)
+### Install MAVIS
 ```
 . ~/bioprog/mavis/bin/activate
 pip install mavis
 ```
 
-#### Run MAVIS annotation only 
-```
+### Run MAVIS annotation only 
 
 
-```
 
-
-## Annotations 
-### [OMIM](https://www.omim.org/) 
+# Annotations 
+## [OMIM](https://www.omim.org/) 
 OMIM is a comprehensive, authoritative compendium of human genes and genetic phenotypes that is freely available and updated daily. The full-text, referenced overviews in OMIM contain information on all known mendelian disorders and over 16,000 genes. OMIM focuses on the relationship between phenotype and genotype. It is updated daily, and the entries contain copious links to other genetics resources.
 
 - `genemap2.txt` is a tab-delimited file containing OMIM's Synopsis of the Human Gene Map including additional information such as genomic coordinates and inheritance. 
@@ -1195,9 +1347,19 @@ OMIM is a comprehensive, authoritative compendium of human genes and genetic phe
 We should implement the auto update of the OMIM database.
 
 ### custom OMIM
-Transformed `genemap2.txt` to a `.bed` file with only the inheritence in the fourth column.
+- Transformed `genemap2.txt` to a `.bed` file with only the inheritence in the fourth column, so VCF could be annotated with inheritence through VEP `--custom`. See `omim_inheritence.sh` to grep inheritence from `genemap2.txt` into a VEP friendly `.bed`.
+- Same transformation for OMIM Phenotypes:
+  ```
+	awk -v OFS='\t' -v FS='\t' '{print $1, $2, $3, $12";"$13}' genemap2.txt | sed 's/\t;/\t/g' | grep -v "#" | awk  '$4!=""' > omim_phen.bed
+	sort -k1,1 -k2,2n -k3,3n -t$'\t' omim_phen.bed | bgzip -c >omim_phen.bed.bz
+	tabix -p bed omim_phen.bed.gz
+  ```
 
-### [DGV](http://dgv.tcag.ca/dgv/app/home) 
+- OMIM parser 
+There is a sample code in python to parse this file [here](https://github.com/OMIM-org/genemap2-parser).    
+See genemap2-parser2bed.py (modified from genemap2-parser.py).
+
+## [DGV](http://dgv.tcag.ca/dgv/app/home) 
 The Database of Genomic Variants (DGV) (MacDonald et al., 2014) provides SV defined as DNA elements with a
 size >50 bp. The content of DGV is only representing SV identified in healthy control samples from large cohorts
 published and integrated by the DGV team. The annotations will give information about whether your SV is a
@@ -1206,33 +1368,60 @@ rare or a benign common variant.
 - `DGV.GS` is a curated dataset of variants. This was created by applying quality filters and merging overlapping variants to the existing DGV dataset in an effort to remove low-resolution data and reduce the number of polymorphic variants. Every year, more and more published structural variants are being reported and yet the DGV Gold Standard Dataset has not been updated since its original release in the summer of 2019.
 - `DGV_variants` has 7x times more variants than the Gold Standard dataset.
 
-#### custom DGV
+### custom DGV
 Transformed the `DGV.txt` file to a `.bed` file with 4 columns, with the different annotations being separated in the fourth column with a `|`.
 
-### [Clinvar](https://www.ncbi.nlm.nih.gov/clinvar/intro/) 
+## [Clinvar](https://www.ncbi.nlm.nih.gov/clinvar/intro/) 
 ClinVar gives access to the relationships asserted between human variants and observed health status.
 - `clinvar.vcf`: a vcf file containing variants description and their clinical significance...
 
 We should implement the auto update of the clinvar database.
 
-### [HGMD](https://www.hgmd.cf.ac.uk/ac/index.php)
+## [HGMD](https://www.hgmd.cf.ac.uk/ac/index.php)
 The Human Gene Mutation Database (HGMD) represents an attempt to collate all known (published) gene lesions responsible for human inherited disease. Need a license (25k $).
 
+## [sysnnd](https://sysndd.dbmr.unibe.ch/) 
+Sysnnd is curated database of gene disease relationships in NDD such as developmental delay, intellectual disability and autism spectrum disorder.
 
-### [GnomaD](https://gnomad.broadinstitute.org/)
+To download the database (`curation_comparisons.xlsx`), go to <https://sysndd.dbmr.unibe.ch/Phenotypes> and select all phenotypes one by one and change "AND" to "OR".
+
+### custom sysndd
+- To make a custom sysndd bed file, we first need sysnnd genes coordinate. Fetch the content of the symbol column  in a text file, then get coordinates with  `snpeff genes2bed`:
+  ```
+  snpeff genes2bed GRCh38.105 -f sysnnd_genes.txt | tr ";" "\t" | awk -v OFS='\t' -v FS='\t' '{print $1, $2, $3, $4}' > sysnnd_genes.bed
+  ```
+
+- Then, fetch symbol and associated phenotype from `curation_comparisons.xlsx` converted to `.txt`:
+  ```
+  awk -v OFS='\t' -v FS='\t' '{print $4, $6}' curation_comparisons.txt > curation_pruned.bed
+  ```
+- and sort files to `join` them:
+  ```
+  sort -k1,1 curation_pruned.txt > curation_pruned_sorted.bed
+  sort -k4,4 sysnnd_genes.bed > sysnnd_genes_sorted.bed
+  join -t '      ' -1 1 curation_pruned_sorted.bed -2 4  sysnnd_genes_sorted.bed > sysnnd_phen.temp.txt
+  awk -v FS="\t" -v OFS="\t" '{print $3, $4, $5, $1"-"$2}' sysnnd_phen.temp.txt > sysnnd_phen.bed
+  ```
+which could be done with this one-liner `join -t '      ' -1 1 -2 4  <(sort -V -k1,1 curation_pruned.txt) <(sort -V -k4,4 sysnnd_genes.bed) | awk -v FS="\t" -v OFS="\t" '{print $3, $4, $5, $1"-"$2}' > sysnnd_phen.bed`
+
+I keep the gene symbol in the 4th column, because we never know.
+
+## [gnomAD](https://gnomad.broadinstitute.org/)
+The Genome Aggregation Database (gnomAD) is composed of exome and genome sequences from more than 75k genomes collected around the world.
+It is recommended using Hail and [Hail utilities for gnomAD](https://broadinstitute.github.io/gnomad_methods/api_reference/) to work with the data.
+The VEP plugin only allows to get population allele frequency.
 
 
 
-
-## Handling VCF 
-### GATK
-#### Install
+# Handling a VCF 
+## GATK
+### Install
 ``` 
 wget gatk-latest.zip
 ```
 Then gatk toolkit is ready to use as `./gatk`
 
-#### liftoverVCF
+### liftoverVCF
 First, create a `.dict` before lifting ofr the **target** reference build: 
 
 ```
@@ -1255,20 +1444,19 @@ then:
 See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfDHXANksNtyvdb&db=hub_3267197_GCA_009914755.4&c=CP068276.2&g=hub_3267197_hgLiftOver> to retreive chain files. 
 
 
-### [vcflib](https://github.com/vcflib/vcflib) - subset VCF
+## [vcflib](https://github.com/vcflib/vcflib) - subset VCF
 A tool for parsing and manipulating VCF files.
 
-#### install
+### install
 
 ```
 sudo apt-get install libvcflib-tools libvcflib-dev
 ```
 
-#### Run vcflib
+### Run vcflib
 `vcflib <program>`
 
-
-#### randomly subset a vcf 
+### randomly subset a vcf 
 - generate a subset of a `.vcf` with `vcfrandomsample`:
   ```
   bcftools view file.vcf.gz | vcflib vcfrandomsample -r 0.01 > subset.vcf
@@ -1276,7 +1464,7 @@ sudo apt-get install libvcflib-tools libvcflib-dev
   View the file with `bcftools` if it is bgzip, as `vcflib` recquire uncompress files.
 
 
-### filter VCFs with `bcftools`
+## filter VCFs with `bcftools`
 - filter regions 
   - `bcftools filter -r chr1,chr2,chr3 -o filtered.vcf in.vcf.gz`
   - `bcftools filter in.vcf.gz -o out.vcf -R 'regiond.bed'`
@@ -1292,7 +1480,7 @@ sudo apt-get install libvcflib-tools libvcflib-dev
   - `bcftools filter -e'FORMAT/GT="mis"' in.vcf.gz -o out.vcf.gz -Oz`
 
 
-### Transfer/custom VCF annotation - an example
+## Transfer/custom VCF annotation - an example
 One could want to remove or modify annotations fields in a VCF for some matters. For example, merging 2 different VCF can happen to be tricky as the annotations format can slighty change between 2 files.
 In this example, the `FORMAT/AD` tag had 2 different definitions in 2 different files that could therefore not be merged: 
 - vcf1: `##FORMAT=<ID=AD,Number=A,Type=Integer,Description="Allele depth">`
@@ -1302,61 +1490,85 @@ One solution can be to remove the `FORMAT/AD` tag, but then that information is 
 
 Here, vcf2 `FORMAT/AD` tag can be modify to match vcf1 definition: 
 
-```
-# delete INFO field with bcftools annotate, as it is useless for the following use of these files.
+- delete INFO field with bcftools annotate, as it is useless for the following use of these files.  
 
+```
 bcftools annotate -x INFO 1.vcf.gz -o 1_noINFO.vcf.gz -Oz
 bcftools annotate -x INFO 2.vcf.gz -o 2_noINFO.vcf.gz -Oz
+```
 
-# extract vcf2 FORMAT/AD into a tab-delimited annotation file.
+- extract vcf2 FORMAT/AD into a tab-delimited annotation file
+
+```
 bcftools query -f '%CHROM\t%POS\tAD:[ %AD]\n' 2_noINFO.vcf.gz > 2_AD.txt
+```
 
-# remove FORMAT/AD tag 
+- remove FORMAT/AD tag 
+
+```
 bcftools annotate -x FORMAT/AD 2.vcf.gz -o 2_noINFOnoAD.vcf.gz -Oz
+```
 
-# now, the 2_AD.txt file can be modified to remove the part of the TAG containing depths for the ref allele:
+- now, the 2_AD.txt file can be modified to remove the part of the TAG containing depths for the ref allele
+
+```
 sed 's/A[^"]*,/ /g' 2_AD.txt | bgzip > 2_noRefDP_AD.txt.gz
+```
 
-# index the file with tabix
+- index the file with tabix
+
+```
 tabix -s1 -b2 -e2 2_noRefDP_AD.txt.gz 
+```
 
-# store new `FORMAT/AD` tag definition to add in the vcf2 header
+- store new `FORMAT/AD` tag definition to add in the vcf2 header
+
+```
 echo -e '##FORMAT=<ID=AD,Number=A,Type=Integer,Description="Allele depth">"' >> hdr.txt
+```
 
+- Transfer the annotation
 
-# Transfer the annotation
+```
 bcftools annotate -a noRefDP_2_AD.txt.gz -h hdr.txt 2_noINFO_noAD.vcf.gz -o 2_noINFO_AD.vcf.gz -Oz -s 6620CY000167 -c CHROM,POS,FORMAT/AD
+```
 
-# Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged
+- Eventually, the 2 vcfs with matching FORMAT/AD tag definition can be merged
+
+```
 bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 
 ```
 
+## Hail 
+### Variant dataset 
 
-## Miscellaneous 
-### liftOver UCSC 
+
+
+# Miscellaneous 
+## liftOver UCSC 
 Move annotations from one assembly to another.
-#### install 
+### install 
 - create an account to download the executable on <https://genome-store.ucsc.edu/>
 - `sudo chmod ugo+x liftOver`
 - add liftOver path to `~/.bashrc`
 - download recquired chain files:
   `wget --timestamping 'ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz' -O hg19ToHg38.over.chain.gz`
 
-### retrieve a specific regions out of a bam file 
+## retrieve a specific regions out of a bam file 
 - `samtools view -b minimap2MD.bam chr11 > in_chr11.bam`
 - `bedtools bamtofastq -i in_chr11.bam -fq chr11.fastq` 
 
-### retrieve reference's specific region in `.fasta`
+## retrieve reference's specific region in `.fasta`
 - `samtools faidx ref.fa -r chr11.txt -o ref_chr11.fa`    
 with `chr11.txt` a file with regions of interest coordinates formatted as:    
 `chr11:from-to`, one per line. 
 
-### Add MD tags to .`bam`
+## Add MD tags to .`bam`
 - `samtools calmd -b noMD.bam > withMD.bam` 
   `-b` output a bam file (outputs are sams by default)
 
-### sam flags
+## sam flags
 - Output reads names and their sam flags:
   ```
   samtools view -@ 4 $BAM | awk '{ print $1, $2 }' > all_flag.txt
@@ -1372,7 +1584,7 @@ with `chr11.txt` a file with regions of interest coordinates formatted as:
    samtools view -@ 4 $BAM | cut -f2 | sort -u
   ```
 
-### reads with `MAPQ==0`
+## reads with `MAPQ==0`
 
 - QC with all basecalled reads and reads with `MAPQ==0`:
 
@@ -1393,7 +1605,7 @@ grep -f reads_MAPQ0.txt sequencing_summary.txt > MAPQ0_sequencing_summary.txt
 pycoQC -f MAPQ0_sequencing_summary.txt -a H_MAPQ0.bam -o MAPQ0_QC.html
 ```
 
-### HyperExome regions > 30X
+## HyperExome regions > 30X
 
 ```
 for cram in /GENETIQUE1/DATA/GenDev/_EXOMES/KAPA-HyperExome_2022/KAPA-HyperExome*/03_Analyse/CRAM/*.cram; do file=`basename $cram`; filename=${file::-5}; echo $filename; samtools view -b $cram | bedtools genomecov -ibam - -bg | awk '$4 > 30' > $filename.bedgraph; done
@@ -1403,9 +1615,9 @@ intersectBed -sorted -a index.bedgraph -b ./bedgraph/* | bedtools merge -i - > m
 
 To compute genome coverage for all bases/regions, one could prefer being able to filter reads with low MAPQ score or specific sam flags. It would allow to make accurate comparisons between a bam and a VCF, as most variant callers will ignore duplicate reads, discordant reads, low MAPQ, etc. See following section.
 
-### `samtools depth`
+## `samtools depth`
 Allows to compute genome coverage at each positions and filtering for MAPQ and sam flags:
-- `samtools depth -f file.bam -Q 5`
+- `samtools depth file.bam -Q 5`
   - `Q`: Only count reads with mapping quality greater than or equal to INT 
   - By default, reads that have any of the flags UNMAP, SECONDARY, QCFAIL, or DUP set are skipped
   
@@ -1414,14 +1626,15 @@ Allows to compute genome coverage at each positions and filtering for MAPQ and s
 - To filter only regions with X>30 AND merge positions to regions, do `awk '$3>30' depth.txt | awk 'BEGIN{OFS="\t"}{print $1,$2-1,$2,$3}' > depth.bed
 sort -k1,1 -k2,2n depth.bed | bedtools merge -i stdin > depth_merged.bed`
 
-### akt - ancestry and kinship toolkit
-#### install
+One liner: `samtools depth $EXBAMPATH -Q 5 | awk -v OFS='\t' '$3>30 {print $1,$2-1,$2,$3}' | sort -k1,1 -k2,2n | bedtools merge -i stdin > filename_30X.bed`
 
+## akt - ancestry and kinship toolkit
 Among else, this tool allows to check the relatedness between several individuals from their vcfs. 
 It calculates the IBD (Identical By Descent).
 
 It can assessed grand-parents grand-child relationship and siblings
 
+### install
 
 ```
 git clone https://github.com/Illumina/akt.git
@@ -1429,12 +1642,9 @@ cd akt/
 make
 ```
 
+See link to exome
 
-
-
-
-
-## Computing issue
+# Computing issue
 ### convert file encoding 
 
 - Check file encoding:
@@ -1446,4 +1656,21 @@ make
   iconv -f ISO-8859-1 -t UTF-8//TRANSLIT /file.vcf -o utf8_file.vcf
   ```
 
+### install R 
 
+First: 
+
+```
+sudo apt remove r-base* --purge
+```
+Remove any existing entry for `R` in the `etc/apt/sources.list` to install an older R version (things that should look like `deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/`)
+
+
+see `https://cran.r-project.org/bin/linux/ubuntu/` and follow instructions.
+
+No https in .Renviron 
+
+
+
+
+https://uw-gac.github.io/SISG_2019/index.html
