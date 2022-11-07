@@ -1,0 +1,4 @@
+bash promline/pipeline.sh -w Promethion_SQKLSK110_17102022 -s 6622CY001026 -r /media/euphrasie/DATA/reference_genome/hg38_exclusion/GRCh38.p13.GRC_exclusions_T2Tv2.fa -f /media/euphrasie/Expansion/Promethion_SQKLSK110_17102022/6622CY001026/20221024_1201_2C_PAM61860_63f212a3/fast5 -p /media/euphrasie/Expansion/Promethion_SQKLSK110_17102022/pod5 -c all -b all -m r9 -t /home/euphrasie/Documents/lr_test3/sniffles/human_GRCh38_no_alt_analysis_set.trf.bed 2>&1 | tee Promethion_SQKLSK110_17102022/log.txt
+
+
+bash promline/annotation.sh -w Promethion_SQKLSK110_17102022 -r /media/euphrasie/DATA/reference_genome/hg38_exclusion/GRCh38.p13.GRC_exclusions_T2Tv2.fa -v /media/euphrasie/Alienware_May202/Promethion_SQKLSK110_17102022/vc/sniffles/6622CY001026_sniffles_BND.vcf -t /media/euphrasie/Alienware_May202/Promethion_SQKLSK110_17102022/vc/clair3/merge_output_raw.norm.vcf.gz 2>&1 | tee Promethion_SQKLSK110_17102022/logann.txt

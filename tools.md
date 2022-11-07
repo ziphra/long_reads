@@ -131,6 +131,7 @@
 	- [MAVIS](#mavis)
 		- [Install MAVIS](#install-mavis)
 		- [Run MAVIS annotation only](#run-mavis-annotation-only)
+				- [Run the test folder](#run-the-test-folder)
 - [Annotations](#annotations)
 	- [OMIM](#omim)
 		- [custom OMIM](#custom-omim)
@@ -151,6 +152,7 @@
 		- [randomly subset a vcf](#randomly-subset-a-vcf)
 	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
 	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
+	- [vcf to tab delimited file](#vcf-to-tab-delimited-file)
 	- [Hail](#hail)
 		- [Variant dataset](#variant-dataset)
 - [Miscellaneous](#miscellaneous)
@@ -1330,13 +1332,22 @@ index_annovar.pl hg38_clinvar_20180603_raw.txt -out hg38_clinvar_20180603.txt -c
 ## [MAVIS](https://mavis.readthedocs.io/en/latest/)
 ### Install MAVIS
 ```
-. ~/bioprog/mavis/bin/activate
-pip install mavis
+pip3 install mavis
+pip3 install tabulate==0.8.9
 ```
 
 ### Run MAVIS annotation only 
-
-
+##### Run the test folder
+```
+git clone https://github.com/bcgsc/mavis.git
+git checkout v3.0.0
+mkdir mavistests
+cd mavistests/
+mv ../mavis/tests .
+mv ../mavis/Snakefile .
+pip install mavis_config
+snakemake -j 1 --configfile=tests/mini-tutorial.config.json -s Snakefile
+```
 
 # Annotations 
 ## [OMIM](https://www.omim.org/) 
@@ -1538,6 +1549,10 @@ bcftools annotate -a noRefDP_2_AD.txt.gz -h hdr.txt 2_noINFO_noAD.vcf.gz -o 2_no
 ```
 bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 
+```
+## vcf to tab delimited file 
+```
+bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' in.vcf.gz > out.txt
 ```
 
 ## Hail 
