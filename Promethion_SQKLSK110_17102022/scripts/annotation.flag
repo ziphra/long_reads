@@ -1,0 +1,29 @@
+#!/usr/bin/sudo bash
+
+#  
+#  
+#
+#  Created by Euphrasie Servant on 17/06/2022.
+#
+
+. ~/miniconda3/etc/profile.d/conda.sh
+
+# source shflags
+. /home/euphrasie/bioprog/shflags-1.2.3/shflags
+
+# define command-line string flag
+DEFINE_string 'base' '.' 'output directory' 'w'
+DEFINE_string 'sample' 'JohnDoe' 'sample name' 's'
+DEFINE_string 'ref' 'hg38' 'reference genome' 'r'
+DEFINE_string 'sv_vcf' '' 'Structural Variants VCF' 'v'
+DEFINE_string 'small_vcf' '' 'Small Variants VCF' 't'
+
+
+
+# parse the command-line
+FLAGS "$@" || exit $?
+eval set -- "${FLAGS_ARGV}"
+
+ANNOTSV_YAML=/home/euphrasie/bioprog/knotAnnotSV/config_AnnotSV.yaml
+knotAnnotSV='perl /home/euphrasie/bioprog/knotAnnotSV/knotAnnotSV.pl'
+knotAnnotSV2XL='perl /home/euphrasie/bioprog/knotAnnotSV/knotAnnotSV2XL.pl'

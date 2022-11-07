@@ -1,0 +1,81 @@
+#!/usr/bin/sudo bash
+
+#  
+#  
+#
+#  Created by Euphrasie Servant on 17/06/2022.
+#
+
+. ~/miniconda3/etc/profile.d/conda.sh
+
+# source shflags
+. /home/euphrasie/bioprog/shflags-1.2.3/shflags
+
+# define command-line string flag
+DEFINE_string 'base' '.' 'working directory' 'w'
+DEFINE_string 'sample' 'JohnDoe' 'sample name' 's'
+DEFINE_string 'ref' 'hg38' 'reference genome' 'r'
+DEFINE_string 'fast5' 'fast5' 'directory containing raw fast5' 'f'
+DEFINE_string 'pod5' '' 'directory for  fast5 to pod5 conversion output or already containing fast5' 'p'
+DEFINE_string 'snp_caller' 'clair3' 'snp caller: either pmdv, clair3 or all' 'c'
+DEFINE_string 'basecalling' 'guppy' 'basecaller: either guppy, dorado or all' 'b'
+DEFINE_string 'model' 'r9' 'flowcell and basecalling model: either r9 or r10' 'm'
+DEFINE_string 'trf' '' 'tandem repeat annotation file for sniffles' 't'
+
+# parse the command-line
+FLAGS "$@" || exit $?
+eval set -- "${FLAGS_ARGV}"
+
+
+# model flowcell
+
+if [[ "$FLAGS_model" = "r9" ]]
+then 
+    MODEL_CLAIR="r941_prom_sup_g5014"
+    MODEL_PMDV="--ont_r9_guppy5_sup"
+    MODEL_GUPPY="dna_r9.4.1_450bps_sup_prom.cfg"
+    MODEL_DORADO="dna_r9.4.1_e8_sup@v3.3"
+    echo -e "guppy model: $MODEL_GUPPY \ndorado model: $MODEL_DORADO \nPMDV model: $MODEL_PMDV \nClair3 model: $MODEL_CLAIR"
+elif [[ "$FLAGS_model" = "r10" ]]
+then 
+    MODEL_CLAIR="r1041_e82_400bps_fast_g632"
+    MODEL_PMDV="--ont_r10_q20"
+    MODEL_GUPPY="dna_r10.4.1_e8.2_400bps_hac_prom.cfg"
+    MODEL_DORADO="dna_r10.4.1_e8.2_400bps_sup@v3.5.2"
+    echo -e "guppy model: $MODEL_GUPPY \ndorado model: $MODEL_DORADO \nPMDV model: $MODEL_PMDV \nClair3 model: $MODEL_CLAIR"
+else
+echo "basecalling model ${FLAGS_model} is not supported. Supported models -m: r9 or r10"
+break 
+fi
+
+
+
+# small variants caller
+
+if [[ "$FLAGS_snp_caller" = "pmdv" ]]
+then 
+    echo -e "small variants caller: PEPPER-Margin-DeepVariant. \nPlease cite Shafin, K., Pesout, T., Chang, PC. et al. Haplotype-aware variant calling with PEPPER-Margin-DeepVariant enables high accuracy in nanopore long-reads. Nat Methods 18, 1322–1332 (2021). https://doi.org/10.1038/s41592-021-01299-w"
+elif [[ "$FLAGS_snp_caller" = "clair3" ]]
+then 
+    echo -e "small variants caller: Clair3. \nPlease cite Zhenxian Zheng, Shumin Li, Junhao Su, Amy Wing-Sze Leung, Tak-Wah Lam, Ruibang Luo, Symphonizing pileup and full-alignment for deep learning-based long-read variant calling. https://doi.org/10.1101/2021.12.29.474431"
+elif [[ "$FLAGS_snp_caller" = "all" ]]
+then 
+    echo -e "small variants caller: Clair3 and PEPPER-Margin-DeepVariant. \nPlease cite Shafin, K., Pesout, T., Chang, PC. et al. Haplotype-aware variant calling with PEPPER-Margin-DeepVariant enables high accuracy in nanopore long-reads. Nat Methods 18, 1322–1332 (2021). https://doi.org/10.1038/s41592-021-01299-w and Zhenxian Zheng, Shumin Li, Junhao Su, Amy Wing-Sze Leung, Tak-Wah Lam, Ruibang Luo, Symphonizing pileup and full-alignment for deep learning-based long-read variant calling. https://doi.org/10.1101/2021.12.29.474431"
+else
+echo "This caller ${FLAGS_snp_caller} is not supported. Supported callers -c: pmdv or clair3 or all (both)"
+break 
+fi
+
+
+# basecaller
+
+if [[ "$FLAGS_basecalling" = "guppy" ]]
+then 
+    echo -e "basecalling: guppy. \n"
+elif [[ "$FLAGS_basecalling" = "dorado" ]]
+then 
+    echo -e "basecalling: dorado. Quality check and variant calling is not yet supported with dorado in this pipeline version"
+else
+echo "This basecaller ${FLAGS_basecalling} is not supported. Supported callers -b: guppy or dorado"
+break 
+fi
