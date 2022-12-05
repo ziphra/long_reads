@@ -153,11 +153,15 @@
 	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
 	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
 	- [vcf to tab delimited file](#vcf-to-tab-delimited-file)
+	- [Plugin bcftools split-vep](#plugin-bcftools-split-vep)
+		- [convert `string` type field to `float`](#convert-string-type-field-to-float)
+		- [vcf filtering from WGS to excel friendly](#vcf-filtering-from-wgs-to-excel-friendly)
 	- [Hail](#hail)
-		- [Variant dataset](#variant-dataset)
+			- [install](#install-28)
+		- [annotate from gcloud stored database](#annotate-from-gcloud-stored-database)
 - [Miscellaneous](#miscellaneous)
 	- [liftOver UCSC](#liftover-ucsc)
-		- [install](#install-28)
+		- [install](#install-29)
 	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -166,7 +170,7 @@
 	- [HyperExome regions > 30X](#hyperexome-regions--30x)
 	- [`samtools depth`](#samtools-depth)
 	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-		- [install](#install-29)
+		- [install](#install-30)
 - [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
 		- [install R](#install-r)
@@ -295,14 +299,11 @@ Which estimates `gpu_runners_per_device` at **4**.
 ## Dorado Alpha release v.0.0.1
 
 ### Install
-Simply download linux package. Link on the readme.
+Simply download linux package. Link in the readme.
 
 ### Run Dorado 
 - download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/models.h).
 
-```
-
-```
 
 ### Output
 Dorado doesn't output `fastq`, as we could expect, but unaligned `sam`.
@@ -397,10 +398,10 @@ See [output file](https://rawcdn.githack.com/ziphra/long_reads/24373579089a7ae0b
 
 
 ## [LongQC](https://github.com/yfukasawa/LongQC)
-Don't work with compress fastq. Don't work recursivly. 
+Dosen't work with compress fastq. Dosen't work recursivly. 
 Another quality tool for long reads. It has 2 functionalities:
  
-- Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analysis or not. You don't need any reference, meta information, even quality score.
+- Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analyse or not. You don't need any reference, meta information, or even quality score.
 - Platform QC: this extracts and provides very fundamental stats for a run such as length or productivity in PacBio and some plots for productivity check for ONT.
 
 ### Install
@@ -1555,9 +1556,51 @@ bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' in.vcf.gz > out.txt
 ```
 
-## Hail 
-### Variant dataset 
+## Plugin bcftools split-vep
+The plugin allows to extract fields from structured annotations such as INFO/CSQ created by bcftools/csq or VEP.
 
+### convert `string` type field to `float`
+So numerous filtering can be applied:
+
+```
+bcftools +split-vep -c field1,field2:Float file.vcf.gz
+```
+
+### vcf filtering from WGS to excel friendly
+```
+bcftools filter -i'FILTER="PASS"' vep.vcf.gz | bcftools filter -e 'DP<5 || QUAL<10 || gnomAD_het>2000 || gnomAD_homhem>1' -Oz -o out.vcf.gz
+
+bcftools +split-vep -f '%CHROM %POS %CSQ\n' -d -A tab Filt_vep.vcf.gz > Filt_vep_tab.txt
+
+## list all fields:
+bcftools +split-vep vep.vcf -l Filt_VEP_tab.vcf.gz
+```
+
+## Hail 
+#### install 
+```
+python3 -m pip install hail
+```
+
+To use gcloud stored data (such as gnomAD): 
+- install [gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk?hl=fr) 
+	```
+	curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-408.0.1-linux-x86_64.tar.gz
+	tar -xf google-cloud-cli-408.0.1-linux-x86.tar.gz
+	export PATH=/home/euphrasie/google-cloud-sdk:$PATH
+	export PATH=/home/euphrasie/
+	./google-cloud-sdk/install.sh
+	./google-cloud-sdk/bin/gcloud init
+	```
+- download  gcloud init script for hail: 
+  ```
+  curl -sSL https://broad.io/install-gcs-connector > googlecon.py
+  python3 googlecon.py
+
+  ```
+
+### annotate from gcloud stored database 
+see <https://hail.is/docs/0.2/annotation_database_ui.html>
 
 
 # Miscellaneous 
