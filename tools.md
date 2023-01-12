@@ -13,36 +13,42 @@
 		- [Install](#install-2)
 		- [Run Dorado](#run-dorado)
 		- [Output](#output-2)
-	- [pod5](#pod5)
+			- [SAM metadata](#sam-metadata)
+				- [Modified base tags](#modified-base-tags)
+	- [modbam2bed](#modbam2bed)
 		- [Install](#install-3)
+		- [Run modbam2bed](#run-modbam2bed)
+	- [pod5](#pod5)
+		- [Install](#install-4)
 		- [Run pod5](#run-pod5)
 - [Quality check](#quality-check)
 	- [FastQC `0.11.9`](#fastqc-0119)
-		- [Install](#install-4)
+		- [Install](#install-5)
 		- [Run FastQC](#run-fastqc)
 		- [Output](#output-3)
+	- [NanoPlot](#nanoplot)
 	- [PycoQC `2.5.2`](#pycoqc-252)
-		- [Install](#install-5)
+		- [Install](#install-6)
 		- [Run PycoQC](#run-pycoqc)
 		- [Output](#output-4)
 	- [LongQC](#longqc)
-		- [Install](#install-6)
+		- [Install](#install-7)
 		- [Run LongQC](#run-longqc)
 		- [Output](#output-5)
 	- [MinIONQC](#minionqc)
-		- [Install](#install-7)
+		- [Install](#install-8)
 		- [Run MinIONQC](#run-minionqc)
 - [Alignment](#alignment)
 	- [minimap2 2.24-r1122](#minimap2-224-r1122)
-		- [Install](#install-8)
+		- [Install](#install-9)
 		- [Run minimap2](#run-minimap2)
 			- [Run minimap2 for dorado](#run-minimap2-for-dorado)
 	- [LRA 1.3.2](#lra-132)
-		- [install](#install-9)
+		- [install](#install-10)
 		- [run LRA](#run-lra)
 - [Assembly](#assembly)
 	- [Shasta](#shasta)
-		- [install](#install-10)
+		- [install](#install-11)
 		- [Run Shasta](#run-shasta)
 		- [Output](#output-6)
 		- [Exploring assembly results](#exploring-assembly-results)
@@ -50,25 +56,25 @@
 		- [Run Shasta with "short" long-reads](#run-shasta-with-short-long-reads)
 		- [God's MinION run (low X and short reads)](#gods-minion-run-low-x-and-short-reads)
 	- [Canu](#canu)
-		- [Install](#install-11)
+		- [Install](#install-12)
 		- [Run Canu](#run-canu)
 		- [output](#output-7)
 	- [Flye](#flye)
-		- [install](#install-12)
+		- [install](#install-13)
 		- [Run Flye](#run-flye)
 - [Polishing](#polishing)
 	- [Medaka](#medaka)
-		- [Install](#install-13)
+		- [Install](#install-14)
 		- [Run Medaka](#run-medaka)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
-		- [Install](#install-14)
+		- [Install](#install-15)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
-		- [Install](#install-15)
+		- [Install](#install-16)
 		- [Run QuastLG](#run-quastlg)
 	- [Inspector](#inspector)
-		- [Install](#install-16)
+		- [Install](#install-17)
 		- [Run Inspector](#run-inspector)
 		- [Output](#output-8)
 	- [Assembly on a specific region](#assembly-on-a-specific-region)
@@ -81,17 +87,17 @@
 			- [Margin](#margin)
 			- [PEPPER HP](#pepper-hp)
 			- [DeepVariant](#deepvariant)
-		- [Install](#install-17)
+		- [Install](#install-18)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
 			- [Output](#output-9)
 		- [clair3](#clair3)
-			- [Install](#install-18)
+			- [Install](#install-19)
 			- [Run clair3](#run-clair3)
 				- [SwitchZygosityBasedOnSVCalls module](#switchzygositybasedonsvcalls-module)
 		- [Output](#output-10)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-19)
+			- [Install](#install-20)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
@@ -105,25 +111,26 @@
 			- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
 			- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 	- [truvari](#truvari)
-		- [Install](#install-20)
+		- [Install](#install-21)
 		- [Run truvari](#run-truvari)
 	- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
 		- [Output](#output-11)
 - [Variants annotation](#variants-annotation)
 	- [vt](#vt)
-		- [install](#install-21)
-	- [VEP](#vep)
 		- [install](#install-22)
-	- [ANNOTSV](#annotsv)
+	- [VEP](#vep)
 		- [install](#install-23)
+	- [ANNOTSV](#annotsv)
+		- [install](#install-24)
 		- [Run ANNOTSV](#run-annotsv)
 			- [custom annotation with ANNOTSV](#custom-annotation-with-annotsv)
 		- [Output](#output-12)
 		- [KnotAnnotSV](#knotannotsv)
-			- [Install](#install-24)
+			- [Install](#install-25)
+			- [Add INFO and FORMAT field in separate columns to ANNOTSV html and xlsm](#add-info-and-format-field-in-separate-columns-to-annotsv-html-and-xlsm)
 	- [Snpeff & SnpSift](#snpeff--snpsift)
-		- [Install](#install-25)
+		- [Install](#install-26)
 		- [Run Snpeff](#run-snpeff)
 	- [ANNOVAR](#annovar)
 		- [Install ANNOVAR](#install-annovar)
@@ -144,20 +151,24 @@
 	- [gnomAD](#gnomad)
 - [Handling a VCF](#handling-a-vcf)
 	- [GATK](#gatk)
-		- [Install](#install-26)
+		- [Install](#install-27)
 		- [liftoverVCF](#liftovervcf)
 	- [vcflib - subset VCF](#vcflib---subset-vcf)
-		- [install](#install-27)
+		- [install](#install-28)
 		- [Run vcflib](#run-vcflib)
 		- [randomly subset a vcf](#randomly-subset-a-vcf)
 	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
 	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
 	- [vcf to tab delimited file](#vcf-to-tab-delimited-file)
+	- [Plugin bcftools split-vep](#plugin-bcftools-split-vep)
+		- [convert `string` type field to `float`](#convert-string-type-field-to-float)
+		- [vcf filtering from WGS to excel friendly](#vcf-filtering-from-wgs-to-excel-friendly)
 	- [Hail](#hail)
-		- [Variant dataset](#variant-dataset)
+			- [install](#install-29)
+		- [annotate from gcloud stored database](#annotate-from-gcloud-stored-database)
 - [Miscellaneous](#miscellaneous)
 	- [liftOver UCSC](#liftover-ucsc)
-		- [install](#install-28)
+		- [install](#install-30)
 	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -166,10 +177,12 @@
 	- [HyperExome regions > 30X](#hyperexome-regions--30x)
 	- [`samtools depth`](#samtools-depth)
 	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-		- [install](#install-29)
+		- [install](#install-31)
 - [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
 		- [install R](#install-r)
+- [Promline](#promline)
+	- [Install](#install-32)
 
 
 
@@ -295,19 +308,25 @@ Which estimates `gpu_runners_per_device` at **4**.
 ## Dorado Alpha release v.0.0.1
 
 ### Install
-Simply download linux package. Link on the readme.
+Simply download linux package. Link in the readme.
 
 ### Run Dorado 
-- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/models.h).
+- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/utils/models.h).
 
 ```
-
+dorado basecaller dna_r10.4.1_e8.2_260bps_hac@v4.0.0 pod5s/ | samtools view -Shb > calls.bam
 ```
+
+- to call modified bases add `--modified-bases`:
+  ```
+  dorado basecaller dna_r10.4.1_e8.2_260bps_hac@v4.0.0 pod5s/ | samtools view -Sh > calls.bam
+  ```
+
 
 ### Output
 Dorado doesn't output `fastq`, as we could expect, but unaligned `sam`.
 `sam` can store more information than `fastq`, that only store sequence ID, sequence itself, and quality scores for each nucleotides. 
-Originally, `sam` are used to store mapping information. A `bam` is smaller than a `fastq.gz` containing exactly the same information.
+Originally, `sam` are used to store mapping information. A `bam` and `cram` are smaller than a `fastq.gz` containing exactly the same information.
 Also, `sam` allows to store metadata. 
 
 **size (GB) according to file type:**       
@@ -317,7 +336,46 @@ Also, `sam` allows to store metadata.
 
 Dorado took 19 hours to basecalled `PromethionGenDev_Test4_13062022_analysis` data .
 
-** basecalled `sam` metadata**
+#### SAM metadata
+| tag    | signification                                              |
+|--------|------------------------------------------------------------|
+| RG:Z:  | <runid\>_<basecalling_model>                                |
+| qs:i:  | mean basecall qscore rounded to the nearest integer        |
+| ns:i:  | the number of samples in the signal prior to trimming      |
+| ts:i:  | the number of samples trimmed from the start of the signal |
+| mx:i:  | read mux                                                   |
+| ch:i:  | read channel                                               |
+| rn:i:  | read number                                                |
+| st:Z:  | read start time (in UTC)                                   |
+| du:f:  | duration of the read (in seconds)                          |
+| f5:Z:  | fast5 file name                                            |
+| sm:f:  | scaling midpoint/mean/median (pA to ~0-mean/1-sd)          |
+| sd:f:  | scaling dispersion (pA to ~0-mean/1-sd)                    |
+| sv:Z:  | scaling version                                            |
+| mv:B:c | sequence to signal move table (optional)                   |
+  
+
+##### Modified base tags
+When modified base output is requested the modified base calls will be output directly in the output files via SAM tags. The MM and ML tags are specified in the SAM format specification documentation. Briefly, these tags represent the relative positions and probability that particular canonical bases have the specified modified bases.
+
+These tags in the SAM/BAM/CRAM formats can be parsed by either the modbam2bed or pysam software for downstream analysis. For algined outputs, visualization of these tags is available in popular genome browsers, including IGV and JBrowse. - from [Bonito documentation](https://github.com/nanoporetech/bonito/blob/master/documentation/SAM.md)
+
+## modbam2bed
+### Install 
+`conda install -c bioconda -c conda-forge -c epi2melabs modbam2bed`
+
+### Run modbam2bed
+
+```
+modbam2bed  <reference.fasta> <reads.bam> -t $THREADS 
+```
+
+
+
+
+
+
+
 
 
 ## [pod5](https://github.com/nanoporetech/pod5-file-format)
@@ -370,6 +428,8 @@ It provides an htlm document in which to inspect the output, and contains:
 - **Duplication levels and over-represented sequences**: Indicate PCR primers, sequencing adapters, multiplexing barcodes etc that are still contained in the data and will have to be trimmed/removed.
 
 
+## [NanoPlot]()
+
 ## [PycoQC](https://github.com/a-slide/pycoQC) `2.5.2`
 Computes metrics and generates interactive QC plots for ONT.
 
@@ -397,10 +457,10 @@ See [output file](https://rawcdn.githack.com/ziphra/long_reads/24373579089a7ae0b
 
 
 ## [LongQC](https://github.com/yfukasawa/LongQC)
-Don't work with compress fastq. Don't work recursivly. 
+Dosen't work with compress fastq. Dosen't work recursivly. 
 Another quality tool for long reads. It has 2 functionalities:
  
-- Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analysis or not. You don't need any reference, meta information, even quality score.
+- Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analyse or not. You don't need any reference, meta information, or even quality score.
 - Platform QC: this extracts and provides very fundamental stats for a run such as length or productivity in PacBio and some plots for productivity check for ONT.
 
 ### Install
@@ -1218,6 +1278,34 @@ o conf commit
 install YAML::XS
 install Sort::Key::Natural
 ```
+#### Add INFO and FORMAT field in separate columns to ANNOTSV html and xlsm
+- Select the INFO column in .tsv, and parse it:
+  ```
+  cat 6622CY001026bis_sniffles_BND.annotated.tsv | awk 'BEGIN {FS="\t"} {print $13}' | sed -re 's/(BND;)(SUPPORT)/\1SVLEN=0;\2/' | sed -re 's/([0-9];)(CHR2)/\1STDEV_LEN=0;\2/' | sed -e 's/\(CHR2\).*\(;STDEV\)/\1\2/' | sed 's/CHR2;//g' | sed 's/;END=[0-9]//g' | tr ";" "\t" | awk 'BEGIN {FS=OFS="\t"} {print $1,$3,$4,$5,$6,$7,$8,$9,$10}' | sed 's/SUPPORT=//g' | sed 's/COVERAGE=//g' | sed 's/STRAND=//g' | sed 's/AF=//g'| sed 's/STDEV_LEN=//g' | sed 's/STDEV_POS=//g'| sed 's/SUPPORT_LONG=//g'|sed 's/SVLEN=//g' | sed 's/INFO/PRECISE\tSVLEN\tSUPPORT\tCOVERAGE\tSTRAND\tAF\tSTDEV_LEN\tSTDEV_POS\tSUPPORT_LONG/g' > sniffles_info.tsv
+  ```
+
+- Same for FORMAT
+  ```
+  cat 6622CY001026bis_sniffles_BND.annotated.tsv | awk 'BEGIN {FS="\t"} {print $15}' | tr ":" "       " | sed 's/SAMPLE/GT\tGQ\tDR\tDV\t/g' > sniffles_format.tsv
+  ```
+- numerote lines to join them after:
+  ```
+  nl sniffles_info.tsv > nl_sniffles_info.tsv
+  nl sniffles_format.tsv > nl_sniffles_format.tsv
+  nl 6622CY001026bis_sniffles_BND.annotated.tsv > nl_6622CY001026bis_sniffles_BND.annotated.tsv
+  ```
+
+- join matching INFO and FORMAT lines to .tsv 
+  ```
+  join -t "       " nl_sniffles_info.tsv nl_sniffles_format.tsv > join_info_format.tsv
+  join -t "       " nl_6622CY001026bis_sniffles_BND.annotated.tsv join_info_format.tsv > join_6622CY001026bis_sniffles_BND.annotated.tsv
+  ```
+- remove empty fields ? 
+  ```
+  cut -d "        " -f2- join_6622CY001026bis_sniffles_BND.annotated.tsv > new_6622CY001026bis_sniffles_BND.annotated.tsv
+  ```
+
+- add columns to  configknotannotsv.yaml 
 
 ## [Snpeff & SnpSift](https://pcingola.github.io/SnpEff/se_commandline/) 
 
@@ -1555,9 +1643,51 @@ bcftools merge 1_noINFO.vcf.gz 2_noINFO_noAD.vcf.gz
 bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' in.vcf.gz > out.txt
 ```
 
-## Hail 
-### Variant dataset 
+## Plugin bcftools split-vep
+The plugin allows to extract fields from structured annotations such as INFO/CSQ created by bcftools/csq or VEP.
 
+### convert `string` type field to `float`
+So numerous filtering can be applied:
+
+```
+bcftools +split-vep -c field1,field2:Float file.vcf.gz
+```
+
+### vcf filtering from WGS to excel friendly
+```
+bcftools filter -i'FILTER="PASS"' vep.vcf.gz | bcftools filter -e 'DP<5 || QUAL<10 || gnomAD_het>2000 || gnomAD_homhem>1' -Oz -o out.vcf.gz
+
+bcftools +split-vep -f '%CHROM %POS %CSQ\n' -d -A tab Filt_vep.vcf.gz > Filt_vep_tab.txt
+
+## list all fields:
+bcftools +split-vep vep.vcf -l Filt_VEP_tab.vcf.gz
+```
+
+## Hail 
+#### install 
+```
+python3 -m pip install hail
+```
+
+To use gcloud stored data (such as gnomAD): 
+- install [gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk?hl=fr) 
+	```
+	curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-408.0.1-linux-x86_64.tar.gz
+	tar -xf google-cloud-cli-408.0.1-linux-x86.tar.gz
+	export PATH=/home/euphrasie/google-cloud-sdk:$PATH
+	export PATH=/home/euphrasie/
+	./google-cloud-sdk/install.sh
+	./google-cloud-sdk/bin/gcloud init
+	```
+- download  gcloud init script for hail: 
+  ```
+  curl -sSL https://broad.io/install-gcs-connector > googlecon.py
+  python3 googlecon.py
+
+  ```
+
+### annotate from gcloud stored database 
+see <https://hail.is/docs/0.2/annotation_database_ui.html>
 
 
 # Miscellaneous 
@@ -1686,6 +1816,9 @@ see `https://cran.r-project.org/bin/linux/ubuntu/` and follow instructions.
 No https in .Renviron 
 
 
+# Promline
+## Install 
+
+See <https://github.com/ziphra/promline>.
 
 
-https://uw-gac.github.io/SISG_2019/index.html

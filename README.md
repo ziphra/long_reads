@@ -23,14 +23,7 @@ While NGS' read length usually span between 75 up to 600bp, long reads technolog
     - [Variant calling](#variant-calling)
       - [Structural Variants](#structural-variants)
       - [Single Nucleotide Variants](#single-nucleotide-variants)
-      - [Copy Number Variation (CNV)](#copy-number-variation-cnv)
     - [Trio callers](#trio-callers)
-    - [Phasing](#phasing)
-    - [Quality metrics](#quality-metrics)
-      - [Basecalling](#basecalling-1)
-      - [Alignment](#alignment)
-      - [Variant calling](#variant-calling-1)
-  - [Cas 9](#cas-9)
 
 ## Long reads technologies 
 Two sequencing technologies relying on very different principles share long reads production today: Pacific Biosciences’ (PacBio) single-molecule real-time (SMRT) sequencing and Oxford Nanopore Technologies’ (ONT) nanopore sequencing. Nanopore offers longer read length, higher throughput, and lower costs than PacBio SMRT sequencing as of now.
@@ -90,16 +83,19 @@ It is the official production basecaller. It is fully supported and documented. 
 New features move from Bonito to Guppy. 
 Bonito can also perform the alignment with minimap2 if an indexed reference is provided.
 
+- **Dorado**
+Dorado is an open-source ONT basecaller. Dorado output nucleotides sequence in unaligned bam output. This format allows to store the nucleotides sequences as well as numerous metadata - such as methylation call.
+
 
 ### Consensus sequences generation
 
-Despite rapid advances in nanopore technologies, long reads still end with a higher base‐level error rate (~15%)in comparison to short read assembly, mainly due to signal noise during translocation. Thus, long-read accuracy remains challenging. 
+Despite rapid advances in nanopore technologies, long reads still end with a higher base‐level error rate in comparison to short read assembly, mainly due to signal noise during translocation. Thus, long-read accuracy remains challenging. 
 
 To overcome accuracy issues, error-correction can be applied before downstream analysis in order to improve quality results.     
 
 However, it is important that error-correction is not done at the expense of read depth and N50. Some tools may discard or trim reads during the process, negatively impacting downstream analysis.  
 
-Depending on the metholodoly used, two type of error-correction exists.
+Depending on the methodology used, two type of error-correction exists.
 
 #### Hybrid correction 
 This type of error-correction tools uses the high accuracy of short-reads (that have error rates usually < 1%) to correct long reads via alignment-based or assembly-based methods. 
@@ -117,9 +113,7 @@ Error-correction performance usually increase with sequencing depth.
 Long-reads error-correction recquire high computational power and is relatively slow when perform prior to the reads assembly. Usually, the error prone reads are first assembled and then corrected, but it can also be done before **and** after.
 
 Most current long-reads genome assembly tools include a built-in error-correction stage prior or after the assembly.  
-It seems (to me) that error correction before assembly as a seperate software is not that common. It might be the reason why most correcting tools are not under active development, compared to assemblers. However, highly accurate sequences are crucial for exact diagnosis. For that matter, testing error-correcting tools prior assembly could be of interest. 
-
-
+It seems (to me) that error correction before assembly as a seperate software is not that common. It might be the reason why most correcting tools are not under active development, compared to assemblers. However, highly accurate sequences are crucial for exact diagnosis. For that matter, error-correcting tools prior assembly can be of interest. 
 
 
 ### *De novo* assembly
@@ -242,37 +236,31 @@ Pipelines using minimap2-sniffles, minimap2-CuteSV as well as LRA-sniffles and L
 
 
 #### Single Nucleotide Variants
-Identifying SNVs is a challenging task, especially with error prone long reads, usually having an error rate above 10%.
+Identifying SNVs is a challenging task, especially with error prone long reads.
 
 
 | **SNV**      | **Notes**                                                                                            |
 |--------------|------------------------------------------------------------------------------------------------------|
 | long shot    | - Only for SNV<br>- Active                                                                           |
 | medaka       | - ONT tool<br>- Active<br>- Create consensus sequence                                                |
-| deepvariant  | - Google<br>- Active<br>- Part of the PEPPER-Margin-DeepVariant pipeline (polishing+variant calling).<br> Used in the [Ultra Rapid paper](https://doi.org/10.1038/s41587-022-01221-5) |
+| deepvariant  | - Google<br>- Active<br>- Part of the PEPPER-Margin-DeepVariant pipeline (polishing+variant calling).<br> Used in the [Ultra Rapid paper](https://doi.org/10.1038/s41587-022-01221-5) - full alignment based |
+| clair3  | Recommended by ONT. Use both pileup and full alignment algorithm |
 
+In long-read variant caller usually used a pile-up or a full alignment algorithm.
+With a pileup-based algorithm, the read alignments are summarized into features and counts before being inputted into a variant-calling network. 
+A pileup file is a text file that contains one line for each position in the genome, with columns for the reference base, the position, the number of reads that align to that position, the consensus sequence of the reads at that position, and the quality scores for each base.
+A pileup format is a way of visualizing the alignment of reads to a specific position in a genome, and it shows the consensus sequence of the reads at that position, as well as any variations from the reference genome.
 
-#### Copy Number Variation (CNV)
+The full alignment algorithm uses entire aligned sequences and compare the read to the reference.
+
+The pileup based algorithms are usually superior in terms of time efficiency, and the full-alignment algorithms provide the best precision and recall.
+
+Callers are usually trained on raw long read sequences, with no error correction prior. For that matter, error correction before variant calling could lower the calling accuracy, as it is not the type of data the caller was specifically trained on. Also, callers usually create consensus sequences in their calling process. 
 
 ### Trio callers
 Treating genetic trio analysis as 3 independant tasks limits accurate variant calling.
 Few callers can take the familly pedigree in trio or duo analysis to perform more acuurate calling. 
-Only Clair3 can do such with ONT data.
-
-### Phasing 
-
-### Quality metrics
-#### Basecalling
-#### Alignment
-#### Variant calling 
-- mendelian error rate 
-
-
-
-## Cas 9
-<https://community.nanoporetech.com/knowledge/bioinformatics/evaluation-of-read-mapping/tutorial>
-
-
+Only Clair3-Trio can do such with ONT data.
 
 
 
