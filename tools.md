@@ -1,54 +1,46 @@
 - [Basecalling](#basecalling)
 	- [Bonito `0.5.1`](#bonito-051)
-		- [Install](#install)
 		- [Run Bonito](#run-bonito)
 		- [Output](#output)
 	- [Guppy](#guppy)
-		- [Install](#install-1)
 			- [update (guppy 6)](#update-guppy-6)
 		- [Run Guppy](#run-guppy)
 		- [Setting custom GPU parameters in Guppy](#setting-custom-gpu-parameters-in-guppy)
 		- [Output](#output-1)
 	- [Dorado Alpha release v.0.0.1](#dorado-alpha-release-v001)
-		- [Install](#install-2)
 		- [Run Dorado](#run-dorado)
 		- [Output](#output-2)
 			- [SAM metadata](#sam-metadata)
 				- [Modified base tags](#modified-base-tags)
 	- [modbam2bed](#modbam2bed)
-		- [Install](#install-3)
 		- [Run modbam2bed](#run-modbam2bed)
+			- [`modbamtools plot`](#modbamtools-plot)
 	- [pod5](#pod5)
-		- [Install](#install-4)
 		- [Run pod5](#run-pod5)
 - [Quality check](#quality-check)
 	- [FastQC `0.11.9`](#fastqc-0119)
-		- [Install](#install-5)
 		- [Run FastQC](#run-fastqc)
 		- [Output](#output-3)
 	- [NanoPlot](#nanoplot)
+		- [Run NanoPlot](#run-nanoplot)
+			- [no sequencing summary](#no-sequencing-summary)
+	- [Nanocomp](#nanocomp)
 	- [PycoQC `2.5.2`](#pycoqc-252)
-		- [Install](#install-6)
 		- [Run PycoQC](#run-pycoqc)
 		- [Output](#output-4)
 	- [LongQC](#longqc)
-		- [Install](#install-7)
 		- [Run LongQC](#run-longqc)
 		- [Output](#output-5)
 	- [MinIONQC](#minionqc)
-		- [Install](#install-8)
 		- [Run MinIONQC](#run-minionqc)
 - [Alignment](#alignment)
 	- [minimap2 2.24-r1122](#minimap2-224-r1122)
-		- [Install](#install-9)
 		- [Run minimap2](#run-minimap2)
 			- [Run minimap2 for dorado](#run-minimap2-for-dorado)
 	- [LRA 1.3.2](#lra-132)
-		- [install](#install-10)
 		- [run LRA](#run-lra)
 - [Assembly](#assembly)
 	- [Shasta](#shasta)
-		- [install](#install-11)
 		- [Run Shasta](#run-shasta)
 		- [Output](#output-6)
 		- [Exploring assembly results](#exploring-assembly-results)
@@ -56,25 +48,19 @@
 		- [Run Shasta with "short" long-reads](#run-shasta-with-short-long-reads)
 		- [God's MinION run (low X and short reads)](#gods-minion-run-low-x-and-short-reads)
 	- [Canu](#canu)
-		- [Install](#install-12)
 		- [Run Canu](#run-canu)
 		- [output](#output-7)
 	- [Flye](#flye)
-		- [install](#install-13)
 		- [Run Flye](#run-flye)
 - [Polishing](#polishing)
 	- [Medaka](#medaka)
-		- [Install](#install-14)
 		- [Run Medaka](#run-medaka)
 - [Assembly quality assesment](#assembly-quality-assesment)
 	- [Pomoxis](#pomoxis)
-		- [Install](#install-15)
 		- [Run Pomoxis](#run-pomoxis)
 	- [QuastLG](#quastlg)
-		- [Install](#install-16)
 		- [Run QuastLG](#run-quastlg)
 	- [Inspector](#inspector)
-		- [Install](#install-17)
 		- [Run Inspector](#run-inspector)
 		- [Output](#output-8)
 	- [Assembly on a specific region](#assembly-on-a-specific-region)
@@ -87,22 +73,18 @@
 			- [Margin](#margin)
 			- [PEPPER HP](#pepper-hp)
 			- [DeepVariant](#deepvariant)
-		- [Install](#install-18)
 			- [Run PEPPER-Margin-Deep Variant workflow](#run-pepper-margin-deep-variant-workflow)
 			- [Output](#output-9)
 		- [clair3](#clair3)
-			- [Install](#install-19)
 			- [Run clair3](#run-clair3)
 				- [SwitchZygosityBasedOnSVCalls module](#switchzygositybasedonsvcalls-module)
 		- [Output](#output-10)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
-			- [Install](#install-20)
 			- [Run Sniffles](#run-sniffles)
 			- [Run Sniffles on low depth data](#run-sniffles-on-low-depth-data)
 			- [Ouput](#ouput)
 		- [CuteSV](#cutesv)
-			- [installation](#installation)
 			- [Run CuteSV](#run-cutesv)
 - [Variants benchmarking](#variants-benchmarking)
 	- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
@@ -111,32 +93,24 @@
 			- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
 			- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 	- [truvari](#truvari)
-		- [Install](#install-21)
 		- [Run truvari](#run-truvari)
 	- [hap.py](#happy)
 		- [Run `hap.py`](#run-happy)
 		- [Output](#output-11)
 - [Variants annotation](#variants-annotation)
 	- [vt](#vt)
-		- [install](#install-22)
 	- [VEP](#vep)
-		- [install](#install-23)
 	- [ANNOTSV](#annotsv)
-		- [install](#install-24)
 		- [Run ANNOTSV](#run-annotsv)
 			- [custom annotation with ANNOTSV](#custom-annotation-with-annotsv)
 		- [Output](#output-12)
 		- [KnotAnnotSV](#knotannotsv)
-			- [Install](#install-25)
 			- [Add INFO and FORMAT field in separate columns to ANNOTSV html and xlsm](#add-info-and-format-field-in-separate-columns-to-annotsv-html-and-xlsm)
 	- [Snpeff & SnpSift](#snpeff--snpsift)
-		- [Install](#install-26)
 		- [Run Snpeff](#run-snpeff)
 	- [ANNOVAR](#annovar)
-		- [Install ANNOVAR](#install-annovar)
 	- [Run Annovar](#run-annovar)
 	- [MAVIS](#mavis)
-		- [Install MAVIS](#install-mavis)
 		- [Run MAVIS annotation only](#run-mavis-annotation-only)
 				- [Run the test folder](#run-the-test-folder)
 - [Annotations](#annotations)
@@ -151,10 +125,8 @@
 	- [gnomAD](#gnomad)
 - [Handling a VCF](#handling-a-vcf)
 	- [GATK](#gatk)
-		- [Install](#install-27)
 		- [liftoverVCF](#liftovervcf)
 	- [vcflib - subset VCF](#vcflib---subset-vcf)
-		- [install](#install-28)
 		- [Run vcflib](#run-vcflib)
 		- [randomly subset a vcf](#randomly-subset-a-vcf)
 	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
@@ -164,11 +136,9 @@
 		- [convert `string` type field to `float`](#convert-string-type-field-to-float)
 		- [vcf filtering from WGS to excel friendly](#vcf-filtering-from-wgs-to-excel-friendly)
 	- [Hail](#hail)
-			- [install](#install-29)
 		- [annotate from gcloud stored database](#annotate-from-gcloud-stored-database)
 - [Miscellaneous](#miscellaneous)
 	- [liftOver UCSC](#liftover-ucsc)
-		- [install](#install-30)
 	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
 	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
 	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
@@ -177,18 +147,16 @@
 	- [HyperExome regions > 30X](#hyperexome-regions--30x)
 	- [`samtools depth`](#samtools-depth)
 	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-		- [install](#install-31)
 - [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
-		- [install R](#install-r)
 - [Promline](#promline)
-	- [Install](#install-32)
+	- [Install](#install)
 
 
 
 # Basecalling
 ## [Bonito](https://github.com/nanoporetech/bonito) `0.5.1`
-### Install
+**Install:**   
 ```
 conda install pip
 pip install --upgrade -pip
@@ -233,7 +201,7 @@ Use the training set `dna_rXX.X_e8.X_hc@vX.X` according to flowcells' nanopore (
 ## [Guppy](https://community.nanoporetech.com/knowledge/bioinformatics/tools) 
 Guppy is the official ONT basecaller. As bonito, it can output `.bam` files. 
 
-### Install 
+**Install:**    
 See ONT [doc](https://community.nanoporetech.com/docs/prepare/library_prep_protocols/Guppy-protocol/v/gpb_2003_v1_revac_14dec2018).
 Guppy was already installed, but needed an update.      
 ```
@@ -307,7 +275,7 @@ Which estimates `gpu_runners_per_device` at **4**.
 
 ## Dorado Alpha release v.0.0.1
 
-### Install
+**Install:**   
 Simply download linux package. Link in the readme.
 
 ### Run Dorado 
@@ -361,10 +329,29 @@ When modified base output is requested the modified base calls will be output di
 These tags in the SAM/BAM/CRAM formats can be parsed by either the modbam2bed or pysam software for downstream analysis. For algined outputs, visualization of these tags is available in popular genome browsers, including IGV and JBrowse. - from [Bonito documentation](https://github.com/nanoporetech/bonito/blob/master/documentation/SAM.md)
 
 ## modbam2bed
-### Install 
+**Install:**    
 `conda install -c bioconda -c conda-forge -c epi2melabs modbam2bed`
 
 ### Run modbam2bed
+#### `modbamtools plot` 
+Recquires a sorted .gtf or .gff file.
+GTF and GFF can be download from gencode. It will allows genes and features annotations.
+
+Those files can be sorted like that: 
+```
+sort -k1,1 -k4,4n gencode.v42.primary_assembly.annotation.gtf > gencode.v42.primary_assembly.sorted.annotation.gtf
+bgzip gencode.v42.primary_assembly.sorted.annotation.gtf
+tabix gencode.v42.primary_assembly.sorted.annotation.gtf.gz
+```
+and then, plotting: 
+
+```
+modbamtools plot -r chr11:116819907-116843072     --gtf gencode.v42.primary_assembly.sorted.annotation.gtf.gz    --out .     --prefix firstplot     --samples sample     --track-titles Genes    aligned_dorado.bam
+```
+
+
+
+
 
 ```
 modbam2bed  <reference.fasta> <reads.bam> -t $THREADS 
@@ -381,7 +368,7 @@ modbam2bed  <reference.fasta> <reads.bam> -t $THREADS
 ## [pod5](https://github.com/nanoporetech/pod5-file-format)
 pod5 is ONT new format for its raw sequencing data. It replaces fast5 and has smaller size and improves read/write performance. ONT has developped a python library and a set of tools for pod5. Dorado, ONT' latest basecaller at the time writing, uses pod5 for best performances.
 
-### Install 
+**Install:**    
 To use ONT's [selection of tools](https://github.com/nanoporetech/pod5-file-format/blob/master/python/README.md) for pod5:
 
 ```
@@ -409,7 +396,7 @@ FastQC performs the quality control of raw fastq files. It identifies biases in 
 Originally made for NGS data, it has not been fully optimized for long reads.   
 Can work recursively, and on compressed fastq.
 
-### Install   
+**Install:**      
 `sudo apt install fastqc`  
 
 ### Run FastQC 
@@ -428,12 +415,75 @@ It provides an htlm document in which to inspect the output, and contains:
 - **Duplication levels and over-represented sequences**: Indicate PCR primers, sequencing adapters, multiplexing barcodes etc that are still contained in the data and will have to be trimmed/removed.
 
 
-## [NanoPlot]()
+## [NanoPlot](https://github.com/wdecoster/NanoPlot) 
+**Install:**    
+`pip install NanoPlot` 
+
+### Run NanoPlot
+`NanoPlot --summary file.txt ./outputdir -t 20`   
+`NanoPlot --ubam dorado.bam ./outputdir -t 20 --huge `   
+`NanoPlot --bam dorado_mmi.bam ./outputdir -t 20 --huge`   
+
+#### no sequencing summary 
+If the sequences were basecalled with dorado, there won't be a sequencing_summary.txt as with guppy, but we can recreate it in order to perform a QC using the sequencing_summary output by MinKnow after sequencing. This summary only miss read length as 'sequence_length_template' and 'mean_qscore_template' which can be found in the dorado uBAM.
+
+- retrieve qscore and add appropriate header:
+```
+samtools view dorado/6622CY001205_dorado.bam | awk -v OFS='\t' '{print $1, $12}'
+sed -i '/qs:i://' qscore.txt
+echo -e "read_id\tmean_qscore_template" | cat - qscore.txt > h_qscore.txt
+
+```
+
+- retrieve reads sequences:
+```
+samtools view dorado/6622CY001205_dorado.bam | awk -v OFS='\t' '{print $1, $10}' > read.txt
+echo -e "read_id\tread" | cat - read.txt > h_read.txt
+```
+
+then: 
+
+```
+import pandas as pd
+
+# reading two files
+summary = pd.read_csv('sequencing_summary_PAM50222_d6bc3dbd_a12a655a.txt',sep='\t')
+qscore = pd.read_csv('h_qscore.txt',sep='\t')
+rl = pd.read_csv('h_read.txt',sep='\t')
+
+# using merge function
+# output1 = pd.merge(summary, qscore, on='read_id')
+
+# calculate read length from read sequence
+rl['sequence_length_template']  = rl['read'].str.len()
+
+# remove read sequence
+rl.drop("read",axis=1,inplace=True)
+
+# merge again 
+output2 = pd.merge(output1, rl, on='read_id')
+
+# save file
+output2.to_csv("complete_summary.txt",index=False,sep='\t')
+
+```
+
+Change columns order: 
+```
+awk -v OFS='\t' '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$17,$16}' summ/complete_summary.txt > summ/complete_summary2.txt 
+```
+
+## [Nanocomp](https://github.com/wdecoster/nanocomp)
+**Install:**    
+```
+pip install NanoComp
+```
+
 
 ## [PycoQC](https://github.com/a-slide/pycoQC) `2.5.2`
 Computes metrics and generates interactive QC plots for ONT.
 
-### Install 
+**Install:**    
 ```
 conda create -n pycoQC python=3.6
 conda activate pycoQC
@@ -463,7 +513,7 @@ Another quality tool for long reads. It has 2 functionalities:
 - Sample QC: this accepts standard sequence file formats, Fastq, Fasta and subread BAM from PacBio sequencers, and users can check whether their data are ready to analyse or not. You don't need any reference, meta information, or even quality score.
 - Platform QC: this extracts and provides very fundamental stats for a run such as length or productivity in PacBio and some plots for productivity check for ONT.
 
-### Install
+**Install:**   
 ```
 git clone https://github.com/yfukasawa/LongQC.git
 cd LongQC/minimap2-coverage && make
@@ -487,7 +537,7 @@ See [output file](https://htmlpreview.github.io/?https://github.com/ziphra/long_
 ## [MinIONQC](https://github.com/roblanf/minion_qc)
 MinIONQC is a quality control tool for MinION and PromethION sequencing data. In comparison to PycoQC it is able to compare multiple sequencing runs, e.g., to compare different library preparation or DNA extraction protocols used.
 
-### Install 
+**Install:**    
 ```
 wget https://raw.githubusercontent.com/roblanf/minion_qc/master/MinIONQC.R -O MinIONQC.R
 wget https://github.com/roblanf/minion_qc/archive/refs/tags/1.4.2.zip
@@ -504,7 +554,7 @@ MinIONQC.R -i path/to/sequencing_summary.txt # or path/to/parent_directory
 # Alignment 
 ## [minimap2 2.24-r1122](https://github.com/lh3/minimap2)
 Does not produce consensus sequence. 
-### Install 
+**Install:**    
 ```
 git clone https://github.com/lh3/minimap2
 cd minimap2 && make
@@ -518,7 +568,7 @@ minimap2 -x map-ont hg38.fa -d ref.mmi
 ```
 - alignment: 
 ```
-minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
+minimap2 -t 10 -ax map-ont -Y hg38.mmi ../fastq/basecalled.fastq | samtools sort -@ 8 -o minimap2_alignment.bam
 ```
 
 	- `t`: number of threads 
@@ -528,6 +578,7 @@ minimap2 -t 10 -ax map-ont hg38.mmi ../fastq/basecalled.fastq | samtools sort -@
 	- The pipe `|` allows to directly write the outputs as `BAM`, and not as `SAM` (or `.paf` in default mode). 
 	- `@`: number of threads 
 	- `MD` MD tag is for SNP/indels calling without looking at the reference.
+	- `Y` use soft clipping for supplementary alignments - recquired by callers.
 
 minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows to convert to `bam` sorted files, its binary format. 
 	
@@ -535,11 +586,13 @@ minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows t
 #### Run minimap2 for dorado 
 
 ```
-bedtools bamtofastq -i  dorado.bam -fq dorado.fastq | minimap2 -t 10 -ax map-ont hg38.mmi - | samtools sort -@ 8 -o minimap2_alignment.bam
+samtools bam2fq $DORADOBAM | minimap2 -Y -y -t 10 -ax map-ont --MD $REFMMI - | samtools sort -@ $THREAD -o $DORADOMMI
 ```
 
+`-Y` will ensure that 
+
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
-### install 
+**Install:**    
 From source, build in a `conda env` with `zlib` and `htslib` installed:  
 
 ```
@@ -563,7 +616,7 @@ Indexs will be stored in the **same directory where the ref.fa is stored!**
 # Assembly
 ## [Shasta](https://github.com/chanzuckerberg/shasta)
 <https://chanzuckerberg.github.io/shasta/>
-### install 
+**Install:**    
 
 ```
 curl -O -L https://github.com/chanzuckerberg/shasta/releases/download/0.8.0/shasta-Linux-0.8.0
@@ -665,7 +718,7 @@ shasta \
 ```
 
 ## [Canu](https://canu.readthedocs.io/en/latest/tutorial.html)
-### Install 
+**Install:**    
 ```
 curl -L https://github.com/marbl/canu/releases/download/v2.2/canu-2.2.Linux-amd64.tar.xz --output canu-2.2.Linux.tar.xz 
 tar -xJf canu-2.2.*.tar.xz
@@ -693,7 +746,7 @@ The `canu` command will execute all the assembly steps, from correction, trimmin
 Way too long
 
 ## [Flye](https://github.com/fenderglass/Flye)
-### install 
+**Install:**    
 ```
 conda create -n flye -c conda-forge -c bioconda flye=2.9
 ```
@@ -711,7 +764,7 @@ flye --nano-hq /media/eservant/Data1/euphrasie/HG002_PAG07506/HG002_PAG07506.fas
 ## [Medaka](https://github.com/nanoporetech/medaka)
 Medaka is a polishing tool developped by ONT. 
 It was often use together with the other polishing tool Racon, but Racon was not updated since 2019 and it seems that there is no difference between assemblies polished with Racon x Medaka and Medaka alone. 
-### Install 
+**Install:**    
 By installing from source, dependencies are resolved and it enables the use of GPU resource.
 
 ```
@@ -734,7 +787,7 @@ medaka_consensus -i /home/euphrasie/Documents/HG002_PAG07506/HG002_PAG07506.fast
 ## [Pomoxis](https://nanoporetech.github.io/pomoxis/programs.html#assess-assembly)
 Pomoxis can be used to do basics operations on assemblies and compute basics assemblies stats. 
 
-### Install 
+**Install:**    
 ```
 conda create --name pomoxis
 conda activate pomoxis
@@ -750,7 +803,7 @@ conda install pomoxis
 
 ## QuastLG
 For evaluating large-scale genome assemblies 
-### Install 
+**Install:**    
 ```
 wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
 tar -xzf quast-5.0.2.tar.gz
@@ -768,7 +821,7 @@ Replace all occurences of `cgi` with `html` in `quast_libs/site_packages/jsontem
 
 ## [Inspector](https://github.com/ChongLab/Inspector) 
 
-### Install 
+**Install:**    
 `Inspector` works in conda `base` env. 
 
 - `git clone https://github.com/ChongLab/Inspector.git`
@@ -828,7 +881,7 @@ Takes the haplotagged alignment file from Margin and produces a set of candidate
 #### DeepVariant
 Produces the final genotype calls by using a convolutional neural network with the candidates from PEPPER HP
 
-### Install 
+**Install:**    
 see <https://github.com/kishwarshafin/pepper/blob/r0.8/docs/quickstart/variant_calling_docker_gpu_quickstart.md>.    
 Followed instruction to install nvidia-docker, but `sudo docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi` or any attempt in docker pulling would result in
  
@@ -909,7 +962,7 @@ Germline small variant caller for long-reads.
 Clair3 integrates both pileup (summarized alignment statistics) model and full-alignment model for variant calling. While a pileup model determines the result of a majority of variant candidates, candidates with uncertain results are further processed with a more computational-intensive haplotype-resolved full-alignment model. [PMDV]() only uses a full-alignment model. The pileup-based algorithms are usually superior in terms of time efficiency and the full-alignment algorithms provide the best precision and recall. 
 
 
-#### Install 
+#**Install:**    
 `conda create -n clair3 -c bioconda clair3 python=3.6.10 -y`
 
 #### Run clair3
@@ -937,7 +990,7 @@ See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
 
 ## Structural variants calling 
 ### Sniffles
-#### Install 
+#**Install:**    
 - Alienware:    
   `pip install sniffles` 
   `pip install sniffles --upgrade` updated to 2.0.7
@@ -978,7 +1031,7 @@ sniffles -i ../minimap2MD/minimap2MD.bam \
 A VCF file. Runs too fast? Difference without MD alignment?
 
 ### [CuteSV](https://github.com/tjiangHIT/cuteSV)
-#### installation 
+#**Install:**   ation 
 
 ```
 conda create -n cutesv
@@ -1045,7 +1098,7 @@ For the reasons below, it is not a random subset of the genome, so performance m
   - The benchmark bed excludes complex SVs, because no current tools exist to compare these.  
 
 ## truvari 
-### Install 
+**Install:**    
 `python3.8` is required to get the latest `numpy` version, one of `truvari`'s dependencies.
 ```
 sudo apt-get install python3.8-dev
@@ -1150,7 +1203,7 @@ Pre-process the vcf file for multi-allelic variants before annotating facilitate
 
 The `vt` toolset allows to split one position in the VCF for all alternatives alleles, so all possible different variants can be represented by one line each. See <https://research-help.genomicsengland.co.uk/display/GERE/Variant+Normalisation>
 
-### install
+**Install:**   
 
 ```
  #this will create a directory named vt in the directory you cloned the repository
@@ -1175,7 +1228,7 @@ The `vt` toolset allows to split one position in the VCF for all alternatives al
 
 ## [VEP](http://www.ensembl.org/info/docs/tools/vep/script/vep_tutorial.html)
 
-### install 
+**Install:**    
 ```
 conda install -c bioconda ensembl-vep==106.1
 vep_install -a cf -s homo_sapiens -y GRCh38 -c ./vep --CONVERT
@@ -1221,7 +1274,7 @@ See [ANNOTSV Readme](https://lbgi.fr/AnnotSV/Documentation/README.AnnotSV_latest
 
 Bad for translocations annotations according to jmsa.
 
-### install 
+**Install:**    
 ```
 git clone https://github.com/lgmgeo/AnnotSV.git
 make PREFIX=. install
@@ -1268,7 +1321,7 @@ A tab-delimited file.
 
 ### KnotAnnotSV
 Create customizable html or xlsm files from an AnnotSV output.
-#### Install
+#**Install:**   
 ```
 # install perl dependencies
 
@@ -1310,7 +1363,7 @@ install Sort::Key::Natural
 ## [Snpeff & SnpSift](https://pcingola.github.io/SnpEff/se_commandline/) 
 
 SnpEff is a variant annotation and effect prediction tool. User can use its own bed and vcf files for custom annotations. 
-### Install 
+**Install:**    
 - `wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 unzip snpEff_latest_core.zip`
 - load reference database: `java -jar snpEff.jar download -v GRCh38`
@@ -1345,7 +1398,7 @@ java -jar SnpSift.jar annotate preannotated.vcf'\
 ## [ANNOVAR](https://annovar.openbioinformatics.org/en/latest/user-guide/startup/)
 ANNOVAR seems to be the most used annotator.
 
-### Install ANNOVAR 
+**Install:**    ANNOVAR 
 ```
 wget http://www.openbioinformatics.org/annovar/download/0wgxR2rIVP/annovar.latest.tar.gz
 tar xvfz annovar.latest.tar.gz
@@ -1418,7 +1471,7 @@ index_annovar.pl hg38_clinvar_20180603_raw.txt -out hg38_clinvar_20180603.txt -c
 
 
 ## [MAVIS](https://mavis.readthedocs.io/en/latest/)
-### Install MAVIS
+**Install:**    MAVIS
 ```
 pip3 install mavis
 pip3 install tabulate==0.8.9
@@ -1514,7 +1567,7 @@ The VEP plugin only allows to get population allele frequency.
 
 # Handling a VCF 
 ## GATK
-### Install
+**Install:**   
 ``` 
 wget gatk-latest.zip
 ```
@@ -1546,7 +1599,7 @@ See <https://genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1362452629_UneFYykJjrSS6NfD
 ## [vcflib](https://github.com/vcflib/vcflib) - subset VCF
 A tool for parsing and manipulating VCF files.
 
-### install
+**Install:**   
 
 ```
 sudo apt-get install libvcflib-tools libvcflib-dev
@@ -1664,7 +1717,7 @@ bcftools +split-vep vep.vcf -l Filt_VEP_tab.vcf.gz
 ```
 
 ## Hail 
-#### install 
+#**Install:**    
 ```
 python3 -m pip install hail
 ```
@@ -1693,7 +1746,7 @@ see <https://hail.is/docs/0.2/annotation_database_ui.html>
 # Miscellaneous 
 ## liftOver UCSC 
 Move annotations from one assembly to another.
-### install 
+**Install:**    
 - create an account to download the executable on <https://genome-store.ucsc.edu/>
 - `sudo chmod ugo+x liftOver`
 - add liftOver path to `~/.bashrc`
@@ -1779,7 +1832,7 @@ It calculates the IBD (Identical By Descent).
 
 It can assessed grand-parents grand-child relationship and siblings
 
-### install
+**Install:**   
 
 ```
 git clone https://github.com/Illumina/akt.git
@@ -1801,7 +1854,7 @@ See link to exome
   iconv -f ISO-8859-1 -t UTF-8//TRANSLIT /file.vcf -o utf8_file.vcf
   ```
 
-### install R 
+**Install:**    R 
 
 First: 
 
