@@ -36,7 +36,7 @@ See [HTML sequencing run1 report](https://raw.githack.com/ziphra/long_reads/main
 - `guppy 6.3.8`, super accurate (SUP) model `dna_r9.4.1_450bps_sup_prom.cfg`, ~69 hours
 - `dorado`, `dna_r9.4.1_e8_sup@v3.3`, ~80 hours.
 
-The second run was basecalled in real time.
+The second run was also basecalled in real time on the Promethion.
 
 
 ## mapping 
