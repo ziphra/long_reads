@@ -23,6 +23,7 @@ While NGS' read length usually span between 75 up to 600bp, long reads technolog
     - [Variant calling](#variant-calling)
       - [Structural Variants](#structural-variants)
       - [Single Nucleotide Variants](#single-nucleotide-variants)
+      - [Repeat expansion](#repeat-expansion)
     - [Trio callers](#trio-callers)
 
 ## Long reads technologies 
@@ -256,6 +257,10 @@ The full alignment algorithm uses entire aligned sequences and compare the read 
 The pileup based algorithms are usually superior in terms of time efficiency, and the full-alignment algorithms provide the best precision and recall.
 
 Callers are usually trained on raw long read sequences, with no error correction prior. For that matter, error correction before variant calling could lower the calling accuracy, as it is not the type of data the caller was specifically trained on. Also, callers usually create consensus sequences in their calling process. 
+
+#### Repeat expansion 
+The detectable size range of STR expansions is limited by the read length of the sequencing technology, typically in the range of 120–150 bp for second-generation sequencing, and under estimation of large STR expansion are often underestimated.
+Repeat expansion loci have been shown to have an altered methylation status, which can change the disease phenotype. To this end, characterisation of the methylation status in expansion loci, and untangling its effects on different disease phenotypes will be an important question to further examine. 
 
 ### Trio callers
 Treating genetic trio analysis as 3 independant tasks limits accurate variant calling.
