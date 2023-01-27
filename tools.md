@@ -25,6 +25,7 @@
 		- [Run NanoPlot](#run-nanoplot)
 			- [no sequencing summary](#no-sequencing-summary)
 	- [Nanocomp](#nanocomp)
+		- [Run Nanocomp](#run-nanocomp)
 	- [PycoQC `2.5.2`](#pycoqc-252)
 		- [Run PycoQC](#run-pycoqc)
 		- [Output](#output-4)
@@ -478,7 +479,7 @@ awk -v OFS='\t' '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$17,$
 ```
 pip install NanoComp
 ```
-
+### Run Nanocomp
 
 ## [PycoQC](https://github.com/a-slide/pycoQC) `2.5.2`
 Computes metrics and generates interactive QC plots for ONT.

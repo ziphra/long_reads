@@ -1,4 +1,5 @@
 # Promethion_SQK-LSK110_05012023
+MinKnown was not up to date, which is the reason for the bad results.
 
 See [promline](https://github.com/ziphra/promline) for the pipeline.
 
