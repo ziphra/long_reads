@@ -1,7 +1,7 @@
 # Promethion_SQKLSK110_17102022
 # and Promethion_SQKLSK110_14112022
-- [Promethion_SQKLSK110_17102022](#promethion_sqklsk110_17102022)
-- [and Promethion_SQKLSK110_14112022](#and-promethion_sqklsk110_14112022)
+- [Promethion\_SQKLSK110\_17102022](#promethion_sqklsk110_17102022)
+- [and Promethion\_SQKLSK110\_14112022](#and-promethion_sqklsk110_14112022)
   - [Basecalling](#basecalling)
   - [mapping](#mapping)
   - [QC](#qc)
@@ -25,7 +25,8 @@
 
 See [pipeline.sh](./scripts/pipeline.sh) for code. 
 
-See [HTML sequencing run1 report](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/report_PAM61860_20221024_1205_63f212a3.html), and [HTML sequencing run2 report](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/report_PAM61860_20221024_1205_63f212a3.html).
+See [HTML sequencing run1 report](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/report_PAM61860_20221024_1205_63f212a3.html), and [HTML sequencing run2 report](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/
+report_PAM59472_20221115_1054_9c810272.html).
 
 - **Date:** 27/10/22
 - **Yield:** 78.9 Gb
@@ -50,21 +51,21 @@ Reads were aligned back to `GRCh38.p13`: an improved version of hg38 with masked
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38 exclusion    | 6E+07    | 18.4          | 13500 | 9010               | 0.969                |
 
-- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/Promethion_SQKLSK110_17102022_basecalledQC.html)
+- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/Promethion_SQKLSK110_17102022_basecalledQC.html)
 
 ### run2
 | Alignment summary | Reads    | Mean coverage | N50   | Median read length | Median identity freq |
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38 exclusion    | 3.7E+6    | 9          | 13300 | 8750               | 0.970                |
 
-- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/Promethion_SQKLSK110_14112022_basecalledQC.html)
+- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/Promethion_SQKLSK110_14112022_basecalledQC.html)
 
 ### run1 + run2
 | Alignment summary | Reads    | Mean coverage | N50   | Median read length | Median identity freq |
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38 exclusion    | 1E+11    | 27.4          | 13800 | 8600               | 0.969                |
 
-- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/Promethion_SQKLSK110_1411_17102022_basecalledQC.html)
+- See [basecalling and alignment QC](https://raw.githack.com/ziphra/long_reads/main/Promethion_SQKLSK110_17102022/files/Promethion_SQKLSK110_1411_17102022_basecalledQC.html)
 
 ### Run1 compared to `PromethionGenDev_Test4`
 - Basecalling 
