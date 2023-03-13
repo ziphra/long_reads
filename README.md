@@ -259,7 +259,9 @@ The pileup based algorithms are usually superior in terms of time efficiency, an
 Callers are usually trained on raw long read sequences, with no error correction prior. For that matter, error correction before variant calling could lower the calling accuracy, as it is not the type of data the caller was specifically trained on. Also, callers usually create consensus sequences in their calling process. 
 
 #### Repeat expansion 
+Short tandem repeats are tandem repetitions of small genomics segment that are a couple of base pairs in length. The number of repeats for a locus vary a lot between individuals. Repeat size of such evenments can be associated with diseases and correlated with  phenotypic severity.
 The detectable size range of STR expansions is limited by the read length of the sequencing technology, typically in the range of 120–150 bp for second-generation sequencing, and under estimation of large STR expansion are often underestimated.
+
 Repeat expansion loci have been shown to have an altered methylation status, which can change the disease phenotype. To this end, characterisation of the methylation status in expansion loci, and untangling its effects on different disease phenotypes will be an important question to further examine. 
 
 ### Trio callers

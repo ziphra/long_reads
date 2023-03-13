@@ -7,7 +7,7 @@
 		- [Run Guppy](#run-guppy)
 		- [Setting custom GPU parameters in Guppy](#setting-custom-gpu-parameters-in-guppy)
 		- [Output](#output-1)
-	- [Dorado Alpha release v.0.0.1](#dorado-alpha-release-v001)
+	- [Dorado](#dorado)
 		- [Run Dorado](#run-dorado)
 		- [Output](#output-2)
 			- [SAM metadata](#sam-metadata)
@@ -15,6 +15,8 @@
 	- [modbam2bed](#modbam2bed)
 		- [Run modbam2bed](#run-modbam2bed)
 			- [`modbamtools plot`](#modbamtools-plot)
+	- [duplex tools](#duplex-tools)
+		- [Duplex basecalling](#duplex-basecalling)
 	- [pod5](#pod5)
 		- [Run pod5](#run-pod5)
 - [Quality check](#quality-check)
@@ -87,11 +89,13 @@
 			- [Ouput](#ouput)
 		- [CuteSV](#cutesv)
 			- [Run CuteSV](#run-cutesv)
+		- [straglr](#straglr)
+			- [Run straglr](#run-straglr)
 - [Variants benchmarking](#variants-benchmarking)
 	- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
 		- [Small variants truth set](#small-variants-truth-set)
 		- [SV truth set](#sv-truth-set)
-			- [NIST SVs Integration_v0.6](#nist-svs-integration_v06)
+			- [NIST SVs Integration\_v0.6](#nist-svs-integration_v06)
 			- [GIAB Challenging Medically Relevant Gene Benchmark](#giab-challenging-medically-relevant-gene-benchmark)
 	- [truvari](#truvari)
 		- [Run truvari](#run-truvari)
@@ -107,23 +111,10 @@
 		- [Output](#output-12)
 		- [KnotAnnotSV](#knotannotsv)
 			- [Add INFO and FORMAT field in separate columns to ANNOTSV html and xlsm](#add-info-and-format-field-in-separate-columns-to-annotsv-html-and-xlsm)
-	- [Snpeff & SnpSift](#snpeff--snpsift)
+	- [Snpeff \& SnpSift](#snpeff--snpsift)
 		- [Run Snpeff](#run-snpeff)
 	- [ANNOVAR](#annovar)
 	- [Run Annovar](#run-annovar)
-	- [MAVIS](#mavis)
-		- [Run MAVIS annotation only](#run-mavis-annotation-only)
-				- [Run the test folder](#run-the-test-folder)
-- [Annotations](#annotations)
-	- [OMIM](#omim)
-		- [custom OMIM](#custom-omim)
-	- [DGV](#dgv)
-		- [custom DGV](#custom-dgv)
-	- [Clinvar](#clinvar)
-	- [HGMD](#hgmd)
-	- [sysnnd](#sysnnd)
-		- [custom sysndd](#custom-sysndd)
-	- [gnomAD](#gnomad)
 - [Handling a VCF](#handling-a-vcf)
 	- [GATK](#gatk)
 		- [liftoverVCF](#liftovervcf)
@@ -137,6 +128,8 @@
 		- [convert `string` type field to `float`](#convert-string-type-field-to-float)
 		- [vcf filtering from WGS to excel friendly](#vcf-filtering-from-wgs-to-excel-friendly)
 	- [Hail](#hail)
+		- [**Install:**](#install)
+		- [Hail recurrence database](#hail-recurrence-database)
 		- [annotate from gcloud stored database](#annotate-from-gcloud-stored-database)
 - [Miscellaneous](#miscellaneous)
 	- [liftOver UCSC](#liftover-ucsc)
@@ -145,13 +138,13 @@
 	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
 	- [sam flags](#sam-flags)
 	- [reads with `MAPQ==0`](#reads-with-mapq0)
-	- [HyperExome regions > 30X](#hyperexome-regions--30x)
+	- [HyperExome regions \> 30X](#hyperexome-regions--30x)
 	- [`samtools depth`](#samtools-depth)
 	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
 - [Computing issue](#computing-issue)
 		- [convert file encoding](#convert-file-encoding)
 - [Promline](#promline)
-	- [Install](#install)
+	- [Install](#install-1)
 
 
 
@@ -274,13 +267,13 @@ Which estimates `gpu_runners_per_device` at **4**.
 - fastq or bam depending if there were an optional alignment step. Output might be separated into `pass`, `fail`, and `calibration_strands` folders depending on wether they pass or fail the filtering condition. For faster models, the filtering score is 7 (~85% accuracy) but is higher for more accurate models.
 - what is the `dump-dp` folder for?
 
-## Dorado Alpha release v.0.0.1
+## Dorado 
 
 **Install:**   
 Simply download linux package. Link in the readme.
 
 ### Run Dorado 
-- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget https://nanoporetech.box.com/shared/static/g6rbgd12xfunw5plgec3zlyy35692vy3.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/utils/models.h).
+- download a model: `dorado download --model dna_r9.4.1_e8_sup@v3.3` doesn't work, but one can `wget` the requested model folder with `wget  https://cdn.oxfordnanoportal.com/software/analysis/dorado/MODELNAME.zip`. Models' paths can be found [here](https://github.com/nanoporetech/dorado/blob/master/dorado/utils/models.h).
 
 ```
 dorado basecaller dna_r10.4.1_e8.2_260bps_hac@v4.0.0 pod5s/ | samtools view -Shb > calls.bam
@@ -359,9 +352,38 @@ modbam2bed  <reference.fasta> <reads.bam> -t $THREADS
 ```
 
 
+## [duplex tools](https://github.com/nanoporetech/duplex-tools)
+Duplex Tools contains a set of utilities for dealing with Duplex sequencing data. Tools are provided to identify and prepare duplex pairs for basecalling by Dorado (recommended) and Guppy, and for recovering simplex basecalls from incorrectly concatenated pairs.
 
+**Install:**   
+```
+pip install duplex_tools
+```
+### Duplex basecalling 
 
+- simplex basecalling with --emit-moves option so pairs can be retrieved in following step.
+  This first simplex basecalling is just to retrieved pairs.
+	```
+	dorado basecaller dna_r10.4.1_e8.2_400bps_fast@v4.0.0 pod5s/ --emit-moves > unmapped_reads_with_moves.sam
+	```
+- pair reads:  
+  The unmapped_reads_with_moves.sam allows to reconstiture pair reads.
+  	```
+	duplex_tools pair --output_dir pairs_from_bam unmapped_reads_with_moves.sam
+	```
 
+- recover and pair duplex reads (for cases where template/complement are contained within a single minknow read)
+	```
+	duplex_tools split_pairs unmapped_reads_with_moves.sam pod5s/ pod5s_splitduplex/
+	cat pod5s_splitduplex/*_pair_ids.txt > split_duplex_pair_ids.txt
+	```
+
+- stereo basecall all the reads. This two commands output the reads basecalled to align.
+	```
+	dorado duplex dna_r10.4.1_e8.2_400bps_sup@v4.0.0 pod5s/ --pairs pairs_from_bam/pair_ids_filtered.txt > duplex_orig.sam
+
+	dorado duplex dna_r10.4.1_e8.2_400bps_sup@v4.0.0 pod5s_splitduplex/ --pairs split_duplex_pair_ids.txt > duplex_splitduplex.sam
+	```
 
 
 
@@ -429,7 +451,7 @@ It provides an htlm document in which to inspect the output, and contains:
 If the sequences were basecalled with dorado, there won't be a sequencing_summary.txt as with guppy, but we can recreate it in order to perform a QC using the sequencing_summary output by MinKnow after sequencing. This summary only miss read length as 'sequence_length_template' and 'mean_qscore_template' which can be found in the dorado uBAM.
 
 - retrieve qscore and add appropriate header:
-```
+```bash
 samtools view dorado/6622CY001205_dorado.bam | awk -v OFS='\t' '{print $1, $12}'
 sed -i '/qs:i://' qscore.txt
 echo -e "read_id\tmean_qscore_template" | cat - qscore.txt > h_qscore.txt
@@ -437,41 +459,37 @@ echo -e "read_id\tmean_qscore_template" | cat - qscore.txt > h_qscore.txt
 ```
 
 - retrieve reads sequences:
-```
+```bash
 samtools view dorado/6622CY001205_dorado.bam | awk -v OFS='\t' '{print $1, $10}' > read.txt
 echo -e "read_id\tread" | cat - read.txt > h_read.txt
 ```
 
 then: 
 
-```
+```python 
 import pandas as pd
 
-# reading two files
+# reading two csv files
 summary = pd.read_csv('sequencing_summary_PAM50222_d6bc3dbd_a12a655a.txt',sep='\t')
 qscore = pd.read_csv('h_qscore.txt',sep='\t')
-rl = pd.read_csv('h_read.txt',sep='\t')
 
 # using merge function
-# output1 = pd.merge(summary, qscore, on='read_id')
+output = pd.merge(summary, qscore, on='read_id')
 
-# calculate read length from read sequence
+rl = pd.read_csv('h_read.txt',sep='\t')
+
 rl['sequence_length_template']  = rl['read'].str.len()
 
-# remove read sequence
 rl.drop("read",axis=1,inplace=True)
 
-# merge again 
-output2 = pd.merge(output1, rl, on='read_id')
+output2 = pd.merge(summary, qscore, rl, on='read_id')
 
-# save file
-output2.to_csv("complete_summary.txt",index=False,sep='\t')
-
+output2.to_csv('handmade_summary.txt', sep='\t', index=False)
 ```
 
-Change columns order: 
-```
-awk -v OFS='\t' '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$17,$16}' summ/complete_summary.txt > summ/complete_summary2.txt 
+verify and change columns order: 
+```bash
+awk -v OFS='\t' '{print $4, $5, $6, $7, $1, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $3, $2}' handmade_summary.txt > handmade_summary2.txt
 ```
 
 ## [Nanocomp](https://github.com/wdecoster/nanocomp)
@@ -480,12 +498,15 @@ awk -v OFS='\t' '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$17,$
 pip install NanoComp
 ```
 ### Run Nanocomp
+```
+NanoComp --summary summary1.txt summary2.txt summary3.txt-n run1 run2 run3
+```
 
 ## [PycoQC](https://github.com/a-slide/pycoQC) `2.5.2`
 Computes metrics and generates interactive QC plots for ONT.
 
 **Install:**    
-```
+```bash
 conda create -n pycoQC python=3.6
 conda activate pycoQC
 conda install -c aleg -c anaconda -c bioconda -c conda-forge pycoQC=2.5.2
@@ -494,9 +515,10 @@ conda install -c aleg -c anaconda -c bioconda -c conda-forge pycoQC=2.5.2
 ### Run PycoQC
 PycoQC relies on the `sequencing_summary.txt` file generated by basecallers but can also generate a summary file from basecalled fast5 files.
 
+If the sequences were basecalled with dorado, there won't be a sequencing_summary.txt as with guppy, see []()
 
 ``` 
-pycoQC -f basecalled_summary.tsv -a file.bam -o basecalled.html
+pycoQC -f sequencing-summary.txt -a file.bam -o basecalled.html
 ```
 
 - `f`: `sequencing-summary.txt` from the basecaller 
@@ -590,7 +612,7 @@ minimap2 produces `.sam` (Sequence Alignment and Map) files. `samtools` allows t
 samtools bam2fq $DORADOBAM | minimap2 -Y -y -t 10 -ax map-ont --MD $REFMMI - | samtools sort -@ $THREAD -o $DORADOMMI
 ```
 
-`-Y` will ensure that 
+`-y` will pass fastq comments (such as methylation tags) between input and output
 
 ## [LRA 1.3.2](https://github.com/ChaissonLab/LRA)
 **Install:**    
@@ -991,7 +1013,7 @@ See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
 
 ## Structural variants calling 
 ### Sniffles
-#**Install:**    
+**Install:**    
 - Alienware:    
   `pip install sniffles` 
   `pip install sniffles --upgrade` updated to 2.0.7
@@ -1032,7 +1054,7 @@ sniffles -i ../minimap2MD/minimap2MD.bam \
 A VCF file. Runs too fast? Difference without MD alignment?
 
 ### [CuteSV](https://github.com/tjiangHIT/cuteSV)
-#**Install:**   ation 
+**Install:**   
 
 ```
 conda create -n cutesv
@@ -1049,6 +1071,61 @@ cuteSV ../lra/lra.bam /media/god/DATA/reference_genome/hg38/hg38_GenDev.fa lra_c
     --diff_ratio_merging_DEL 0.3 \
     --threads 16
 ```
+
+### [straglr](https://github.com/bcgsc/straglr)
+**Install:**   
+```
+git clone https://github.com/bcgsc/straglr
+cd straglr
+conda env create --name straglr --file=environment.yaml
+```
+
+Install [Tandem Repeats Findern](https://github.com/Benson-Genomics-Lab/TRF) and `blastn`.
+
+```
+wget https://github.com/Benson-Genomics-Lab/TRF/archive/refs/tags/v4.09.1.tar.gz
+cd v4.09.1
+mkdir build
+cd build
+../configure
+make
+# To install to system
+sudo make install
+```
+And add to the PATH.
+
+```
+sudo apt install ncbi-blast+
+```
+
+"Highly repetitive genomic regions may be problematic for aligners and give rise to questionable genotyping results. They can be skipped over in Straglr's genome scan. To generate a bed file that contains all segmental duplications, centromeric and gap regions for exclusion from a Straglr run:"   
+
+```
+# + supplementary awk command
+(cut -f1-3 hg38.segdups.bed;awk '$3-$2>=10000' hg38.simple_repeats.bed | cut -f1-3;cat hg38.centromeres.bed hg38_gaps.bed) | awk -v OFS='\t' '{print $1, $2, $3}' | bedtools sort -i - | bedtools merge -i - -d 1000 > hg38.exclude.bed
+
+``` 
+
+To do so, download the recquired files from the [UCSC table browser](http://genome.ucsc.edu/cgi-bin/hgTables)
+
+
+Patch and contigs name doesn't match in this hg38.exclude.bed and the bam file aligned to our hg38 version, causing straglr to fail.
+
+To homogenize names: 
+```
+sed 's/^[^_]*_//'  hg38.exclude.bed | awk 'BEGIN{FS=OFS="\t"} {sub(/[_].*/,"",$1)} 1' | sed 's/v1/\.1/' | sed 's/v2/\.2/' >  hg38_renamed.exclude.bed
+```
+
+#### Run straglr
+
+
+```
+
+
+
+
+```
+
 
 
 # Variants benchmarking 
@@ -1256,14 +1333,18 @@ VEP can annotate SV if the `SVTYPE` INFO field in the VCF is set to one of the c
   ```
   And then it works.
 
+- **vep 109.3**:
+  - New install:
+  ```
 
+  ```
 
 see [this page](https://research-help.genomicsengland.co.uk/pages/viewpage.action?pageId=38046629) for a quick tutorial.
 
 
 
 
-
+!
 
 
 
@@ -1564,7 +1645,56 @@ The Genome Aggregation Database (gnomAD) is composed of exome and genome sequenc
 It is recommended using Hail and [Hail utilities for gnomAD](https://broadinstitute.github.io/gnomad_methods/api_reference/) to work with the data.
 The VEP plugin only allows to get population allele frequency.
 
+# Prediction tools 
+## CAPICE 
+### Install 
+```
+conda create -n capice python=3.11
+conda activate capice
+pip install capice
+wget https://github.com/apptainer/apptainer/releases/download/v1.1.6/apptainer_1.1.6_amd64.deb
+sudo apt install -y ./apptainer_1.1.6_amd64.deb
 
+
+wget https://raw.githubusercontent.com/molgenis/vip/main/resources/vep/plugins/Grantham.pm
+mv Grantham.pm ~/.vep/Plugins/
+
+wget https://github.com/ucscGenomeBrowser/kent/archive/v335_base.tar.gz
+tar xzf v335_base.tar.gz
+export KENT_SRC=$PWD/kent-335_base/src
+export MACHTYPE=$(uname -m)
+export CFLAGS="-fPIC"
+export MYSQLINC=`mysql_config --include | sed -e 's/^-I//g'`
+export MYSQLLIBS=`mysql_config --libs
+cd $KENT_SRC/lib
+echo 'CFLAGS="-fPIC"' > ../inc/localEnvironment.mk
+make clean && make
+cd ../jkOwnLib
+make clean && make
+cpanm YAML
+cpanm ExtUtils::CBuilder
+cpanm Bio::Root::Version --force
+cpanm Bio::DB::BigFile --force
+
+```
+### Run CAPICE
+- In order to score your variants through CAPICE, you have to annotate your variants using VEP by using the following command: 
+```
+vep --input_file <path to your input file> --format vcf --output_file <path to your output file> \
+--vcf --compress_output gzip --sift s --polyphen s --numbers --symbol \
+--shift_3prime 1 --allele_number --refseq --total_length --no_stats --offline --cache \
+--dir_cache </path/to/cache/107> --species "homo_sapiens" --assembly <GRCh37 or GRCh38> \
+--fork <n_threads> --dont_skip --allow_non_variant --use_given_ref --exclude_predicted \
+--flag_pick_allele --plugin Grantham \
+--plugin SpliceAI,snv=<path/to/spliceai_scores.masked.snv.vcf.gz>,indel=</path/to/spliceai_scores.masked.indel.vcf.gz> \
+--custom "<path/to/gnomad.total.sites.stripped.vcf.gz>,gnomAD,vcf,exact,0,AF,HN" \
+--custom "<path/to/phyloP100way.bw>,phyloP,bigwig,exact,0" \
+--dir_plugins <path to your VEP plugin directory>
+```
+- Then convert the VEP output to TSV using their BCFTools script: `./scripts/convert_vep_vcf_to_tsv_capice.sh -i </path/to/vep_output.vcf.gz> -o </path/to/capice_input.tsv.gz> `
+- Run CAPICE: 
+  ```
+  capice predict -i input.vcf -o output.vcf -m 
 
 # Handling a VCF 
 ## GATK
@@ -1718,13 +1848,14 @@ bcftools +split-vep vep.vcf -l Filt_VEP_tab.vcf.gz
 ```
 
 ## Hail 
-#**Install:**    
+### **Install:**    
+
 ```
 python3 -m pip install hail
 ```
 
 To use gcloud stored data (such as gnomAD): 
-- install [gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk?hl=fr) 
+- install [gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk?hl=fr) ????
 	```
 	curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-408.0.1-linux-x86_64.tar.gz
 	tar -xf google-cloud-cli-408.0.1-linux-x86.tar.gz
@@ -1739,6 +1870,14 @@ To use gcloud stored data (such as gnomAD):
   python3 googlecon.py
 
   ```
+
+
+
+### Hail recurrence database
+
+- `hail.methods.variant_qc(mt, name='variant_qc')`
+  Compute common variant statistics (quality control metrics).
+
 
 ### annotate from gcloud stored database 
 see <https://hail.is/docs/0.2/annotation_database_ui.html>
