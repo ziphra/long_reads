@@ -91,6 +91,10 @@
 			- [Run CuteSV](#run-cutesv)
 		- [straglr](#straglr)
 			- [Run straglr](#run-straglr)
+		- [QDNAseq](#qdnaseq)
+			- [Run QDNAseq](#run-qdnaseq)
+		- [Smoove](#smoove)
+			- [Run Smoove](#run-smoove)
 - [Variants benchmarking](#variants-benchmarking)
 	- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
 		- [Small variants truth set](#small-variants-truth-set)
@@ -115,36 +119,9 @@
 		- [Run Snpeff](#run-snpeff)
 	- [ANNOVAR](#annovar)
 	- [Run Annovar](#run-annovar)
-- [Handling a VCF](#handling-a-vcf)
-	- [GATK](#gatk)
-		- [liftoverVCF](#liftovervcf)
-	- [vcflib - subset VCF](#vcflib---subset-vcf)
-		- [Run vcflib](#run-vcflib)
-		- [randomly subset a vcf](#randomly-subset-a-vcf)
-	- [filter VCFs with `bcftools`](#filter-vcfs-with-bcftools)
-	- [Transfer/custom VCF annotation - an example](#transfercustom-vcf-annotation---an-example)
-	- [vcf to tab delimited file](#vcf-to-tab-delimited-file)
-	- [Plugin bcftools split-vep](#plugin-bcftools-split-vep)
-		- [convert `string` type field to `float`](#convert-string-type-field-to-float)
-		- [vcf filtering from WGS to excel friendly](#vcf-filtering-from-wgs-to-excel-friendly)
-	- [Hail](#hail)
-		- [**Install:**](#install)
-		- [Hail recurrence database](#hail-recurrence-database)
-		- [annotate from gcloud stored database](#annotate-from-gcloud-stored-database)
-- [Miscellaneous](#miscellaneous)
-	- [liftOver UCSC](#liftover-ucsc)
-	- [retrieve a specific regions out of a bam file](#retrieve-a-specific-regions-out-of-a-bam-file-1)
-	- [retrieve reference's specific region in `.fasta`](#retrieve-references-specific-region-in-fasta)
-	- [Add MD tags to .`bam`](#add-md-tags-to-bam)
-	- [sam flags](#sam-flags)
-	- [reads with `MAPQ==0`](#reads-with-mapq0)
-	- [HyperExome regions \> 30X](#hyperexome-regions--30x)
-	- [`samtools depth`](#samtools-depth)
-	- [akt - ancestry and kinship toolkit](#akt---ancestry-and-kinship-toolkit)
-- [Computing issue](#computing-issue)
-		- [convert file encoding](#convert-file-encoding)
+	- [list all fields:](#list-all-fields)
 - [Promline](#promline)
-	- [Install](#install-1)
+	- [Install](#install)
 
 
 
@@ -1126,6 +1103,39 @@ sed 's/^[^_]*_//'  hg38.exclude.bed | awk 'BEGIN{FS=OFS="\t"} {sub(/[_].*/,"",$1
 
 ```
 
+### [QDNAseq](https://bioconductor.org/packages/release/bioc/vignettes/QDNAseq/inst/doc/QDNAseq.pdf) 
+**Install:**   
+in Rstudio: 
+
+```R
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("QDNAseq")
+```
+#### Run QDNAseq 
+QDNAseq can be run trough epi2me-labs nextflow: 
+
+```
+nextflow run epi2me-labs/wf-human-variation --cnv --bam ../mmi/6622CY001205_dorado_mmi.bam --ref /media/eservant/HDD_12To_31/ref/hg38_exclusion/GRCh38.p13.GRC_exclusions_T2Tv2.fa --basecaller_cfg 'dna_r10.4.1_e8.2_400bps_hac@v4.0.0' --sample_name 6622CY001205 --threads 10 --bin_size 15
+```
+
+### [Smoove](https://github.com/brentp/smoove)
+"smoove simplifies and speeds calling and genotyping SVs for short reads. It also improves specificity by removing many spurious alignment signals that are indicative of low-level noise and often contribute to spurious calls. There is a blog-post describing smoove in more detail [here](https://brentp.github.io/post/smoove/).
+
+It both supports small cohorts in a single command, and population-level calling with 4 total steps, 2 of which are parallel by sample."
+
+
+**Install:**   
+```
+docker pull brentp/smoove
+```
+
+#### Run Smoove
+```
+docker run -it -v "REF":"REF" -v "BAM":"BAM" brentp/smoove smoove call -x --name KAPA-HyperExome_21032023-1 --fasta /home/jburatti/Tools/ref_genomes/hg19/hg19_std_M-rCRS_Y-PAR-mask.fa -p 10 --genotype /BAM/*.dedup.bam
+```
+
 
 
 # Variants benchmarking 
@@ -1336,6 +1346,8 @@ VEP can annotate SV if the `SVTYPE` INFO field in the VCF is set to one of the c
 - **vep 109.3**:
   - New install:
   ```
+	conda install -c bioconda ensembl-vep==109.3
+	vep_install -a cf -s homo_sapiens -y GRCh38 -c ./vep --CONVERT
 
   ```
 
@@ -1359,10 +1371,10 @@ Bad for translocations annotations according to jmsa.
 **Install:**    
 ```
 git clone https://github.com/lgmgeo/AnnotSV.git
-make PREFIX=. install
 cd AnnotSV/
+make PREFIX=. install
 curl -C - -LO https://www.lbgi.fr/~geoffroy/Annotations/Annotations_Human_3.1.1.tar.gz -k
-tar -xvfz Annotations_Human_3.1.1.tar.gz
+tar -xvf Annotations_Human_3.1.1.tar.gz
 
 sudo apt-get install tclsh
 
@@ -1405,6 +1417,8 @@ A tab-delimited file.
 Create customizable html or xlsm files from an AnnotSV output.
 #**Install:**   
 ```
+git clone https://github.com/mobidic/knotAnnotSV.git
+
 # install perl dependencies
 
 cpan 
@@ -1671,10 +1685,7 @@ echo 'CFLAGS="-fPIC"' > ../inc/localEnvironment.mk
 make clean && make
 cd ../jkOwnLib
 make clean && make
-cpanm YAML
-cpanm ExtUtils::CBuilder
-cpanm Bio::Root::Version --force
-cpanm Bio::DB::BigFile --force
+conda install -c bioconda perl-bio-bigfile
 
 ```
 ### Run CAPICE
@@ -1691,10 +1702,11 @@ vep --input_file <path to your input file> --format vcf --output_file <path to y
 --custom "<path/to/phyloP100way.bw>,phyloP,bigwig,exact,0" \
 --dir_plugins <path to your VEP plugin directory>
 ```
-- Then convert the VEP output to TSV using their BCFTools script: `./scripts/convert_vep_vcf_to_tsv_capice.sh -i </path/to/vep_output.vcf.gz> -o </path/to/capice_input.tsv.gz> `
+- Then convert the VEP output to TSV using their BCFTools script: `./scripts/convert_vep_vcf_to_tsv_capice.sh -i </path/to/vep_output.vcf.gz> -o </path/to/capice_input.tsv.gz> -p 'bcftools-1.14.sif`
 - Run CAPICE: 
   ```
-  capice predict -i input.vcf -o output.vcf -m 
+  capice predict -i input.vcf -o output.vcf -m xgb_booster_poc.ubj
+  ```
 
 # Handling a VCF 
 ## GATK
@@ -1771,7 +1783,7 @@ In this example, the `FORMAT/AD` tag had 2 different definitions in 2 different 
 
 One solution can be to remove the `FORMAT/AD` tag, but then that information is lost.
 
-Here, vcf2 `FORMAT/AD` tag can be modify to match vcf1 definition: 
+Here, vcf2 `FORMAT/AD` tag can be modified to match vcf1 definition: 
 
 - delete INFO field with bcftools annotate, as it is useless for the following use of these files.  
 
