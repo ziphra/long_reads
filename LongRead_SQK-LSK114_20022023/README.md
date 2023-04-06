@@ -33,3 +33,8 @@ The clair3 VCF from this run was compared against its HyperExome truth set. Befo
 - **Truth** : HyperExome variants in >30X regions
 - **gt** : genotype
 - **al** : allele 
+
+
+## QDNAseq
+- [15kb](https://raw.githack.com/ziphra/long_reads/main/LongRead_SQK-LSK114_20022023/files/15kb.wf-human-cnv-report.html)
+- [500kb](https://raw.githack.com/ziphra/long_reads/main/LongRead_SQK-LSK114_20022023/files/500kb.wf-human-cnv-report.html)
