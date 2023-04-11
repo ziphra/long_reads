@@ -6,4 +6,4 @@ Too much sequencing buffer.
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38              | 7.7E+06 | 1.94          | 11960 | 515               | 0.66                |
 
-See [QC](https://raw.githack.com/ziphra/long_reads/main/SQK_LSK114_6622CY001478_27032023/6622CY001478_QC.html)
+See [QC](https://raw.githack.com/ziphra/long_reads/main/SQK_LSK114_6622CY001478_27032023/files/6622CY001478_QC.html)
