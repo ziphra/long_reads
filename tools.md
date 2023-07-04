@@ -95,6 +95,8 @@
 			- [Run QDNAseq](#run-qdnaseq)
 		- [Smoove](#smoove)
 			- [Run Smoove](#run-smoove)
+		- [CNVpytor](#cnvpytor)
+			- [Run CNVpytor](#run-cnvpytor)
 - [Variants benchmarking](#variants-benchmarking)
 	- [Benchmarcking resources: Genome in a Bottle](#benchmarcking-resources-genome-in-a-bottle)
 		- [Small variants truth set](#small-variants-truth-set)
@@ -120,6 +122,9 @@
 	- [ANNOVAR](#annovar)
 	- [Run Annovar](#run-annovar)
 	- [list all fields:](#list-all-fields)
+- [Computing issue](#computing-issue)
+	- [convert file encoding](#convert-file-encoding)
+	- [Jupyter Notebooks on remote server SSH](#jupyter-notebooks-on-remote-server-ssh)
 - [Promline](#promline)
 	- [Install](#install)
 
@@ -420,12 +425,14 @@ It provides an htlm document in which to inspect the output, and contains:
 `pip install NanoPlot` 
 
 ### Run NanoPlot
-`NanoPlot --summary file.txt ./outputdir -t 20`   
-`NanoPlot --ubam dorado.bam ./outputdir -t 20 --huge `   
-`NanoPlot --bam dorado_mmi.bam ./outputdir -t 20 --huge`   
+`NanoPlot --summary file.txt -o ./outputdir -t 20`   
+`NanoPlot --ubam dorado.bam -o ./outputdir -t 20 --huge `   
+`NanoPlot --bam dorado_mmi.bam -o ./outputdir -t 20 --huge`   
 
 #### no sequencing summary 
 If the sequences were basecalled with dorado, there won't be a sequencing_summary.txt as with guppy, but we can recreate it in order to perform a QC using the sequencing_summary output by MinKnow after sequencing. This summary only miss read length as 'sequence_length_template' and 'mean_qscore_template' which can be found in the dorado uBAM.
+
+UPDATE: you can now produce a sequencing summary from basecalling with dorado.
 
 - retrieve qscore and add appropriate header:
 ```bash
@@ -965,6 +972,8 @@ Clair3 integrates both pileup (summarized alignment statistics) model and full-a
 #**Install:**    
 `conda create -n clair3 -c bioconda clair3 python=3.6.10 -y`
 
+Don't install with python=3.9 as suggested.
+
 #### Run clair3
 ```
 MODEL_NAME="[YOUR_MODEL_NAME]"         # e.g. r941_prom_hac_g360+g422
@@ -1138,6 +1147,59 @@ docker pull brentp/smoove
 docker run -it -v "REF":"REF" -v "BAM":"BAM" brentp/smoove smoove call -x --name KAPA-HyperExome_21032023-1 --fasta /home/jburatti/Tools/ref_genomes/hg19/hg19_std_M-rCRS_Y-PAR-mask.fa -p 10 --genotype /BAM/*.dedup.bam
 ```
 
+### CNVpytor 
+CNVpytor is a Python package and command line tool for CNV/CNA analysis from depth-of-coverage. It's the extension of CNVNator.
+
+<https://github.com/abyzovlab/CNVpytor/issues/113#issuecomment-1120771164>
+
+**Install:**
+```
+conda create -n cnvpytor
+conda activate cnvpytor
+pip install cnvpytor
+cnvpytor -download
+```
+And `pip install` all missing dependencies.
+Make sure `pip` installs programs in the conda env directory with `which pip`. It should returns `~/miniconda3/envs/cnvpytor/bin/pip`. Might need to install `pip` first with `conda install pip`.
+
+#### Run CNVpytor 
+1. Import read depth signal 
+   ```
+   cnvpytor -root file.pytor -rd file.bam -chrom chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX chrY
+   ```
+2. Predict CNV regions
+   1. Calculate RD histograms.
+   ```
+   cnvpytor -root file.pytor -his 500 1000 10000
+   ```
+   2. Partitionning using mean shift method. `-nogc` option prevents GC correction:
+   ```
+   cnvpytor -root file.pytor -nogc -partition 500 1000 10000
+   ```
+   3. Call CNVs
+   ```
+   cnvpytor -root file.pytor -nogc -call 10000 > calls.10000.tsv
+   ```
+   One can filter calls in viewer mode
+3. Import SNP data   
+   It allows to identify LOH (loss of heterozygosity) events, it gives confidence to the CNV call and allows to identify false CNV calls. It's another type of calling. It's not use by the mean-shit reads.
+   ```
+   cnvpytor -root file.pytor -snp file.vcf.gz [-sample sample_name] [-chrom name1 ...] [-ad AD_TAG] [-gt GT_TAG] [-noAD]
+   ```
+
+
+
+file.pytor is updated at each steps with the results. To check its content: `cnvpytor -root file.pytor -ls` 
+
+The recommended minimal bin size depends on sequencing coverage: 
+
+| **Coverage X** | **Min bin size** |
+|----------------|------------------|
+| 0.1            | 150000           |
+| 0.5            | 30000            |
+| 5              | 3000             |
+| 30             | 500              |
+| 100            | 200              |
 
 
 # Variants benchmarking 
@@ -1994,10 +2056,55 @@ cd akt/
 make
 ```
 
-See link to exome
+look up exome github.
+
+### akt on snparray
+- genotype file: 
+  - convert the genotype code to VCF friendly GT, for each individuals:
+  ``` 
+  sed 's/AB/0\/1/g' gt.txt
+  sed -i 's/BB/1\/1/g' gt.txt 
+  sed -i 's/AA/0\/0/g' gt.txt
+  sed -i '/0	0/d' gt.txt
+  ```
+  - if issues with windows formatting new lines: `sed -i "s/\r//g"`
+  - prepare snparray.vcf: 
+  ```
+  #remove header
+  grep -v "##" snparray_sorted.vcf > noH_snparray_sorted.txt
+  ```
+  - Merge the gt.txt files together
+  ```python
+	import pandas as pd
+	# load gt files and snparray.vcf
+	gt1 = pd.read_csv('6619.txt', delimiter='\t')
+	gt2 = pd.read_csv('6623.txt', delimiter='\t')
+	vcf = pd.read_csv('noH_snparray_sorted.txt', delimiter='\t')
+	# join gt files on Chr and Position
+	mergedgt=pd.merge(gt1, gt2, on=['Chr','Position'], how='inner')
+	# rename columns to match vcf format
+	mergedgt.rename(columns = {'Chr':'#CHROM', 'Position':'POS'}, inplace = True)
+	# save as tab file
+	mergedgt.to_csv('merged_gt.txt', index=None, sep='\t',mode='a')
+	# merge and save
+	mergedvcf=pd.merge(mergedgt, vcf, on=['#CHROM','POS'], how='inner')
+	mergedvcf.to_csv('output.txt', index=None, sep='\t',mode='a')
+  ```
+  - Format as vcf
+  ```
+  awk -v OFS='\t' '{print $1,$2,$5,$6,$7,$8,$9,"AF="$10,$11,"GT",$3,$4}' output.txt > output.vcf
+  ```
+  Then use `vim` to modify the header to match the vcf format (INFO and FORMAT columns, remove extra tab and add optional header lines)
+  - run akt: 
+    - `--F`
+  ```
+  akt kin --force output.vcf > kinforce.txt
+  akt kin output.vcf -F wgs.hg19.vcf.gz > kin.txt
+  ```
+
 
 # Computing issue
-### convert file encoding 
+## convert file encoding 
 
 - Check file encoding:
   ```
@@ -2022,10 +2129,14 @@ see `https://cran.r-project.org/bin/linux/ubuntu/` and follow instructions.
 
 No https in .Renviron 
 
-
+## [Jupyter Notebooks on remote server SSH](https://medium.com/@apbetahouse45/how-to-run-jupyter-notebooks-on-remote-server-part-1-ssh-a2be0232c533)
+- connect to ssh 
+- run `jupyter notebook --no-browser --port 1234` 
+- in a new terminal window: `ssh -NL 1234:localhost:1234 eservant@10.160.210.125`
+- and copy paste the url provided in a new window
+  
 # Promline
 ## Install 
 
 See <https://github.com/ziphra/promline>.
-
 
