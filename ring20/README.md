@@ -14,8 +14,8 @@ Chromosome 20 adaptive sampling
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38 exclusion    | 1.7E+07    | 4.26          | 813 | 777               | 0.990
 
-See [QC, GRCh38 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_38)
-See [QC, chm13v2 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_t2t)
+See [QC, GRCh38 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_38.html)
+See [QC, chm13v2 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_t2t.html)
 
 ## Results
 - No adaptive sampling for unknown reasons.
