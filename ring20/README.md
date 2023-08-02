@@ -14,15 +14,15 @@ Chromosome 20 adaptive sampling
 |-------------------|----------|---------------|-------|--------------------|----------------------|
 | Hg38 exclusion    | 1.7E+07    | 4.26          | 813 | 777               | 0.990
 
-See [QC, GRCh38 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_38)
-See [QC, chm13v2 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_t2t)
+See [QC, GRCh38 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_38.html)
+See [QC, chm13v2 alignment](https://raw.githack.com/ziphra/long_reads/main/ring20/16005_QC_t2t.html)
 
 ## Results
 - No adaptive sampling for unknown reasons.
 - Poor library quality due to phenol-chloroform DNA extraction.
 - Low coverage did not allow copy number profiling or accurate methylation profiling either.
 
-> Methylation frequency in chromosome 20 telomeres and subtelomeric regions. (t2t alignment )
+> Methylation frequency, chromosome 20 telomeres and subtelomeric regions. (t2t alignment)
 ![telomere1](./chr20_tel1.png)
 ![telomere2](./chr20_tel2.png)
 
