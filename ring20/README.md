@@ -22,7 +22,7 @@ See [QC, chm13v2 alignment](https://raw.githack.com/ziphra/long_reads/main/ring2
 - Poor library quality due to phenol-chloroform DNA extraction.
 - Low coverage did not allow copy number profiling or accurate methylation profiling either.
 
-> Methylation frequency in chromosome 20 telomeres and subtelomeric regions. (t2t alignment )
+> Methylation frequency, chromosome 20 telomeres and subtelomeric regions. (t2t alignment)
 ![telomere1](./chr20_tel1.png)
 ![telomere2](./chr20_tel2.png)
 
