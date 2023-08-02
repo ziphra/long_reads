@@ -12,13 +12,16 @@
 		- [Output](#output-2)
 			- [SAM metadata](#sam-metadata)
 				- [Modified base tags](#modified-base-tags)
-	- [modbam2bed](#modbam2bed)
-		- [Run modbam2bed](#run-modbam2bed)
-			- [`modbamtools plot`](#modbamtools-plot)
 	- [duplex tools](#duplex-tools)
 		- [Duplex basecalling](#duplex-basecalling)
 	- [pod5](#pod5)
 		- [Run pod5](#run-pod5)
+- [Methylation](#methylation)
+	- [modbam2bed](#modbam2bed)
+		- [Run modbam2bed](#run-modbam2bed)
+			- [`modbamtools plot`](#modbamtools-plot)
+	- [modkit](#modkit)
+	- [Methphaser](#methphaser)
 - [Quality check](#quality-check)
 	- [FastQC `0.11.9`](#fastqc-0119)
 		- [Run FastQC](#run-fastqc)
@@ -81,7 +84,7 @@
 		- [clair3](#clair3)
 			- [Run clair3](#run-clair3)
 				- [SwitchZygosityBasedOnSVCalls module](#switchzygositybasedonsvcalls-module)
-		- [Output](#output-10)
+			- [Output](#output-10)
 	- [Structural variants calling](#structural-variants-calling)
 		- [Sniffles](#sniffles)
 			- [Run Sniffles](#run-sniffles)
@@ -304,36 +307,6 @@ When modified base output is requested the modified base calls will be output di
 
 These tags in the SAM/BAM/CRAM formats can be parsed by either the modbam2bed or pysam software for downstream analysis. For algined outputs, visualization of these tags is available in popular genome browsers, including IGV and JBrowse. - from [Bonito documentation](https://github.com/nanoporetech/bonito/blob/master/documentation/SAM.md)
 
-## modbam2bed
-**Install:**    
-`conda install -c bioconda -c conda-forge -c epi2melabs modbam2bed`
-
-### Run modbam2bed
-#### `modbamtools plot` 
-Recquires a sorted .gtf or .gff file.
-GTF and GFF can be download from gencode. It will allows genes and features annotations.
-
-Those files can be sorted like that: 
-```
-sort -k1,1 -k4,4n gencode.v42.primary_assembly.annotation.gtf > gencode.v42.primary_assembly.sorted.annotation.gtf
-bgzip gencode.v42.primary_assembly.sorted.annotation.gtf
-tabix gencode.v42.primary_assembly.sorted.annotation.gtf.gz
-```
-and then, plotting: 
-
-```
-modbamtools plot -r chr11:116819907-116843072     --gtf gencode.v42.primary_assembly.sorted.annotation.gtf.gz    --out .     --prefix firstplot     --samples sample     --track-titles Genes    aligned_dorado.bam
-```
-
-
-
-
-
-```
-modbam2bed  <reference.fasta> <reads.bam> -t $THREADS 
-```
-
-
 ## [duplex tools](https://github.com/nanoporetech/duplex-tools)
 Duplex Tools contains a set of utilities for dealing with Duplex sequencing data. Tools are provided to identify and prepare duplex pairs for basecalling by Dorado (recommended) and Guppy, and for recovering simplex basecalls from incorrectly concatenated pairs.
 
@@ -393,7 +366,85 @@ pod5-convert-from-fast5 fast5/* pod5/
 ```
 
 
+# Methylation
+## modbam2bed
+**Install:**    
+`conda install -c bioconda -c conda-forge -c epi2melabs modbam2bed`
 
+### Run modbam2bed
+#### `modbamtools plot` 
+Recquires a sorted .gtf or .gff file.
+GTF and GFF can be download from gencode. It will allows genes and features annotations.
+
+Those files can be sorted like that: 
+```
+sort -k1,1 -k4,4n gencode.v42.primary_assembly.annotation.gtf > gencode.v42.primary_assembly.sorted.annotation.gtf
+bgzip gencode.v42.primary_assembly.sorted.annotation.gtf
+tabix gencode.v42.primary_assembly.sorted.annotation.gtf.gz
+```
+and then, plotting: 
+
+```
+modbamtools plot -r chr11:116819907-116843072     --gtf gencode.v42.primary_assembly.sorted.annotation.gtf.gz    --out .     --prefix firstplot     --samples sample     --track-titles Genes    aligned_dorado.bam
+```
+```
+modbam2bed  <reference.fasta> <reads.bam> -t $THREADS 
+```
+
+## [modkit](https://nanoporetech.github.io/modkit/intro_bedmethyl.html#description-of-bedmethyl-output)
+Replace `modbam2bed` . 
+
+```
+# Install rust first 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+
+# then modkit
+git clone https://github.com/nanoporetech/modkit.git
+cd modkit
+cargo install --path .
+```
+
+- construct a bed methyl table 
+  ```
+	modkit pileup path/to/reads.bam output/path/pileup.bed --log-filepath pileup.log
+  ```
+
+**Columns description:**   
+
+
+| column |        name        |                                   description                                  |  type |
+|:------:|:------------------:|:------------------------------------------------------------------------------:|:-----:|
+| 1      | chrom              | name of reference sequence from BAM header                                     | str   |
+| 2      | start position     | 0-based start position                                                         | int   |
+| 3      | end position       | 0-based exclusive end position                                                 | int   |
+| 4      | modified base code | single letter code for modified base                                           | str   |
+| 5      | score              | Equal to Nvalid_cov.                                                           | int   |
+| 6      | strand             | '+' for positive strand '-' for negative strand, '.' when strands are combined | str   |
+| 7      | start position     | included for compatibility                                                     | int   |
+| 8      | end position       | included for compatibility                                                     | int   |
+| 9      | color              | included for compatibility, always 255,0,0                                     | str   |
+| 10     | Nvalid_cov         | See definitions above.                                                         | int   |
+| 11     | fraction modified  | Nmod / Nvalid_cov                                                              | float |
+| 12     | Nmod               | See definitions above.                                                         | int   |
+| 13     | Ncanonical         | See definitions above.                                                         | int   |
+| 14     | Nother_mod         | See definitions above.                                                         | int   |
+| 15     | Ndelete            | See definitions above.                                                         | int   |
+| 16     | Nfail              | See definitions above.                                                         | int   |
+| 17     | Ndiff              | See definitions above.                                                         | int   |
+| 18     | Nnocall            | See definitions above.                                                         | int   |
+
+
+## [Methphaser](https://gitlab.com/treangenlab/methphaser)
+This tool use methylation information for phasingw. Only works on autosomes. 
+
+**Install:**    
+Download the gitlab repository.
+Then export `methphasing` executable to the PATH: 
+
+```
+
+```
 
 # Quality check 
 ## [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) `0.11.9`
@@ -969,7 +1020,8 @@ Germline small variant caller for long-reads.
 Clair3 integrates both pileup (summarized alignment statistics) model and full-alignment model for variant calling. While a pileup model determines the result of a majority of variant candidates, candidates with uncertain results are further processed with a more computational-intensive haplotype-resolved full-alignment model. [PMDV]() only uses a full-alignment model. The pileup-based algorithms are usually superior in terms of time efficiency and the full-alignment algorithms provide the best precision and recall. 
 
 
-#**Install:**    
+**Install with conda:**    
+
 `conda create -n clair3 -c bioconda clair3 python=3.6.10 -y`
 
 Don't install with python=3.9 as suggested.
@@ -989,9 +1041,30 @@ run_clair3.sh \
 See usage example [here](https://github.com/HKU-BAL/Clair3#usage).
 
 ##### SwitchZygosityBasedOnSVCalls module
+Not working 
 
 
-### Output
+
+**Trough docker image:**
+```
+docker run -it \
+-v "/media/eservant/ref/":"/media/eservant/ref/" \
+-v "/media/eservant/data":"/media/eservant/data" \
+-v "/media/eservant/output/":"/media/eservant/output" \
+hkubal/clair3:v1.0.4 \
+/opt/bin/run_clair3.sh \
+--bam_fn="/media/eservant/data/sample.bam" \
+--ref_fn="/media/eservant/ref/ref.fasta" \
+--threads=24 \
+--platform="ont" \
+--model_path="/opt/models/r941_prom_sup_g5014" \
+--output="/media/eservant/output" \
+--gvcf --include_all_ctgs \
+--bed_fn="/media/eservant/HDD_12To_31/data_asl/pcr15.bed"
+```
+
+
+#### Output
 
 - `full_alignment.vcf`
 - `pileup.vcf`
